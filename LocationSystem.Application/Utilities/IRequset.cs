@@ -7,4 +7,8 @@ namespace LocationSystem.Application.Utilities
     public interface IRequset<TResponse>
     {
     }
+    public interface IRequset
+    {
+
+    }
 }
