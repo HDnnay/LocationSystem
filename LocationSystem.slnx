@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/Api/">
+    <Project Path="LocationSystem.Api/LocationSystem.Api.csproj" Id="051b720e-2141-4ed5-bdd5-d85256678d68" />
+  </Folder>
+  <Folder Name="/Core/">
+    <Project Path="LocationSystem.Application/LocationSystem.Application.csproj" />
+    <Project Path="LocationSystem.Domain/LocationSystem.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="LocationSystem.Infrastructure/LocationSystem.Infrastructure.csproj" Id="9a10b297-15b9-4b94-80df-095f6682cd88" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="LocationSystem.Tests/LocationSystem.Tests.csproj" />
+  </Folder>
+</Solution>
