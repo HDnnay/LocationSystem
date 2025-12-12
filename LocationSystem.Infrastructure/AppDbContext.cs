@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Infrastructure
 {
-    public class AppDbContext:DbContext
+    public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -18,6 +18,6 @@ namespace LocationSystem.Infrastructure
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
         public DbSet<DentalOffice> DentalOffices { get; set; }
-       
+        public DbSet<Patient> Patients { get; set; }
     }
 }

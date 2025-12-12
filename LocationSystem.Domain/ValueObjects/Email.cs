@@ -7,6 +7,7 @@ namespace LocationSystem.Domain.ValueObjects
 {
     public record Email
     {
+        private Email() { }
         public string Value { get; } = null!;
         public Email(string email)
         {
