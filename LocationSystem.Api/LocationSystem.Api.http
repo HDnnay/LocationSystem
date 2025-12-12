@@ -24,5 +24,22 @@ Content-Type: application/json
 DELETE {{LocationSystem.Api_HostAddress}}/api/DentalOffices/ceda72b8-c28f-417b-ba68-8605bddf5cf0
 Accept: application/json
 
+###
+POST {{LocationSystem.Api_HostAddress}}/api/Patients
+Accept:application/json
+Content-Type:application/json
 
+{
+  "name":"Patients",
+  "email":"qer@mail.com"
+}
+
+###
+GET {{LocationSystem.Api_HostAddress}}/api/Patients
+Accept:application/json
+
+
+###
+GET {{LocationSystem.Api_HostAddress}}/api/Patients/
+Accept:application/json
 
