@@ -1,4 +1,5 @@
 ﻿using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
+using LocationSystem.Application.Features.DentalOffices.Commands.UpDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOfficesDetail;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Utilities;
@@ -37,6 +38,13 @@ namespace LocationSystem.Api.Controllers
             var command = new GetDetalOfficesListQuery();
             var model = await _mediator.Send(command);
             return Ok(model);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id,[FromBody]UpdateDetalOfficeDto updateDetalOfficeDto)
+        {
+            var command = new UpdateDetalOfficeCommand { Id = id,Name = updateDetalOfficeDto.Name };    
+            await _mediator.Send(command);
+            return NoContent();
         }
     }
 }

@@ -16,9 +16,7 @@ namespace LocationSystem.Application.Utilities
         }
         public async Task<TResponse> Send<TResponse>(IRequset<TResponse> requset)
         {
-            var validatorType = typeof(IValidator<>).MakeGenericType(requset.GetType());
-            var validator = _serviceProvider.GetService(validatorType);
-            await ValidateMethod(requset, validatorType, validator);
+            await ValidationMethod(requset);
             var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requset.GetType(), typeof(TResponse));
             var handler = _serviceProvider.GetService(handlerType);
             if (handler is null)
@@ -28,8 +26,11 @@ namespace LocationSystem.Application.Utilities
 
         }
 
-        private static async Task ValidateMethod<TResponse>(IRequset<TResponse> requset, Type validatorType, object? validator)
+        private async Task ValidationMethod<TResponse>(IRequset<TResponse> requset)
         {
+
+            var validatorType = typeof(IValidator<>).MakeGenericType(requset.GetType());
+            var validator = _serviceProvider.GetService(validatorType);
             if (validator is not null)
             {
                 var validaterMethod = validatorType.GetMethod("ValidateAsync");
@@ -46,12 +47,13 @@ namespace LocationSystem.Application.Utilities
 
         public async Task Send(IRequset requset)
         {
-            var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requset.GetType());
+           
+            var handlerType = typeof(IRequestHandler<>).MakeGenericType(requset.GetType());
             var handler = _serviceProvider.GetService(handlerType);
             if (handler is null)
                 throw new MediatorExpcetion($"{nameof(handler)}为空");
             var method = handlerType.GetMethod("Handle");
-            await method.Invoke(handler);
+            await (Task)method.Invoke(handler,new object[] { requset})!;
         }
     }
 }

@@ -11,12 +11,23 @@ namespace LocationSystem.Domain.Entities
         public string Name { get; private set; } = null!;
         public DentalOffice(string name)
         {
-            if(string.IsNullOrWhiteSpace(name))
+            ValidatorName(name);
+            Name = name;
+            Id = Guid.NewGuid();
+        }
+
+        private static void ValidatorName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new BussinessRuleException($"{nameof(name)}的为空");
             }
+        }
+
+        public void UpdateName(string name)
+        {
+            if(string.IsNullOrWhiteSpace(name)) { throw new BussinessRuleException("Name名字不能为空！"); }
             Name = name;
-            Id = Guid.NewGuid();
         }
     }
 }

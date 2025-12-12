@@ -1,11 +1,13 @@
 ﻿using FluentValidation;
 using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
+using LocationSystem.Application.Features.DentalOffices.Commands.UpDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOfficesDetail;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace LocationSystem.Application
@@ -15,7 +17,8 @@ namespace LocationSystem.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddTransient<IMediator, SimpleMediator>();
-            services.AddValidatorsFromAssemblyContaining<CreateDentalOfficesCommandValidator>();
+            
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddScoped<IRequestHandler<CreateDentalOfficesCommand, Guid>,
                 CreateDentalOfficesCommandHandler>();
             
@@ -23,6 +26,7 @@ namespace LocationSystem.Application
                 GetDentalOfficesDetailQueryHandler>();
             services.AddScoped<IRequestHandler<GetDetalOfficesListQuery, List<DentalOfficesListDto>>, 
                 GetDetalOfficesListQueryHandler>();
+            services.AddScoped<IRequestHandler<UpdateDetalOfficeCommand>, UpdateDnetalOfficeCommandHandler>();
             return services;
         }
     }

@@ -8,4 +8,8 @@ namespace LocationSystem.Application.Utilities
     {
         Task<TResponse> Handle(TRequset request);
     }
+    public interface IRequestHandler<TRequest>
+    {
+        Task Handle(TRequest request);
+    }
 }

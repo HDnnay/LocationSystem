@@ -1,6 +1,13 @@
 @LocationSystem.Api_HostAddress = http://localhost:5231
 
-GET {{LocationSystem.Api_HostAddress}}/weatherforecast/
+GET {{LocationSystem.Api_HostAddress}}/api/DentalOffices
 Accept: application/json
 
 ###
+PUT {{LocationSystem.Api_HostAddress}}/api/DentalOffices/ceda72b8-c28f-417b-ba68-8605bddf5cf0
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name":"ÐÂµÄDetalOffices"
+}

@@ -7,7 +7,7 @@ namespace LocationSystem.Application.Exceptions
 {
     public class CustomVallidatorException:Exception
     {
-        public List<string> ValidationError { get; set; }
+        public List<string> ValidationError { get; set; } = new();
         public CustomVallidatorException(ValidationResult validationResult)
         {
             foreach (var error in validationResult.Errors)
