@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace LocationSystem.Infrastructure.Repositories
@@ -30,9 +31,18 @@ namespace LocationSystem.Infrastructure.Repositories
             return await _context.Set<T>().ToListAsync();
         }
 
-        public Task<T?> GetByIdAsync(Guid id)
+        public async Task<T?> GetByIdAsync(Guid id)
         {
-            return _context.Set<T>().FindAsync(id).AsTask();
+            return await _context.Set<T>().FindAsync(id);
+        }
+
+        public async Task<int> GetTotalCount(Expression<Func<T, bool>> predicate=null)
+        {
+            if (predicate != null)
+            {
+                return await _context.Set<T>().CountAsync(predicate);
+            }
+            return await _context.Set<T>().CountAsync();
         }
 
         public Task UpdateAsync(T entity)

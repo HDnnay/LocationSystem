@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace LocationSystem.Application.Contrats.Repositories
@@ -11,5 +12,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(T entity);
+        Task<int> GetTotalCount(Expression<Func<T, bool>> predicate=null);
     }
 }
