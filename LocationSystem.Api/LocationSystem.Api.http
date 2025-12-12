@@ -47,7 +47,7 @@ Content-Type:application/json
 }
 
 ### Patients
-GET {{LocationSystem.Api_HostAddress}}/api/Patients?page=1&&page
+GET {{LocationSystem.Api_HostAddress}}/api/Patients?page=1&pagesize=10&keyword=
 Accept:application/json
 
 
@@ -64,3 +64,6 @@ Content-Type:application/json
   "name":"new Patients",
   "email":"new qer@mail.com"
 }
+###
+DELETE {{LocationSystem.Api_HostAddress}}/api/Patients/c85179a2-b380-47f2-b7a3-aad3055a6322
+Accept:application/json

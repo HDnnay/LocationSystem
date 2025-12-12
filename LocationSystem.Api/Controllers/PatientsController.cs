@@ -1,5 +1,6 @@
 ﻿using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Features.Patients.Command.CreatePatient;
+using LocationSystem.Application.Features.Patients.Command.DeletePatient;
 using LocationSystem.Application.Features.Patients.Command.UpdatePatient;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienDetail;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienList;
@@ -49,6 +50,13 @@ namespace LocationSystem.Api.Controllers
                 Name = dto.Name,
                 Email = dto.Email,
             };
+            await _mediator.Send(command);
+            return NoContent();
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var command = new DeletePatientCommand { Id =id};
             await _mediator.Send(command);
             return NoContent();
         }
