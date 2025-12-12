@@ -1,5 +1,13 @@
 @LocationSystem.Api_HostAddress = http://localhost:5231
 
+POST {{LocationSystem.Api_HostAddress}}/api/DentalOffices
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name":"新的DetalOffices"
+}
+###
 GET {{LocationSystem.Api_HostAddress}}/api/DentalOffices
 Accept: application/json
 
@@ -11,3 +19,10 @@ Content-Type: application/json
 {
   "name":"新的DetalOffices"
 }
+
+###
+DELETE {{LocationSystem.Api_HostAddress}}/api/DentalOffices/ceda72b8-c28f-417b-ba68-8605bddf5cf0
+Accept: application/json
+
+
+

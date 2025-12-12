@@ -1,8 +1,9 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
-using LocationSystem.Application.Features.DentalOffices.Commands.UpDentalOffice;
+using LocationSystem.Application.Features.DentalOffices.Commands.UpdateDentalOffice;
 using LocationSystem.Domain.Entities;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using NSubstitute.ReturnsExtensions;
 using System;
 using System.Collections.Generic;
@@ -43,14 +44,30 @@ namespace LocationSystem.Tests.Applicstion.Features.DetalOffice
         [TestMethod]
         public async Task Handler_UpdateDetalOfficeTest_Throw()
         {
-        
+
             var command = new UpdateDetalOfficeCommand() { Id = Guid.NewGuid(), Name = "new name" };
             repositoty.GetByIdAsync(command.Id).ReturnsNull();
-            await handler.Handle(command);
-           
-          
 
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async ()=>
+            {
+                await handler.Handle(command);
+            });
+        }
 
+        [TestMethod]
+        // [ExpectedException(typeof(ArgumentNullException))]
+        public async Task Handler_UpdateDetalOfficeTest_Throw_RollBack()
+        {
+            var dentalOffice = new DentalOffice("DentalOffice A");
+            var id = dentalOffice.Id;
+            var command = new UpdateDetalOfficeCommand() { Id = id, Name = "new name" };
+            repositoty.GetByIdAsync(id).Returns(dentalOffice);
+            repositoty.UpdateAsync(dentalOffice).Throws<InvalidOperationException>();
+            await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
+            {
+                await handler.Handle(command);
+            });
+            await unitOfWork.Received(1).Rollback();
         }
     }
 }

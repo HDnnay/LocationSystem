@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LocationSystem.Application.Features.DentalOffices.Commands.UpDentalOffice
+namespace LocationSystem.Application.Features.DentalOffices.Commands.UpdateDentalOffice
 {
     public class UpdateDnetalOfficeCommandHandler : IRequestHandler<UpdateDetalOfficeCommand>
     {
@@ -21,7 +21,7 @@ namespace LocationSystem.Application.Features.DentalOffices.Commands.UpDentalOff
             var dentalOffice = await _repositoty.GetByIdAsync(request.Id);
             if (dentalOffice == null) 
             {
-                throw new Exception($"{nameof(dentalOffice)}为空");
+                throw new ArgumentNullException($"{nameof(dentalOffice)}为空");
             }
             dentalOffice.UpdateName(request.Name);
             try

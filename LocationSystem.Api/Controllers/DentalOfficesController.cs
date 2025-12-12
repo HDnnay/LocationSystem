@@ -1,10 +1,12 @@
 ﻿using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
-using LocationSystem.Application.Features.DentalOffices.Commands.UpDentalOffice;
+using LocationSystem.Application.Features.DentalOffices.Commands.DeleteDentalOffice;
+using LocationSystem.Application.Features.DentalOffices.Commands.UpdateDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOfficesDetail;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -19,7 +21,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(CreateDentalOffceDetailDto dto)
+        public async Task<IActionResult> Post([FromBody]CreateDentalOffceDetailDto dto)
         {
             var command = new CreateDentalOfficesCommand { Name = dto.Name };
             await _mediator.Send(command);
@@ -43,6 +45,13 @@ namespace LocationSystem.Api.Controllers
         public async Task<IActionResult> Put(Guid id,[FromBody]UpdateDetalOfficeDto updateDetalOfficeDto)
         {
             var command = new UpdateDetalOfficeCommand { Id = id,Name = updateDetalOfficeDto.Name };    
+            await _mediator.Send(command);
+            return NoContent();
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id) 
+        {
+            var command = new DeleteDentalOfficeCommand { Id = id };
             await _mediator.Send(command);
             return NoContent();
         }

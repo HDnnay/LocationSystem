@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LocationSystem.Application.Features.DentalOffices.Commands.UpDentalOffice
+namespace LocationSystem.Application.Features.DentalOffices.Commands.UpdateDentalOffice
 {
     public class UpdateDetalOfficeDto
     {
