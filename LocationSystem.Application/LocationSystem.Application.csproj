@@ -15,4 +15,8 @@
     <ProjectReference Include="..\LocationSystem.Domain\LocationSystem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Patients\Queries\" />
+  </ItemGroup>
+
 </Project>
