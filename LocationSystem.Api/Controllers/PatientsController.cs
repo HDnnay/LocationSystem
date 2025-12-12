@@ -1,10 +1,12 @@
 ﻿using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Features.Patients.Command.CreatePatient;
+using LocationSystem.Application.Features.Patients.Command.UpdatePatient;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienDetail;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienList;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -32,11 +34,23 @@ namespace LocationSystem.Api.Controllers
             return Ok(result);
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery]PatiensListFilterDto dto)
         {
-            var command = new GetPatienListQuery();
+            var command = new GetPatienListQuery() { Page = dto.Page, PageSize = dto.PageSize,keyWord=dto.keyWord };
             var result = await _mediator.Send(command);
             return Ok(result);
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdatePatientDto dto)
+        {
+            var command = new UpdatePatientCommand()
+            {
+                Id = id,
+                Name = dto.Name,
+                Email = dto.Email,
+            };
+            await _mediator.Send(command);
+            return NoContent();
         }
     }
 }

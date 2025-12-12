@@ -1,12 +1,12 @@
-﻿using System;
+﻿using LocationSystem.Application.Utilities.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace LocationSystem.Application.Features.Patients.Queries.GetPatienList
 {
-    public class PatiensFilterDto
+    public class PatiensListFilterDto:PageRequest
     {
-        public int page { get; set; } = 1;
-        public int pageSize { get; set; } = 10;
+      
     }
 }

@@ -8,8 +8,20 @@ Content-Type: application/json
   "name":"ÐÂµÄDetalOffices"
 }
 ###
-GET {{LocationSystem.Api_HostAddress}}/api/DentalOffices
+GET {{LocationSystem.Api_HostAddress}}/api/Patients?Page=1&PageSize=10&keywrod=
 Accept: application/json
+
+###
+GET {{LocationSystem.Api_HostAddress}}/api/Patients
+Accept: application/json
+
+{
+   "params": {
+     "page":1,
+     "pageSize":10,
+     "keyword":""
+   }
+}
 
 ###
 PUT {{LocationSystem.Api_HostAddress}}/api/DentalOffices/ceda72b8-c28f-417b-ba68-8605bddf5cf0
@@ -24,7 +36,7 @@ Content-Type: application/json
 DELETE {{LocationSystem.Api_HostAddress}}/api/DentalOffices/ceda72b8-c28f-417b-ba68-8605bddf5cf0
 Accept: application/json
 
-###
+### Patients
 POST {{LocationSystem.Api_HostAddress}}/api/Patients
 Accept:application/json
 Content-Type:application/json
@@ -34,12 +46,21 @@ Content-Type:application/json
   "email":"qer@mail.com"
 }
 
-###
-GET {{LocationSystem.Api_HostAddress}}/api/Patients
+### Patients
+GET {{LocationSystem.Api_HostAddress}}/api/Patients?page=1&&page
 Accept:application/json
 
 
-###
+### Patients
 GET {{LocationSystem.Api_HostAddress}}/api/Patients/c1ae2d46-d87c-4742-9db4-2f6b7f53fab8
 Accept:application/json
 
+### 
+PUT {{LocationSystem.Api_HostAddress}}/api/Patients/c1ae2d46-d87c-4742-9db4-2f6b7f53fab8
+Accept:application/json
+Content-Type:application/json
+
+{
+  "name":"new Patients",
+  "email":"new qer@mail.com"
+}

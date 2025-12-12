@@ -23,4 +23,8 @@
     <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Utilities\Common\" />
+  </ItemGroup>
+
 </Project>

@@ -8,6 +8,6 @@ namespace LocationSystem.Application.Contrats.Repositories
 {
     public interface IPatientRepository : IRepository<Patient>
     {
-        Task<IEnumerable<Patient>> GetPatientPage(PatiensFilterDto fiter);
+        Task<IEnumerable<Patient>> GetPatientPage(PatiensListFilterDto fiter);
     }
 }
