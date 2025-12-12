@@ -1,5 +1,7 @@
-﻿using LocationSystem.Application.Features.Patients.Command.CreatePatient;
+﻿using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
+using LocationSystem.Application.Features.Patients.Command.CreatePatient;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienDetail;
+using LocationSystem.Application.Features.Patients.Queries.GetPatienList;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +24,7 @@ namespace LocationSystem.Api.Controllers
             var result = await _mediator.Send(command);
             return Ok(result);
         }
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
             var command = new GetPatienDetailQuery() { PatientId = id };
@@ -32,7 +34,7 @@ namespace LocationSystem.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var command = new GetPatienDetailQuery() { PatientId = id };
+            var command = new GetPatienListQuery();
             var result = await _mediator.Send(command);
             return Ok(result);
         }
