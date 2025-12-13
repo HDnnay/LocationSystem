@@ -8,6 +8,9 @@ namespace LocationSystem.Application.Features.Appointments.Commands.UpdateAppoin
 {
     public  class UpdateAppointmentCommandValidator: AbstractValidator<UpdateAppointmentCommand>
     {
-        public UpdateAppointmentCommandValidator() { }
+        public UpdateAppointmentCommandValidator() 
+        {
+            RuleFor(t => t.EndDate).GreaterThan(t => t.StartDate).WithMessage("开始时间不能大于结束时间");
+        }
     }
 }

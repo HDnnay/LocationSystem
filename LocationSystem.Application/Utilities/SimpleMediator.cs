@@ -26,9 +26,19 @@ namespace LocationSystem.Application.Utilities
 
         }
 
-        private async Task ValidationMethod<TResponse>(IRequset<TResponse> requset)
+        public async Task Send(IRequset requset)
         {
+           await ValidationMethod(requset);
+             var handlerType = typeof(IRequestHandler<>).MakeGenericType(requset.GetType());
+            var handler = _serviceProvider.GetService(handlerType);
+            if (handler is null)
+                throw new MediatorExpcetion($"{nameof(handler)}为空");
+            var method = handlerType.GetMethod("Handle");
+            await (Task)method.Invoke(handler,new object[] { requset})!;
+        }
 
+        private async Task ValidationMethod(object requset)
+        {
             var validatorType = typeof(IValidator<>).MakeGenericType(requset.GetType());
             var validator = _serviceProvider.GetService(validatorType);
             if (validator is not null)
@@ -43,17 +53,6 @@ namespace LocationSystem.Application.Utilities
                     throw new CustomVallidatorException(validationResult);
                 }
             }
-        }
-
-        public async Task Send(IRequset requset)
-        {
-           
-            var handlerType = typeof(IRequestHandler<>).MakeGenericType(requset.GetType());
-            var handler = _serviceProvider.GetService(handlerType);
-            if (handler is null)
-                throw new MediatorExpcetion($"{nameof(handler)}为空");
-            var method = handlerType.GetMethod("Handle");
-            await (Task)method.Invoke(handler,new object[] { requset})!;
         }
     }
 }
