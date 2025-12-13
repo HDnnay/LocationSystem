@@ -1,4 +1,8 @@
 ﻿using LocationSystem.Application.Features.Appointments.Commands.CreateAppointment;
+using LocationSystem.Application.Features.Appointments.Commands.DeleteAppointment;
+using LocationSystem.Application.Features.Appointments.Commands.UpdateAppointment;
+using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentDetail;
+using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentList;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -18,16 +22,25 @@ namespace LocationSystem.Api.Controllers
         }
         // GET: api/<AppointmentsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get([FromQuery]AppointmentListFilter filter)
         {
-            return new string[] { "value1", "value2" };
+            var command = new GetAppointmentListQuery()
+            {
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                keyWord = filter.keyWord
+            };
+           var model =await _mediator.Send(command);
+            return Ok(model);
         }
 
         // GET api/<AppointmentsController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            return "value";
+            var command = new GetAppointmentDetailQuery { Id = id };
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
 
         // POST api/<AppointmentsController>
@@ -48,14 +61,28 @@ namespace LocationSystem.Api.Controllers
 
         // PUT api/<AppointmentsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateAppointmentDto model)
         {
+            var command = new UpdateAppointmentCommand
+            {
+                Id = id,
+                DentalOfficeId = model.DentalOfficeId,
+                DentistId = model.DentistId,
+                StartDate = model.StartDate,
+                EndDate = model.EndDate,
+                Status = model.Status,
+            };
+            await _mediator.Send(command);
+            return Ok();
         }
 
         // DELETE api/<AppointmentsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
+            var command = new DeleteAppointmentCommand { Id = id };
+            await _mediator.Send(command);
+            return Ok();
         }
     }
 }

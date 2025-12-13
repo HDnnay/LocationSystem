@@ -8,6 +8,9 @@ Content-Type: application/json
 {
   "name":"新的DetalOffices"
 }
+###
+GET {{LocationSystem.Api_HostAddress}}/api/DentalOffices
+Accept: application/json
 
 
 ### Patients分页
@@ -67,17 +70,42 @@ Content-Type:application/json
 DELETE {{LocationSystem.Api_HostAddress}}/api/Patients/c85179a2-b380-47f2-b7a3-aad3055a6322
 Accept:application/json
 
+### 查询单个Appointments
+GET {{LocationSystem.Api_HostAddress}}}/api/Appointments
+Accept:application/json
+Content-Tyoe:application/json
+
+{
+  "params":""
+}
+
+### 查询AppointmentsList
+GET {{LocationSystem.Api_HostAddress}}}/api/Appointments
+Accept:application/json
+Content-Tyoe:application/json
+
+{
+  "params":{
+    "page":1,
+    "pageSize":10,
+    "keyWord":""
+  }
+}
+
+
 ###
 POST {{LocationSystem.Api_HostAddress}}/api/Appointments
 Accept:application/json
 Content-Tyoe:application/json
 
 {
-  {
-  "patientId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "dentistId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "dentalOfficeId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "startDate": "2025-12-13T02:46:14.453Z",
-  "endDate": "2025-12-13T02:46:14.453Z"
+  "patientId": "9db4656e-c80c-47e6-b89d-3ccf7b54f571",
+  "dentistId": "8292a0a0-5814-40db-8bdc-02ebc2b723d8",
+  "dentalOfficeId": "c4a98f99-9ef8-4e0d-ac4d-585d21a9c678",
+  "startDate": "2025-12-13T20:44:39.740Z",
+  "endDate": "2025-12-13T21:44:39.740Z"
 }
-}
+
+### 
+GET {{LocationSystem.Api_HostAddress}}/api/Appointments?page=1&pageSize=10
+Accept:application/json

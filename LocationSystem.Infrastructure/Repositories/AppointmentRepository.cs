@@ -52,7 +52,7 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(t => t.Patient).FirstOrDefaultAsync(t=>t.Id==id);
         }
 
-        public async Task<IEnumerable<Appointment>> GetPatientPage(AppointmentListFilter filter)
+        public async Task<IEnumerable<Appointment>> GetAppointmentPage(AppointmentListFilter filter)
         {
             var query = _context.Appointments.Include(t => t.Patient)
                 .Include(t => t.DentalOffice)

@@ -15,6 +15,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<bool> AppointmentIsProgress(Guid id);
         Task<bool> AppointmentIsScheduled(Guid id);
         new Task<Appointment?> GetByIdAsync(Guid id);
-        Task<IEnumerable<Appointment>> GetPatientPage(AppointmentListFilter fiter);
+        Task<IEnumerable<Appointment>> GetAppointmentPage(AppointmentListFilter fiter);
     }
 }

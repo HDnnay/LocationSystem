@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Appointments.Queries.GetAppointmentDetail
 {
-    public class GetAppointmentDetailQuery:IRequset
+    public class GetAppointmentDetailQuery:IRequset<AppointmentDetailDto>
     {
         public Guid Id { get; set; }
     }

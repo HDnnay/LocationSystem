@@ -9,7 +9,6 @@ namespace LocationSystem.Application.Features.Appointments.Commands.UpdateAppoin
     public class UpdateAppointmentCommand:IRequset
     {
         public Guid Id { get; set; }
-        public required Guid PatientId { get; set; }
         public required Guid DentistId { get; set; }
         public required Guid DentalOfficeId { get; set; }
         public DateTime StartDate { get; set; }
