@@ -1,5 +1,6 @@
 @LocationSystem.Api_HostAddress = http://localhost:5231
 
+###DentalOffices 新增
 POST {{LocationSystem.Api_HostAddress}}/api/DentalOffices
 Accept: application/json
 Content-Type: application/json
@@ -7,11 +8,9 @@ Content-Type: application/json
 {
   "name":"新的DetalOffices"
 }
-###
-GET {{LocationSystem.Api_HostAddress}}/api/Patients?Page=1&PageSize=10&keywrod=
-Accept: application/json
 
-###
+
+### Patients分页
 GET {{LocationSystem.Api_HostAddress}}/api/Patients
 Accept: application/json
 
@@ -23,7 +22,7 @@ Accept: application/json
    }
 }
 
-###
+###编辑DentalOffices
 PUT {{LocationSystem.Api_HostAddress}}/api/DentalOffices/ceda72b8-c28f-417b-ba68-8605bddf5cf0
 Accept: application/json
 Content-Type: application/json
@@ -32,11 +31,11 @@ Content-Type: application/json
   "name":"新的DetalOffices"
 }
 
-###
+###删除DentalOffices
 DELETE {{LocationSystem.Api_HostAddress}}/api/DentalOffices/ceda72b8-c28f-417b-ba68-8605bddf5cf0
 Accept: application/json
 
-### Patients
+### Patients 新增
 POST {{LocationSystem.Api_HostAddress}}/api/Patients
 Accept:application/json
 Content-Type:application/json
@@ -46,16 +45,16 @@ Content-Type:application/json
   "email":"qer@mail.com"
 }
 
-### Patients
+### Patients 分页
 GET {{LocationSystem.Api_HostAddress}}/api/Patients?page=1&pagesize=10&keyword=
 Accept:application/json
 
 
-### Patients
+### Patients获取
 GET {{LocationSystem.Api_HostAddress}}/api/Patients/c1ae2d46-d87c-4742-9db4-2f6b7f53fab8
 Accept:application/json
 
-### 编辑
+### 编辑Patients
 PUT {{LocationSystem.Api_HostAddress}}/api/Patients/c1ae2d46-d87c-4742-9db4-2f6b7f53fab8
 Accept:application/json
 Content-Type:application/json
@@ -64,6 +63,21 @@ Content-Type:application/json
   "name":"new Patients",
   "email":"new qer@mail.com"
 }
-###
+###删除Patients
 DELETE {{LocationSystem.Api_HostAddress}}/api/Patients/c85179a2-b380-47f2-b7a3-aad3055a6322
 Accept:application/json
+
+###
+POST {{LocationSystem.Api_HostAddress}}/api/Appointments
+Accept:application/json
+Content-Tyoe:application/json
+
+{
+  {
+  "patientId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "dentistId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "dentalOfficeId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "startDate": "2025-12-13T02:46:14.453Z",
+  "endDate": "2025-12-13T02:46:14.453Z"
+}
+}

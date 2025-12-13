@@ -9,7 +9,7 @@ namespace LocationSystem.Application.Features.Appointments.Commands.CreateAppoin
     {
         public CreateAppointmentCommandValidator()
         {
-            RuleFor(t => t.StartDate).GreaterThan(t => t.EndDate).WithMessage("开始时间不能大于结束时间");
+            RuleFor(t => t.EndDate).GreaterThan(t => t.StartDate).WithMessage("开始时间不能大于结束时间");
         }
     }
 }
