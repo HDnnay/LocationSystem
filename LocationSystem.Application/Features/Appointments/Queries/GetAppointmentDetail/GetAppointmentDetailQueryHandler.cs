@@ -20,7 +20,7 @@ namespace LocationSystem.Application.Features.Appointments.Queries.GetAppointmen
             var appointment = await _repository.GetByIdAsync(request.Id);
             if (appointment == null)
                 throw new BussinessRuleException("该预约不存在");
-            var model = appointment.MapToDto();
+            var model = appointment.MapToDetailDto();
             return model;
         }
     }

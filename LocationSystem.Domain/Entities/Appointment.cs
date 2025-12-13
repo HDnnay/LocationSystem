@@ -44,11 +44,6 @@ namespace LocationSystem.Domain.Entities
                         break;
                     this.SetScheduled();
                     break;
-                case AppointmentStatus.Progress:
-                    if (Status == status)
-                        break;
-                    this.SetProgress();
-                    break;
                 case AppointmentStatus.Completed:
                     if (Status == status)
                         break;
@@ -103,12 +98,6 @@ namespace LocationSystem.Domain.Entities
                 throw new BussinessRuleException("只有预约过才能被完成");
             }
             Status = AppointmentStatus.Completed;
-        }
-        private void SetProgress()
-        {
-            if (Status != AppointmentStatus.Scheduled)
-                throw new BussinessRuleException("只有预约过才能进行");
-            Status = AppointmentStatus.Progress;
         }
         
     }

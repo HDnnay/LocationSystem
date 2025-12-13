@@ -7,7 +7,6 @@ namespace LocationSystem.Domain.Enums
     public enum AppointmentStatus
     {
         Scheduled,
-        Progress,
         Completed,
         Canceled,
     }

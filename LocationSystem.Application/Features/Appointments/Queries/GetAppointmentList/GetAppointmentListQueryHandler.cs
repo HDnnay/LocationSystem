@@ -18,11 +18,11 @@ namespace LocationSystem.Application.Features.Appointments.Queries.GetAppointmen
         }
         public async Task<PageResult<AppointmentListDto>> Handle(GetAppointmentListQuery request)
         {
-            var appointments =await _repository.GetPatientPage(request);
+            var appointments =await _repository.GetAppointmentPage(request);
             var total = await _repository.GetTotalCount();
             return new PageResult<AppointmentListDto>()
             {
-                Data = appointments.Select(t => (AppointmentListDto)t.MapToDto()).ToList(),
+                Data = appointments.Select(t => t.MapToListDto()).ToList(),
                 Total = total
             };
         }

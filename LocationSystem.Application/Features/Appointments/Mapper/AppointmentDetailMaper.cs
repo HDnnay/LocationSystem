@@ -10,7 +10,7 @@ namespace LocationSystem.Application.Features.Appointments.Mapper
 {
     public static class AppointmentDetailMaper
     {
-        public static AppointmentDetailDto MapToDto(this Appointment appointment) => new AppointmentDetailDto
+        public static AppointmentDetailDto MapToDetailDto(this Appointment appointment) => new AppointmentDetailDto
         {
             Id = appointment.Id,
             Patient = appointment.Patient==null ?null: new PatientDto(appointment.Patient),
