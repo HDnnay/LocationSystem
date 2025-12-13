@@ -12,6 +12,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<bool> AppointmentIsCanceled(Guid id);
         Task<bool> AppointmentIsProgress(Guid id);
         Task<bool> AppointmentIsScheduled(Guid id);
-        new Task<Appointment> GetByIdAsync(Guid id);
+        new Task<Appointment?> GetByIdAsync(Guid id);
     }
 }

@@ -43,7 +43,7 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             return await _context.Appointments.Where(t => t.Id == id && t.Status == AppointmentStatus.Progress).AnyAsync();
         }
-        new public async Task<Appointment> GetByIdAsync(Guid id)
+        new public async Task<Appointment?> GetByIdAsync(Guid id)
         {
             return await _context.Appointments
                 .Include(t => t.DentalOffice)
