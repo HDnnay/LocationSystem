@@ -1,4 +1,6 @@
-﻿using LocationSystem.Domain.Entities;
+﻿using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentList;
+using LocationSystem.Application.Features.Patients.Queries.GetPatienList;
+using LocationSystem.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,5 +15,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<bool> AppointmentIsProgress(Guid id);
         Task<bool> AppointmentIsScheduled(Guid id);
         new Task<Appointment?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Appointment>> GetPatientPage(AppointmentListFilter fiter);
     }
 }

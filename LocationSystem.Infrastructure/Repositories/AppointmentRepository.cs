@@ -1,4 +1,5 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentList;
 using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,24 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(t => t.DentalOffice)
                 .Include(t => t.Dentist)
                 .Include(t => t.Patient).FirstOrDefaultAsync(t=>t.Id==id);
+        }
+
+        public async Task<IEnumerable<Appointment>> GetPatientPage(AppointmentListFilter filter)
+        {
+            var query = _context.Appointments.Include(t => t.Patient)
+                .Include(t => t.DentalOffice)
+                .Include(t => t.Dentist)
+                .AsQueryable();
+            if (!string.IsNullOrWhiteSpace(filter.keyWord))
+            {
+                query = query.Where(t =>
+                    (t.Patient != null && t.Patient.Name != null && t.Patient.Name.Contains(filter.keyWord)) ||
+                    (t.Dentist != null && t.Dentist.Name != null && t.Dentist.Name.Contains(filter.keyWord)) ||
+                    (t.DentalOffice != null && t.DentalOffice.Name != null && t.DentalOffice.Name.Contains(filter.keyWord))
+                );
+            }
+            var retult = await query.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+            return retult;
         }
     }
 }

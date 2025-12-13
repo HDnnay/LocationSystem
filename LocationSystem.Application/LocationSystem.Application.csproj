@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Appointments\Queries\" />
     <Folder Include="Features\Dentists\Commands\DeleteDentist\" />
     <Folder Include="Features\Dentists\Queries\GetDentistDetail\" />
   </ItemGroup>
