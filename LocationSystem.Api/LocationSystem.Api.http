@@ -55,7 +55,7 @@ Accept:application/json
 GET {{LocationSystem.Api_HostAddress}}/api/Patients/c1ae2d46-d87c-4742-9db4-2f6b7f53fab8
 Accept:application/json
 
-### 
+### ±à¼­
 PUT {{LocationSystem.Api_HostAddress}}/api/Patients/c1ae2d46-d87c-4742-9db4-2f6b7f53fab8
 Accept:application/json
 Content-Type:application/json

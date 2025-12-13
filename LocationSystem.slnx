@@ -12,4 +12,10 @@
   <Folder Name="/Tests/">
     <Project Path="LocationSystem.Tests/LocationSystem.Tests.csproj" />
   </Folder>
+  <Folder Name="/Web/">
+    <Project Path="LocationSystemWebApp/locationsystemwebapp.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
 </Solution>
