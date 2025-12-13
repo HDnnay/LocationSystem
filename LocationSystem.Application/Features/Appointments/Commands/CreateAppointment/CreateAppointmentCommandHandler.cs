@@ -35,14 +35,15 @@ namespace LocationSystem.Application.Features.Appointments.Commands.CreateAppoin
             var appointmennt = new Appointment(request.PatientId, request.DentistId, request.DentalOfficeId, timeInterval);
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 var modle = await _repository.AddAsync(appointmennt);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
                 return modle.Id;
 
             }
             catch (Exception) 
             {
-                await _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
         }

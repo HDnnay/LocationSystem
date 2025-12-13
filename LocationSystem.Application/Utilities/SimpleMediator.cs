@@ -34,10 +34,10 @@ namespace LocationSystem.Application.Utilities
             if (validator is not null)
             {
                 var validaterMethod = validatorType.GetMethod("ValidateAsync");
-                var taskValidate = (Task)validaterMethod!.Invoke(validator, new object[] { requset, CancellationToken.None });
+                var taskValidate = (Task)validaterMethod!.Invoke(validator, new object[] { requset, CancellationToken.None })!;
                 await taskValidate;
                 var result = taskValidate.GetType().GetProperty("Result");
-                var validationResult = (ValidationResult)result!.GetValue(taskValidate); // 使用 FluentValidation.Results.ValidationResult
+                var validationResult = (ValidationResult)result!.GetValue(taskValidate)!; // 使用 FluentValidation.Results.ValidationResult
                 if (!validationResult.IsValid) // 现在 IsValid 属性可用
                 {
                     throw new CustomVallidatorException(validationResult);

@@ -24,12 +24,13 @@ namespace LocationSystem.Application.Features.Patients.Command.DeletePatient
                 throw new ArgumentNullException("删除的patient不存在");
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 await _repository.DeleteAsync(patient);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
             catch (Exception)
             {
-                await _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
            

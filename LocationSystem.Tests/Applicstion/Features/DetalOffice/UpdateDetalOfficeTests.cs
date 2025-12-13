@@ -34,8 +34,9 @@ namespace LocationSystem.Tests.Applicstion.Features.DetalOffice
             var command = new UpdateDetalOfficeCommand() { Id = id ,Name = "new name"};
             repositoty.GetByIdAsync(id).Returns(dentalOffice);
             await handler.Handle(command);
+            await unitOfWork.BeginTransactionAsync();
             await repositoty.Received(1).UpdateAsync(dentalOffice);
-            await unitOfWork.Received(1).Commit();
+            await unitOfWork.Received(1).CommitAsync();
              var result = await repositoty.GetByIdAsync(id);
             Assert.IsTrue(result.Name == "new name");
 
@@ -67,7 +68,7 @@ namespace LocationSystem.Tests.Applicstion.Features.DetalOffice
             {
                 await handler.Handle(command);
             });
-            await unitOfWork.Received(1).Rollback();
+            await unitOfWork.Received(1).RollbackAsync();
         }
     }
 }

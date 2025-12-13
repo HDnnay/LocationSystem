@@ -6,8 +6,8 @@ namespace LocationSystem.Application.Contrats.UnitOfWorks
 {
     public interface IUnitOfWork
     {
-
-        Task Commit();
-        Task Rollback();
+        Task BeginTransactionAsync();
+        Task CommitAsync();
+        Task RollbackAsync();
     }
 }

@@ -26,12 +26,13 @@ namespace LocationSystem.Application.Features.DentalOffices.Commands.UpdateDenta
             dentalOffice.UpdateName(request.Name);
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 await _repositoty.UpdateAsync(dentalOffice);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
                 
             }
             catch (Exception ) {
-                await _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
             }
         }
     }

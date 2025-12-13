@@ -25,12 +25,13 @@ namespace LocationSystem.Application.Features.DentalOffices.Commands.DeleteDenta
             }
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 await _repositoty.DeleteAsync(dentalOffice);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
             }
             catch (Exception) 
             {
-                await _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
             

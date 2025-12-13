@@ -33,13 +33,14 @@ namespace LocationSystem.Application.Features.Dentists.Commands.CreateDentist
             var model = new Dentist(request.Name,new Email(request.Email));
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 await _repository.AddAsync(model);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
                 return model.Id;
             }
             catch (Exception ex)
             {
-                await _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
 

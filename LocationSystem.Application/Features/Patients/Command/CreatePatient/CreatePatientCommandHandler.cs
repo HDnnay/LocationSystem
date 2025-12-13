@@ -36,13 +36,14 @@ namespace LocationSystem.Application.Features.Patients.Command.CreatePatient
             var patient = new Patient(command.Name, new Email(command.Email));
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 var model = await _patientRepository.AddAsync(patient);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
                 return model;
             }
             catch (Exception)
             {
-                await _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 throw;
             }
         }

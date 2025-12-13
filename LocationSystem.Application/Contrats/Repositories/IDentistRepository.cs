@@ -9,7 +9,7 @@ namespace LocationSystem.Application.Contrats.Repositories
 {
     public interface IDentistRepository: IRepository<Dentist>
     {
-        Task<IEnumerable<Dentist>> GetDentistPage(DentistListFiterDto fiter);
+        Task<IEnumerable<Dentist>> GetDentistPage(DentistListFilterDto fiter);
 
     }
 }

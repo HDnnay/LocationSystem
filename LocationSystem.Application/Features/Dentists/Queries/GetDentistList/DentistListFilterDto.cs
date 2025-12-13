@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Dentists.Queries.GetDentistList
 {
-    public class DentistListFiterDto:PageRequest
+    public class DentistListFilterDto:PageRequest
     {
     }
 }

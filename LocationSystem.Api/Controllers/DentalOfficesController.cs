@@ -23,7 +23,7 @@ namespace LocationSystem.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]CreateDentalOffceDetailDto dto)
         {
-            var command = new CreateDentalOfficesCommand { Name = dto.Name };
+            var command = new CreateDentalOfficesCommand { Name = "" };
             await _mediator.Send(command);
             return Ok();
         }

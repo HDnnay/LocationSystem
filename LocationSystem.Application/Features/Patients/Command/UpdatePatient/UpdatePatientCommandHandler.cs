@@ -35,13 +35,14 @@ namespace LocationSystem.Application.Features.Patients.Command.UpdatePatient
             patient.UpdateEmail(new Email(request.Email));
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 await _patientRepository.UpdateAsync(patient);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
 
             }
             catch (Exception) 
             {
-                await _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 throw;
             
             }

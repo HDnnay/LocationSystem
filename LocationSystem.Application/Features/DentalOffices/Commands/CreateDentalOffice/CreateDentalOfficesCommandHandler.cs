@@ -35,13 +35,14 @@ namespace LocationSystem.Application.Features.DentalOffices.Commands.CreateDenta
             var dentalOffice = new DentalOffice(command.Name);
             try
             {
+                await _unitOfWork.BeginTransactionAsync();
                 var result = await _repositoty.AddAsync(dentalOffice);
-                await _unitOfWork.Commit();
+                await _unitOfWork.CommitAsync();
                 return result.Id;
             }
             catch(Exception)
             {
-                await _unitOfWork.Rollback();
+                await _unitOfWork.RollbackAsync();
                 // Log the exception (ex) here as needed
                 throw; // Re-throw the exception after logging
             }

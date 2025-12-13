@@ -17,7 +17,7 @@ namespace LocationSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Dentist>> GetDentistPage(DentistListFiterDto fiter)
+        public async Task<IEnumerable<Dentist>> GetDentistPage(DentistListFilterDto fiter)
         {
             var querable = _context.Dentists.AsQueryable();
             if (string.IsNullOrWhiteSpace(fiter.keyWord))

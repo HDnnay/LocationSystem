@@ -1,7 +1,9 @@
 ﻿using LocationSystem.Application.Features.Dentists.Commands.CreateDentist;
+using LocationSystem.Application.Features.Dentists.Queries.GetDentistList;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,18 +18,19 @@ namespace LocationSystem.Api.Controllers
         {
             _mediator = mediator;
         }
-        // GET: api/<DentistsController>
-        [HttpGet]
-        public async Task<IActionResult> Get()
-        {
-            return Ok();
-        }
 
         // GET api/<DentistsController>/5
-        [HttpGet("{id}")]
-        public string Get(Guid id)
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery]DentistListFilterDto model)
         {
-            return "value";
+            var command = new GetDentistListQuery()
+            {
+                Page = model.Page,
+                PageSize = model.PageSize,
+                keyWord = model.keyWord
+            };
+            var result = await _mediator.Send(command);
+            return Ok(result);
         }
 
         // POST api/<DentistsController>

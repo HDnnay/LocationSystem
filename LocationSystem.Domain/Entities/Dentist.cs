@@ -23,5 +23,13 @@ namespace LocationSystem.Domain.Entities
             Email = email;
             Id = Guid.NewGuid();
         }
+        public void UpdateName(string name)
+        {
+            Name = name;
+        }
+        public void UpdateEmail(Email email)
+        {
+            Email = email;
+        }
     }
 }
