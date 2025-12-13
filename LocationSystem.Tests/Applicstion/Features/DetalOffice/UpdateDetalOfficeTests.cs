@@ -15,13 +15,13 @@ namespace LocationSystem.Tests.Applicstion.Features.DetalOffice
     [TestClass]
     public class UpdateDetalOfficeTests
     {
-        private IDentalOfficeRepositoty repositoty;
+        private IDentalOfficeRepository repositoty;
         private IUnitOfWork unitOfWork;
         private UpdateDnetalOfficeCommandHandler handler;
         [TestInitialize]
         public void SetUp() 
         {
-            repositoty = Substitute.For<IDentalOfficeRepositoty>();
+            repositoty = Substitute.For<IDentalOfficeRepository>();
             unitOfWork = Substitute.For<IUnitOfWork>();
             handler =   new UpdateDnetalOfficeCommandHandler(repositoty,unitOfWork);
 

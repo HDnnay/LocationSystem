@@ -11,6 +11,7 @@ namespace LocationSystem.Domain.Entities
         public Guid Id { get; private set; }
         public string Name { get; private set; } = null!;
         public Email Email { get; private set; } = null!;
+        private Dentist() { }
         public Dentist(string name, Email email)
         {
             if (string.IsNullOrWhiteSpace(name))

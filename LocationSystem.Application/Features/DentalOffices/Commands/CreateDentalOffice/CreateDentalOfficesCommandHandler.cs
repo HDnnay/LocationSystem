@@ -12,10 +12,10 @@ namespace LocationSystem.Application.Features.DentalOffices.Commands.CreateDenta
 {
     public class CreateDentalOfficesCommandHandler:IRequestHandler<CreateDentalOfficesCommand, Guid>
     {
-        private readonly IDentalOfficeRepositoty _repositoty;
+        private readonly IDentalOfficeRepository _repositoty;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IValidator<CreateDentalOfficesCommand> _validator;
-        public CreateDentalOfficesCommandHandler(IDentalOfficeRepositoty repositoty,
+        public CreateDentalOfficesCommandHandler(IDentalOfficeRepository repositoty,
                                                 IUnitOfWork unitOfWork,
                                                 IValidator<CreateDentalOfficesCommand> validator)
         {

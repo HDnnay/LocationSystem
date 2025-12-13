@@ -9,9 +9,9 @@ namespace LocationSystem.Application.Features.DentalOffices.Commands.DeleteDenta
 {
     public class DeleteDentalOfficeCommandHandler : IRequestHandler<DeleteDentalOfficeCommand>
     {
-        private readonly IDentalOfficeRepositoty _repositoty;
+        private readonly IDentalOfficeRepository _repositoty;
         private readonly IUnitOfWork _unitOfWork;
-        public DeleteDentalOfficeCommandHandler(IDentalOfficeRepositoty repositoty,IUnitOfWork unitOfWork) 
+        public DeleteDentalOfficeCommandHandler(IDentalOfficeRepository repositoty,IUnitOfWork unitOfWork) 
         {
             _repositoty = repositoty;
             _unitOfWork = unitOfWork;

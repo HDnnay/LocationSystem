@@ -18,6 +18,7 @@ namespace LocationSystem.Domain.Entities
         public DentalOffice? DentalOffice { get; private set; }
         public Dentist? Dentist { get; private set; }
         public TimeInterval TimeInterval { get; private set; }
+        private Appointment() { }
         public Appointment(Guid patientId,Guid dentistId,Guid dentalOfficeId, TimeInterval timeInterval) 
         {
             if (timeInterval.Start < DateTime.UtcNow)

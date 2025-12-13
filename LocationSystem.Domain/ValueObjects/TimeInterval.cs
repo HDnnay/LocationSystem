@@ -7,7 +7,7 @@ namespace LocationSystem.Domain.ValueObjects
 {
     public class TimeInterval
     {
-
+        private TimeInterval() { }
         public TimeInterval(DateTime start,DateTime end)
         {
             if (start > end)

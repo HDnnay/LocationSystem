@@ -18,8 +18,9 @@ namespace LocationSystem.Infrastructure
             // Register Infrastructure services here
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer("name=SqlServerConnectionString"));
-            services.AddScoped<IDentalOfficeRepositoty,DentalOfficeRepository>();
+            services.AddScoped<IDentalOfficeRepository,DentalOfficeRepository>();
             services.AddScoped<IPatientRepository, PatientRepository>();
+            services.AddScoped<IDentistRepository, DentistRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
             return services;
         }

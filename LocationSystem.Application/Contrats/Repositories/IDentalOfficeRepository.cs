@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Contrats.Repositories
 {
-    public interface IDentalOfficeRepositoty:IRepository<DentalOffice>
+    public interface IDentalOfficeRepository:IRepository<DentalOffice>
     {
 
     }

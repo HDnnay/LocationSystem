@@ -8,8 +8,8 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOff
 {
     public class GetDentalOfficesDetailQueryHandler : IRequestHandler<GetDentalOffcesDetailQuery, DentalOfficesDetailDto>
     {
-        private readonly IDentalOfficeRepositoty _repositoty;
-        public GetDentalOfficesDetailQueryHandler(IDentalOfficeRepositoty repositoty)
+        private readonly IDentalOfficeRepository _repositoty;
+        public GetDentalOfficesDetailQueryHandler(IDentalOfficeRepository repositoty)
         {
             _repositoty = repositoty;
         }

@@ -15,4 +15,10 @@
     <ProjectReference Include="..\LocationSystem.Domain\LocationSystem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Dentists\Commands\UpdateDentist\" />
+    <Folder Include="Features\Dentists\Commands\DeleteDentist\" />
+    <Folder Include="Features\Dentists\Queries\GetDentistDetail\" />
+  </ItemGroup>
+
 </Project>

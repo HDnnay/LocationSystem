@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
-    public class DentalOfficeRepository : Repository<DentalOffice>, IDentalOfficeRepositoty
+    public class DentalOfficeRepository : Repository<DentalOffice>, IDentalOfficeRepository
     {
         public DentalOfficeRepository(AppDbContext context) 
             : base(context)

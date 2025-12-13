@@ -9,9 +9,9 @@ namespace LocationSystem.Application.Features.DentalOffices.Commands.UpdateDenta
 {
     public class UpdateDnetalOfficeCommandHandler : IRequestHandler<UpdateDetalOfficeCommand>
     {
-        private readonly IDentalOfficeRepositoty _repositoty;
+        private readonly IDentalOfficeRepository _repositoty;
         private readonly IUnitOfWork _unitOfWork;
-        public UpdateDnetalOfficeCommandHandler(IDentalOfficeRepositoty repositoty,IUnitOfWork unitOfWork) 
+        public UpdateDnetalOfficeCommandHandler(IDentalOfficeRepository repositoty,IUnitOfWork unitOfWork) 
         {
             _repositoty = repositoty;
             _unitOfWork = unitOfWork;
