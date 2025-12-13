@@ -6,6 +6,9 @@ using System.Text;
 
 namespace LocationSystem.Domain.Entities
 {
+    /// <summary>
+    /// 患者
+    /// </summary>
     public class Patient
     {
         public Guid Id { get; private set; }

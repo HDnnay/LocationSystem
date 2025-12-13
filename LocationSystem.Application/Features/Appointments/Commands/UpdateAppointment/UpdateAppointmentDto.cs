@@ -8,7 +8,9 @@ namespace LocationSystem.Application.Features.Appointments.Commands.UpdateAppoin
 {
     public class UpdateAppointmentDto
     {
-        public required Guid PatientId { get; set; }
+        /// <summary>
+        /// 理论上预约单跟患者是关联的，患者ID被更改这个预约单是不存在了，所以患者不能更改
+        /// </summary>
         public required Guid DentistId { get; set; }
         public required Guid DentalOfficeId { get; set; }
         public DateTime StartDate { get; set; }

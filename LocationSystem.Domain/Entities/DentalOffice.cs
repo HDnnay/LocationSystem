@@ -5,6 +5,9 @@ using System.Text;
 
 namespace LocationSystem.Domain.Entities
 {
+    /// <summary>
+    /// 牙科
+    /// </summary>
     public class DentalOffice
     {
         public Guid Id { get; private set; }

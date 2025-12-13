@@ -7,6 +7,9 @@ using System.Text;
 
 namespace LocationSystem.Domain.Entities
 {
+    /// <summary>
+    /// 预约
+    /// </summary>
     public class Appointment
     {
         public Guid Id { get; private set; }
@@ -32,7 +35,59 @@ namespace LocationSystem.Domain.Entities
             TimeInterval = timeInterval;
             Id = Guid.NewGuid();
         }
-        public void Cancel()
+        public void UpdateStatus(AppointmentStatus status)
+        {
+            switch (status)
+            {
+                case AppointmentStatus.Scheduled:
+                    if (Status == status)
+                        break;
+                    this.SetScheduled();
+                    break;
+                case AppointmentStatus.Progress:
+                    if (Status == status)
+                        break;
+                    this.SetProgress();
+                    break;
+                case AppointmentStatus.Completed:
+                    if (Status == status)
+                        break;
+                    this.SetCompleted();
+                    break;
+                case AppointmentStatus.Canceled:
+                    if (Status == status)
+                        break;
+                    SetCanceled();
+                    break;
+            }
+
+
+        }
+        public void UpdateTime(TimeInterval timeInterval)
+        {
+            TimeInterval = timeInterval;
+        }
+        /// <summary>
+        /// 更改牙医医师
+        /// </summary>
+        /// <param name="id"></param>
+        public void UpdateDentistId(Guid id)
+        {
+            DentistId = id;
+        }
+        /// <summary>
+        /// 更改牙科
+        /// </summary>
+        /// <param name="id"></param>
+        public void UpdateDentalOfficeId(Guid id)
+        {
+            DentalOfficeId = id;
+        }
+        private void SetScheduled()
+        {
+            Status = AppointmentStatus.Scheduled;
+        }
+        private void SetCanceled()
         {
             if (Status != AppointmentStatus.Scheduled)
             {
@@ -41,7 +96,7 @@ namespace LocationSystem.Domain.Entities
             Status = AppointmentStatus.Canceled;
 
         }
-        public void Complete()
+        private void SetCompleted()
         {
             if (Status != AppointmentStatus.Scheduled)
             {
@@ -49,5 +104,12 @@ namespace LocationSystem.Domain.Entities
             }
             Status = AppointmentStatus.Completed;
         }
+        private void SetProgress()
+        {
+            if (Status != AppointmentStatus.Scheduled)
+                throw new BussinessRuleException("只有预约过才能进行");
+            Status = AppointmentStatus.Progress;
+        }
+        
     }
 }

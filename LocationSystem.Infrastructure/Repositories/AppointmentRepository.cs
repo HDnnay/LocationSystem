@@ -15,6 +15,19 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             _context = context;
         }
+        public async Task<bool> AppointmentIsScheduled(Guid id)
+        {
+            return await _context.Appointments.Where(t => t.Id == id && t.Status == AppointmentStatus.Scheduled).AnyAsync();
+        }
+        public async Task<bool> AppointmentIsCanceled(Guid id)
+        {
+           return await _context.Appointments.Where(t => t.Id == id && t.Status == AppointmentStatus.Canceled).AnyAsync();
+        }
+
+        public async Task<bool> AppointmentIsCompleted(Guid id)
+        {
+            return await _context.Appointments.Where(t => t.Id == id && t.Status == AppointmentStatus.Completed).AnyAsync();
+        }
 
         public async Task<bool> AppointmentIsExists(Guid dentistId, DateTime start, DateTime end)
         {
@@ -24,6 +37,11 @@ namespace LocationSystem.Infrastructure.Repositories
                 &&start<t.TimeInterval.End
                 &&end>t.TimeInterval.Start).AnyAsync();
             return reult;
+        }
+
+        public async Task<bool> AppointmentIsProgress(Guid id)
+        {
+            return await _context.Appointments.Where(t => t.Id == id && t.Status == AppointmentStatus.Progress).AnyAsync();
         }
     }
 }
