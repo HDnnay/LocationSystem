@@ -6,5 +6,6 @@ namespace LocationSystem.Application.Features.Appointments.Commands.DeleteAppoin
 {
     public class DeleteAppointmentDto
     {
+        public Guid Id { get; set; }
     }
 }

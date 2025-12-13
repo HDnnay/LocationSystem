@@ -1,5 +1,5 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Features.Patients.MapperExtensions;
+using LocationSystem.Application.Features.Patients.Mapper;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
 using System;
