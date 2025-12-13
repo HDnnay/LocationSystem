@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LocationSystem.Infrastructure.Repositories
+namespace LocationSystem.Infrastructure.Configurations
 {
     public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
     {

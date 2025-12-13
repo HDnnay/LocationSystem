@@ -21,6 +21,7 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<IDentalOfficeRepository,DentalOfficeRepository>();
             services.AddScoped<IPatientRepository, PatientRepository>();
             services.AddScoped<IDentistRepository, DentistRepository>();
+            services.AddScoped<IAppointmentRepository,AppointmentRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
             return services;
         }
