@@ -1,4 +1,4 @@
-using LocationSystem.Api.Middlewares;
+ï»¿using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Infrastructure;
 using Microsoft.OpenApi;
@@ -6,16 +6,22 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// æ·»åŠ CORSæœåŠ¡é…ç½®
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:14091").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // å…è®¸å‰ç«¯åº”ç”¨çš„æ¥æº
+    });
+});
+
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    // ÅäÖÃJSONĞòÁĞ»¯Ñ¡Ïî£¬È·±£°üº¬Ä¬ÈÏÖµ
     options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
     options.JsonSerializerOptions.IncludeFields = true;
 
-    // ÅäÖÃÖĞÎÄ×Ö·û²»½øĞĞUnicode×ªÒå£¬Ö±½ÓÊä³öÖĞÎÄ
     options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 
-    //// ÅäÖÃDateTime¸ñÊ½Îª yyyy-MM-dd HH:mm:ss
     //options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
     //options.JsonSerializerOptions.Converters.Add(new NullableDateTimeJsonConverter());
 }); ;
@@ -27,10 +33,10 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "ÎÒµÄ API",
+        Title = "LocationSystem API",
         Version = "v1",
-        Description = "ÕâÊÇÒ»¸öÊ¾Àı API ÎÄµµ",
-        Contact = new OpenApiContact { Name = "¿ª·¢ÍÅ¶Ó", Email = "team@example.com" }
+        Description = "LocationSystem",
+        Contact = new OpenApiContact { Name = "LocationSystem", Email = "team@example.com" }
     });
 });
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -47,11 +53,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "ÎÒµÄ API V1");
-        // c.RoutePrefix = string.Empty; // ¿É½« UI ÉèÖÃÎª¸ùÂ·¾¶·ÃÎÊ
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "LocationSystem API V1");
     });
 }
 app.UseCustomExceptionHandler();
+app.UseCors("AllowFrontend"); // ä½¿ç”¨CORSç­–ç•¥
 app.UseAuthorization();
 
 app.MapControllers();

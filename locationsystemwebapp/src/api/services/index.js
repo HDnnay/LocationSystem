@@ -1,11 +1,12 @@
-import dentalOfficeService from './dentalOfficeService'
+// Export all API services from a single file for easy access
+import appointmentService from './appointmentService'
 import dentistService from './dentistService'
 import patientService from './patientService'
-import appointmentService from './appointmentService'
+import dentalOfficeService from './dentalOfficeService'
 
 export {
-  dentalOfficeService,
+  appointmentService,
   dentistService,
   patientService,
-  appointmentService
+  dentalOfficeService
 }

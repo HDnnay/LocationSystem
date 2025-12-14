@@ -1,9 +1,8 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100vw;
+  height: 100vh;
   font-weight: normal;
 }
 
@@ -21,15 +20,130 @@ a,
   }
 }
 
-@media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
+/* 全屏布局调整 */
+body {
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+#app {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 全局按钮样式 */
+/* 新增按钮 */
+.el-button--primary:first-child {
+  background-color: #409eff;
+  border-color: #409eff;
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.el-button--primary:first-child:hover {
+  background-color: #66b1ff;
+  border-color: #66b1ff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(64, 158, 255, 0.3);
+}
+
+/* 搜索栏按钮 */
+.search-bar .el-button {
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.search-bar .el-button--primary:hover {
+  background-color: #66b1ff;
+  border-color: #66b1ff;
+  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.2);
+}
+
+.search-bar .el-button--default:hover {
+  background-color: #f5f7fa;
+  border-color: #c0c4cc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 表格操作按钮 */
+.el-table .el-button {
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 12px;
+  margin-right: 4px !important;
+  margin-bottom: 0 !important;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* 确保表格操作列中的按钮容器也是水平布局 */
+.el-table .el-table__cell .cell {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 4px;
+}
+
+.el-table .el-button--primary {
+  background-color: #409eff;
+  border-color: #409eff;
+}
+
+.el-table .el-button--primary:hover {
+  background-color: #66b1ff;
+  border-color: #66b1ff;
+  box-shadow: 0 2px 6px rgba(64, 158, 255, 0.3);
+}
+
+.el-table .el-button--danger {
+  background-color: #f56c6c;
+  border-color: #f56c6c;
+}
+
+.el-table .el-button--danger:hover {
+  background-color: #f78989;
+  border-color: #f78989;
+  box-shadow: 0 2px 6px rgba(245, 108, 108, 0.3);
+}
+
+/* 对话框按钮 */
+.dialog-footer .el-button {
+  border-radius: 6px;
+  padding: 8px 20px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.dialog-footer .el-button--primary:hover {
+  background-color: #66b1ff;
+  border-color: #66b1ff;
+  box-shadow: 0 2px 8px rgba(64, 158, 255, 0.2);
+}
+
+.dialog-footer .el-button--default:hover {
+  background-color: #f5f7fa;
+  border-color: #c0c4cc;
+}
+
+/* 搜索栏样式 */
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 300px;
+}
+
+.dialog-footer {
+  text-align: right;
 }
