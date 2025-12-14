@@ -33,5 +33,12 @@ namespace LocationSystem.Domain.Entities
         {
             Email = email;
         }
+        public virtual void SetPasswordHash(string passwordHash)
+        {
+            if (passwordHash.Length < 6)
+                throw new BussinessRuleException("密码长度不能于6位");
+            passwordHash = BCrypt.Net.BCrypt.HashPassword(passwordHash);
+            PasswordHash = passwordHash;
+        }
     }
 }

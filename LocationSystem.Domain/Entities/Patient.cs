@@ -16,6 +16,7 @@ namespace LocationSystem.Domain.Entities
         public Patient(string name, Email email):base(name,email)
         {
             ValidatorName(name);
+            UserType = UserType.Patient;
         }
 
         private static void ValidatorName(string name)
@@ -42,6 +43,10 @@ namespace LocationSystem.Domain.Entities
         {
             ValidatorEmail(email);
             base.UpdateEmail(email);
+        }
+        public override void SetPasswordHash(string passwordHash)
+        {
+            base.SetPasswordHash(passwordHash);
         }
     }
 }

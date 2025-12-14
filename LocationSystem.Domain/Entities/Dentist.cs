@@ -17,7 +17,7 @@ namespace LocationSystem.Domain.Entities
         public string DenetistCode { get; private set; } = null!;
         public Dentist(string name, Email email) : base(name, email)
         {
-           
+           UserType = UserType.Dentist;
         }
         public Dentist(string name, Email email,string code):base(name,email)
         {
@@ -26,6 +26,10 @@ namespace LocationSystem.Domain.Entities
         public void ChangeName(string name)
         {
             UpdateName(name);
+        }
+        public override void SetPasswordHash(string passwordHash)
+        {
+            base.SetPasswordHash(passwordHash);
         }
        
     }
