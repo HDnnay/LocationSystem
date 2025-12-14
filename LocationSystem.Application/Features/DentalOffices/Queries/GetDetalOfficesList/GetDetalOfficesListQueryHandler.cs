@@ -9,14 +9,21 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOffi
     public class GetDetalOfficesListQueryHandler : IRequestHandler<GetDetalOfficesListQuery, List<DentalOfficesListDto>>
     {
         private readonly IDentalOfficeRepository _repositoty;
-        public GetDetalOfficesListQueryHandler(IDentalOfficeRepository repositoty)
+        private readonly ICacheService _CacheService;
+        public GetDetalOfficesListQueryHandler(IDentalOfficeRepository repositoty,ICacheService cacheService)
         {
             _repositoty = repositoty;
+            _CacheService = cacheService;
         }
         public async Task<List<DentalOfficesListDto>> Handle(GetDetalOfficesListQuery request)
         {
-            var result = await _repositoty.GetAll();
-            return result.Select(t => t.MapToDto()).ToList();
+            var model = await _CacheService.GetOrCreateAsync("DentalOfficesList:All", async _ =>
+            {
+                var result = await _repositoty.GetAll();
+                return result.Select(t => t.MapToDto()).ToList();
+            });
+            return model!;
+            
         }
     }
 }

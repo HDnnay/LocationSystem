@@ -21,7 +21,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 }); ;
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddInfrastructureServices();
-builder.Services.AddApplicationServices(builder.Configuration.GetConnectionString("Redis"));
+builder.Services.AddApplicationServices();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -32,6 +32,11 @@ builder.Services.AddSwaggerGen(c =>
         Description = "这是一个示例 API 文档",
         Contact = new OpenApiContact { Name = "开发团队", Email = "team@example.com" }
     });
+});
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "Sys_";
 });
 var app = builder.Build();
 

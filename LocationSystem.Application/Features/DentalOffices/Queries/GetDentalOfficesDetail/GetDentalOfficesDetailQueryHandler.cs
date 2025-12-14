@@ -1,5 +1,6 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Application.Utilities.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,23 +10,38 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOff
     public class GetDentalOfficesDetailQueryHandler : IRequestHandler<GetDentalOffcesDetailQuery, DentalOfficesDetailDto>
     {
         private readonly IDentalOfficeRepository _repositoty;
-        public GetDentalOfficesDetailQueryHandler(IDentalOfficeRepository repositoty)
+        private readonly ICacheService _cacheService;
+        public GetDentalOfficesDetailQueryHandler(IDentalOfficeRepository repositoty, ICacheService cache)
         {
             _repositoty = repositoty;
+            _cacheService = cache;
         }
-        public async Task<DentalOfficesDetailDto> Handle(GetDentalOffcesDetailQuery request)
+        public async Task<DentalOfficesDetailDto?> Handle(GetDentalOffcesDetailQuery request)
         {
-            var dentalOffice= await _repositoty.GetByIdAsync(request.Id);
-            if(dentalOffice is null)
+            try
             {
-                throw new Exception("Dental Office not found");
+                var model = await _cacheService.GetOrCreateAsync("detalOffices:" + request.Id, async _ =>
+                {
+                    var dentalOffice = await _repositoty.GetByIdAsync(request.Id);
+                    if (dentalOffice is null)
+                    {
+                        throw new Exception("Dental Office not found");
+                    }
+                    var dto = new DentalOfficesDetailDto
+                    {
+                        Id = dentalOffice.Id,
+                        Name = dentalOffice.Name
+                    };
+                    return dto;
+                });
+                return model;
             }
-            var dto = new DentalOfficesDetailDto
+            catch (Exception)
             {
-                Id = dentalOffice.Id,
-                Name = dentalOffice.Name
-            };
-            return dto;
+                throw;
+            }
+            
+
         }
     }
 }

@@ -15,7 +15,7 @@ namespace LocationSystem.Application
 {
     public static class RegisterApplicationServices
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services,string redisConnetionString="")
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddTransient<IMediator, SimpleMediator>();
             
@@ -23,16 +23,8 @@ namespace LocationSystem.Application
             services.Scan(s => s.FromAssembliesOf(typeof(RegisterApplicationServices))
             .AddClasses(c => c.AssignableTo(typeof(IRequestHandler<>))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IRequestHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
+            .AddClasses(c=>c.AssignableToAny(typeof(ICacheService))).AsImplementedInterfaces().WithScopedLifetime()
             );
-            if (!string.IsNullOrWhiteSpace(redisConnetionString))
-            {
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = redisConnetionString;
-                    options.InstanceName = "SampleInstance";
-                });
-            }
- 
             return services;
         }
     }
