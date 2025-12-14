@@ -20,7 +20,8 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOff
         {
             try
             {
-                var model = await _cacheService.GetOrCreateAsync("detalOffices:" + request.Id, async _ =>
+                var key = DentalOfficeCacheKey.DentalOfficeIdKey+request.Id;
+                var model = await _cacheService.GetOrCreateAsync(key, async _ =>
                 {
                     var dentalOffice = await _repositoty.GetByIdAsync(request.Id);
                     if (dentalOffice is null)

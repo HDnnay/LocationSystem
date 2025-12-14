@@ -17,7 +17,8 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOffi
         }
         public async Task<List<DentalOfficesListDto>> Handle(GetDetalOfficesListQuery request)
         {
-            var model = await _CacheService.GetOrCreateAsync("DentalOfficesList:All", async _ =>
+            var key = DentalOfficeCacheKey.DentalOfficeAllKey;
+            var model = await _CacheService.GetOrCreateAsync(key, async _ =>
             {
                 var result = await _repositoty.GetAll();
                 return result.Select(t => t.MapToDto()).ToList();
