@@ -42,7 +42,7 @@ namespace LocationSystem.Infrastructure.Repositories
 
         public async Task<bool> AppointmentIsProgress(Guid id)
         {
-            return await _context.Appointments.Where(t => t.Id == id && t.Status == AppointmentStatus.Progress).AnyAsync();
+            return await _context.Appointments.Where(t => t.Id == id && t.Status == AppointmentStatus.Scheduled).AnyAsync();
         }
         new public async Task<Appointment?> GetByIdAsync(Guid id)
         {

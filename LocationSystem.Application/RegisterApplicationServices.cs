@@ -24,15 +24,6 @@ namespace LocationSystem.Application
             .AddClasses(c => c.AssignableTo(typeof(IRequestHandler<>))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IRequestHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
             );
-            //services.AddScoped<IRequestHandler<CreateDentalOfficesCommand, Guid>,
-            //    CreateDentalOfficesCommandHandler>();
-            
-            //services.AddScoped<IRequestHandler<GetDentalOffcesDetailQuery, DentalOfficesDetailDto>,
-            //    GetDentalOfficesDetailQueryHandler>();
-            //services.AddScoped<IRequestHandler<GetDetalOfficesListQuery, List<DentalOfficesListDto>>, 
-            //    GetDetalOfficesListQueryHandler>();
-            //services.AddScoped<IRequestHandler<UpdateDetalOfficeCommand>, UpdateDnetalOfficeCommandHandler>();
-            //services.AddScoped<IRequestHandler<DeleteDentalOfficeCommand>, DeleteDentalOfficeCommandHandler>();
             return services;
         }
     }
