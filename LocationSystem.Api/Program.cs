@@ -11,7 +11,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:14091").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // 允许前端应用的来源
+        policy.WithOrigins("http://localhost:5173/").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // 允许前端应用的来源
     });
 });
 

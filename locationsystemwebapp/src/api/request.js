@@ -34,6 +34,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     // 只返回响应数据
+    console.log('API响应:', { url: response.config.url, data: response.data })
     return response.data
   },
   error => {

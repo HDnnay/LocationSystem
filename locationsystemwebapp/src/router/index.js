@@ -26,7 +26,7 @@ const routes = [
     meta: { title: '预约管理' }
   },
   {
-    path: '/dental-offices',
+    path: '/dentaloffices',
     name: 'DentalOffices',
     component: () => import('@/views/dentalOffices/DentalOfficesView.vue'),
     meta: { title: '牙科诊所管理' }

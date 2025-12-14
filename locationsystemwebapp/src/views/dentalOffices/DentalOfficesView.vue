@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus, Edit, Delete, Search } from '@element-plus/icons-vue'
+import { Plus, Search, ArrowDown } from '@element-plus/icons-vue'
 import dentalOfficeService from '@/api/services/dentalOfficeService'
 
 // 牙科诊所列表数据
@@ -16,7 +16,7 @@ const isEditMode = ref(false)
 const currentDentalOffice = ref({})
 // 查询参数
 const queryParams = ref({
-  name: ''
+  keyWord: ''
 })
 // 分页参数
 const currentPage = ref(1)
@@ -26,14 +26,7 @@ const total = ref(0)
 // 表单验证规则
 const rules = {
   name: [
-    { required: true, message: '请输入牙科诊所名称', trigger: 'blur' }
-  ],
-  address: [
-    { required: true, message: '请输入地址', trigger: 'blur' }
-  ],
-  phone: [
-    { required: true, message: '请输入电话号码', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
+    { required: true, message: '请输入诊所名称', trigger: 'blur' }
   ]
 }
 
@@ -47,8 +40,8 @@ const getDentalOffices = async () => {
       pageSize: pageSize.value
     }
     const response = await dentalOfficeService.getAll(params)
-    dentalOffices.value = response.data?.items || response.data || []
-    total.value = response.data?.total || 0
+    dentalOffices.value = response?.Data || response?.data || []
+    total.value = response?.Total || 0
   } catch (error) {
     ElMessage.error('获取牙科诊所列表失败')
     console.error('获取牙科诊所列表失败:', error)
@@ -66,7 +59,7 @@ const searchDentalOffices = () => {
 // 重置搜索
 const resetSearch = () => {
   queryParams.value = {
-    name: ''
+    keyWord: ''
   }
   currentPage.value = 1
   getDentalOffices()
@@ -93,9 +86,9 @@ const openAddDialog = () => {
 }
 
 // 打开编辑对话框
-const openEditDialog = (dentalOffice) => {
+const openEditDialog = (office) => {
   isEditMode.value = true
-  currentDentalOffice.value = { ...dentalOffice }
+  currentDentalOffice.value = { ...office }
   dialogVisible.value = true
 }
 
@@ -151,9 +144,9 @@ onMounted(() => {
     <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <div>
         <h2 style="margin: 0; font-size: 20px; font-weight: 600;">牙科诊所管理</h2>
-        <p style="margin: 5px 0 0; color: #606266; font-size: 14px;">管理系统中的牙科诊所信息，包括基本资料和联系方式</p>
+        <p style="margin: 5px 0 0; color: #606266; font-size: 14px;">管理系统中的牙科诊所信息</p>
       </div>
-      <el-button type="primary" @click="openAddDialog" :icon="Plus">新增牙科诊所</el-button>
+      <el-button type="primary" @click="openAddDialog" :icon="Plus">新增诊所</el-button>
     </div>
 
     <!-- 搜索栏 -->
@@ -161,8 +154,8 @@ onMounted(() => {
       <el-row :gutter="20" align="middle">
         <el-col :span="6">
           <el-input
-            v-model="queryParams.name"
-            placeholder="请输入牙科诊所名称"
+            v-model="queryParams.keyWord"
+            placeholder="请输入搜索关键词"
             :prefix-icon="Search"
             style="width: 100%;"
           >
@@ -176,32 +169,38 @@ onMounted(() => {
     </div>
 
     <!-- 牙科诊所列表 -->
-    <div style="background-color: #fff; border-radius: 4px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); overflow: hidden;">
+    <div class="table-container" style="background-color: #fff; border-radius: 4px; box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); overflow: hidden; width: 100%;">
       <el-table
         v-loading="loading"
         :data="dentalOffices"
-        style="width: 100%; border: none;"
+        style="width: 100%"
+        stripe
+        border
       >
-      <el-table-column type="index" label="序号" width="80" />
-      <el-table-column prop="name" label="名称" width="150" />
-      <el-table-column prop="address" label="地址" width="250" />
-      <el-table-column prop="phone" label="电话号码" width="150" />
-      <el-table-column prop="email" label="邮箱" width="200" />
-      <el-table-column prop="createdAt" label="创建时间" width="180" />
-      <el-table-column label="操作" width="150" fixed="right">
+      <el-table-column type="index"
+                      :index="(index) => (currentPage - 1) * pageSize + index + 1"
+                      label="序号"
+                      width="80" />
+      <el-table-column prop="name"
+                      label="名称"
+                      min-width="200" />
+      <el-table-column label="操作" min-width="100" fixed="right">
         <template #default="scope">
-          <el-button
-            type="primary"
-            size="small"
-            @click="openEditDialog(scope.row)"
-            :icon="Edit"
-          >编辑</el-button>
-          <el-button
-            type="danger"
-            size="small"
-            @click="deleteDentalOffice(scope.row.id)"
-            :icon="Delete"
-          >删除</el-button>
+          <el-dropdown>
+            <el-button type="primary" size="small">
+              操作 <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>
+                  <el-button type="primary" icon="el-icon-Edit" size="small" @click.stop="openEditDialog(scope.row)" :loading="loading">编辑</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item>
+                  <el-button type="danger" icon="el-icon-Delete" size="small" @click.stop="deleteDentalOffice(scope.row.id)" :loading="loading">删除</el-button>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </template>
       </el-table-column>
       </el-table>
@@ -216,6 +215,10 @@ onMounted(() => {
           :total="total"
           @size-change="handleSizeChange"
           @current-change="handlePageChange"
+          :prev-text="'上一页'"
+          :next-text="'下一页'"
+          :jump-text="'前往'"
+          :page-sizes-text="'每页条数'"
         />
       </div>
     </div>
@@ -233,24 +236,7 @@ onMounted(() => {
         label-width="100px"
       >
         <el-form-item label="名称" prop="name">
-          <el-input v-model="currentDentalOffice.name" placeholder="请输入牙科诊所名称" />
-        </el-form-item>
-        <el-form-item label="地址" prop="address">
-          <el-input v-model="currentDentalOffice.address" placeholder="请输入地址" />
-        </el-form-item>
-        <el-form-item label="电话号码" prop="phone">
-          <el-input v-model="currentDentalOffice.phone" placeholder="请输入电话号码" />
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="currentDentalOffice.email" placeholder="请输入邮箱" />
-        </el-form-item>
-        <el-form-item label="备注">
-          <el-input
-            v-model="currentDentalOffice.remark"
-            type="textarea"
-            :rows="3"
-            placeholder="请输入备注信息"
-          />
+          <el-input v-model="currentDentalOffice.name" placeholder="请输入诊所名称" />
         </el-form-item>
       </el-form>
       <template #footer>

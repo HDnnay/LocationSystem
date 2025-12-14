@@ -35,9 +35,14 @@ namespace LocationSystem.Api.Controllers
             return Ok(model);
         }
         [HttpGet]
-        public async Task<IActionResult> GetDentalOffices()
+        public async Task<IActionResult> GetDentalOffices([FromQuery]DentalOfficeListFilter filter)
         {
-            var command = new GetDetalOfficesListQuery();
+            var command = new GetDetalOfficesListQuery()
+            {
+                Page = filter.Page,
+                PageSize = filter.PageSize,
+                keyWord = filter.keyWord
+            };
             var model = await _mediator.Send(command);
             return Ok(model);
         }

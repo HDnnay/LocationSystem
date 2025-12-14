@@ -145,7 +145,7 @@ const handleUserMenuClick = (command) => {
               <el-icon><Calendar /></el-icon>
               <span>预约管理</span>
             </el-menu-item>
-            <el-menu-item index="dental-offices">
+            <el-menu-item index="dentaloffices">
               <el-icon><MapLocation /></el-icon>
               <span>牙科诊所管理</span>
             </el-menu-item>
