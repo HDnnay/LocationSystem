@@ -23,7 +23,6 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOffi
                 return result.Select(t => t.MapToDto()).ToList();
             });
             return model!;
-            
         }
     }
 }
