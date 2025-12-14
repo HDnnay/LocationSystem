@@ -16,7 +16,7 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOff
             _repositoty = repositoty;
             _cacheService = cache;
         }
-        public async Task<DentalOfficesDetailDto?> Handle(GetDentalOffcesDetailQuery request)
+        public async Task<DentalOfficesDetailDto> Handle(GetDentalOffcesDetailQuery request)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOff
                     };
                     return dto;
                 });
-                return model;
+                return model!;
             }
             catch (Exception)
             {
