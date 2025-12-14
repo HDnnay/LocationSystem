@@ -16,7 +16,13 @@ namespace LocationSystem.Infrastructure
             base.OnModelCreating(modelBuilder);
             // Additional model configuration can go here
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            modelBuilder.Entity<User>()
+           .HasDiscriminator<UserType>("UserType")
+           .HasValue<Patient>(UserType.Patient)
+           .HasValue<Dentist>(UserType.Dentist);
+
         }
+        public DbSet<User> Users { get; set; }
         public DbSet<DentalOffice> DentalOffices { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Dentist> Dentists { get; set; }

@@ -11,11 +11,11 @@ namespace LocationSystem.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Dentist> builder)
         {
-            builder.Property(t=>t.Name).HasMaxLength(50).IsRequired();
-            builder.ComplexProperty(t => t.Email, action =>
-            {
-                action.Property(e=>e.Value).HasColumnName("Email").HasMaxLength(50);
-            });
+            //builder.Property(t=>t.Name).HasMaxLength(50).IsRequired();
+            //builder.ComplexProperty(t => t.Email, action =>
+            //{
+            //    action.Property(e=>e.Value).HasColumnName("Email").HasMaxLength(50);
+            //});
         }
     }
 }

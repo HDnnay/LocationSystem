@@ -9,19 +9,13 @@ namespace LocationSystem.Domain.Entities
     /// <summary>
     /// 患者
     /// </summary>
-    public class Patient
+    public class Patient:User
     {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; } = null!;
-        public Email Email { get; private set; } = null!;
-        private Patient() { }
-        public Patient(string name, Email email)
+        
+        private Patient():base() { }
+        public Patient(string name, Email email):base(name,email)
         {
             ValidatorName(name);
-
-            Name = name;
-            Email = email;
-            Id = Guid.NewGuid();
         }
 
         private static void ValidatorName(string name)
@@ -39,15 +33,15 @@ namespace LocationSystem.Domain.Entities
             }
         }
 
-        public void UpdateName(string name) 
+        public override void UpdateName(string name) 
         {
             ValidatorName(name);
-            Name = name;
+            base.UpdateName(name);
         }
-        public void UpdateEmail(Email email) 
+        public override void UpdateEmail(Email email) 
         {
             ValidatorEmail(email);
-            Email = email;
+            base.UpdateEmail(email);
         }
     }
 }

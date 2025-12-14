@@ -9,30 +9,24 @@ namespace LocationSystem.Domain.Entities
     /// <summary>
     /// 牙医
     /// </summary>
-    public class Dentist
+    public class Dentist:User
     {
-        public Guid Id { get; private set; }
-        public string Name { get; private set; } = null!;
-        public Email Email { get; private set; } = null!;
-        private Dentist() { }
-        public Dentist(string name, Email email)
+        public Dentist():base()
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new BussinessRuleException($"{nameof(name)}的为空");
-            }
+        }
+        public string DenetistCode { get; private set; } = null!;
+        public Dentist(string name, Email email) : base(name, email)
+        {
            
-            Name = name;
-            Email = email;
-            Id = Guid.NewGuid();
         }
-        public void UpdateName(string name)
+        public Dentist(string name, Email email,string code):base(name,email)
         {
-            Name = name;
+            DenetistCode = code;
         }
-        public void UpdateEmail(Email email)
+        public void ChangeName(string name)
         {
-            Email = email;
+            UpdateName(name);
         }
+       
     }
 }
