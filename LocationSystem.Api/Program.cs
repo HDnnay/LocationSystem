@@ -21,7 +21,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 }); ;
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddInfrastructureServices();
-builder.Services.AddApplicationServices();
+builder.Services.AddApplicationServices(builder.Configuration.GetConnectionString("Redis"));
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen(c =>
 {
