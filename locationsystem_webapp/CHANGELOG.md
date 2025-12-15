@@ -4,9 +4,9 @@
 - create-vite
 
 以下为生成此项目的步骤:
-- 使用 create-vite: `npm init --yes vue@latest wepapp -- --eslint ` 创建 vue 项目。
+- 使用 create-vite: `npm init --yes vue@latest locationsystem_webapp -- --eslint ` 创建 vue 项目。
 - 正在使用端口更新 `vite.config.js`。
-- 创建项目文件 (`wepapp.esproj`)。
+- 创建项目文件 (`locationsystem_webapp.esproj`)。
 - 创建 `launch.json` 以启用调试。
 - 向解决方案添加项目。
 - 写入此文件。

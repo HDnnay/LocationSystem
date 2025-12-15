@@ -1,6 +1,10 @@
 <Solution>
   <Folder Name="/Api/">
     <Project Path="LocationSystem.Api/LocationSystem.Api.csproj" Id="051b720e-2141-4ed5-bdd5-d85256678d68" />
+    <Project Path="LocationSystem_WebApp/locationsystem_webapp.esproj">
+      <Build />
+      <Deploy />
+    </Project>
   </Folder>
   <Folder Name="/Core/">
     <Project Path="LocationSystem.Application/LocationSystem.Application.csproj" />
@@ -12,10 +16,5 @@
   <Folder Name="/Tests/">
     <Project Path="LocationSystem.Tests/LocationSystem.Tests.csproj" />
   </Folder>
-  <Folder Name="/Web/">
-    <Project Path="wepapp/wepapp.esproj">
-      <Build />
-      <Deploy />
-    </Project>
-  </Folder>
+  <Folder Name="/Web/" />
 </Solution>
