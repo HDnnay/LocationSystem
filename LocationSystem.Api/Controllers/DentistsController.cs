@@ -1,4 +1,6 @@
 ﻿using LocationSystem.Application.Features.Dentists.Commands.CreateDentist;
+using LocationSystem.Application.Features.Dentists.Commands.DeleteDentist;
+using LocationSystem.Application.Features.Dentists.Commands.UpdateDentist;
 using LocationSystem.Application.Features.Dentists.Queries.GetDentistList;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -45,14 +47,19 @@ namespace LocationSystem.Api.Controllers
 
         // PUT api/<DentistsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(Guid id, [FromBody] UpdateDentistDto model)
         {
+            var command = new UpdateDentistCommand() { Id = id, Name = model.Name, Email = model.Email };
+            await _mediator.Send(command);
+            return NoContent();
         }
-
-        // DELETE api/<DentistsController>/5
+            // DELETE api/<DentistsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
+            var command = new DeleteDentistCommand() { Id = id };
+            await _mediator.Send(command);
+            return NoContent();
         }
     }
 }
