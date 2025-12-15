@@ -216,6 +216,7 @@
 
 <script>
 import { Plus, Search, Download, Edit, Delete } from '@element-plus/icons-vue'
+import api from '@/api'
 
 export default {
     name: 'Dentists',
@@ -311,6 +312,7 @@ export default {
     },
     mounted() {
         this.updateDateTime()
+        this.getDentists()
     },
     methods: {
         // 更新日期时间
@@ -325,23 +327,42 @@ export default {
             this.currentDate = `${year}-${month}-${day} ${weekday}`
         },
         
+        // 获取牙医列表
+        async getDentists() {
+            try {
+                const response = await api.dentists.getDentists({
+                    page: this.currentPage,
+                    pageSize: this.pageSize,
+                    keyWord: this.searchKeyword
+                })
+                this.dentists = response.data
+            } catch (error) {
+                this.$message.error('获取牙医列表失败')
+                console.error('获取牙医列表失败:', error)
+            }
+        },
+        
         // 搜索和筛选
         handleSearch() {
             this.currentPage = 1
+            this.getDentists()
         },
         
         handleFilter() {
             this.currentPage = 1
+            this.getDentists()
         },
         
         // 分页处理
         handleSizeChange(val) {
             this.pageSize = val
             this.currentPage = 1
+            this.getDentists()
         },
         
         handleCurrentChange(val) {
             this.currentPage = val
+            this.getDentists()
         },
         
         // 表格选择
@@ -372,62 +393,79 @@ export default {
         },
         
         // 保存
-        handleSave() {
-            if (this.isEdit) {
-                // 编辑模式
-                const index = this.dentists.findIndex(d => d.id === this.formData.id)
-                if (index !== -1) {
-                    this.dentists.splice(index, 1, {...this.formData})
+        async handleSave() {
+            try {
+                if (this.isEdit) {
+                    // 编辑模式
+                    await api.dentists.updateDentist(this.formData.id, {
+                        name: this.formData.name,
+                        email: this.formData.email
+                    })
                     this.$message.success('医师信息更新成功')
+                } else {
+                    // 添加模式
+                    await api.dentists.createDentist({
+                        name: this.formData.name,
+                        email: this.formData.email
+                    })
+                    this.$message.success('医师添加成功')
                 }
-            } else {
-                // 添加模式
-                const newId = 'D' + String(this.dentists.length + 1).padStart(3, '0')
-                const newDentist = {
-                    ...this.formData,
-                    id: newId
-                }
-                this.dentists.unshift(newDentist)
-                this.$message.success('医师添加成功')
+                this.dialogVisible = false
+                this.getDentists() // 重新获取牙医列表
+            } catch (error) {
+                this.$message.error(this.isEdit ? '医师信息更新失败' : '医师添加失败')
+                console.error(this.isEdit ? '更新牙医失败:' : '创建牙医失败:', error)
             }
-            this.dialogVisible = false
         },
         
         // 删除操作
-        handleDelete(id) {
-            this.$confirm('确定要删除这位医师吗？', '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                const index = this.dentists.findIndex(d => d.id === id)
-                if (index !== -1) {
-                    this.dentists.splice(index, 1)
-                    this.$message.success('删除成功')
+        async handleDelete(id) {
+            try {
+                await this.$confirm('确定要删除这位医师吗？', '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                
+                await api.dentists.deleteDentist(id)
+                this.$message.success('医师删除成功')
+                this.getDentists() // 重新获取牙医列表
+            } catch (error) {
+                if (error !== 'cancel') {
+                    this.$message.error('医师删除失败')
+                    console.error('删除牙医失败:', error)
                 }
-            }).catch(() => {
-                // 取消删除
-            })
+            }
         },
         
-        handleBatchDelete() {
+        // 批量删除
+        async handleBatchDelete() {
             if (this.selectedDentists.length === 0) {
                 this.$message.warning('请选择要删除的医师')
                 return
             }
             
-            this.$confirm(`确定要删除选中的${this.selectedDentists.length}位医师吗？`, '警告', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                const idsToDelete = this.selectedDentists.map(d => d.id)
-                this.dentists = this.dentists.filter(d => !idsToDelete.includes(d.id))
-                this.selectedDentists = []
+            try {
+                await this.$confirm(`确定要删除选中的${this.selectedDentists.length}位医师吗？`, '警告', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                
+                // 批量删除，逐个调用API
+                for (const dentist of this.selectedDentists) {
+                    await api.dentists.deleteDentist(dentist.id)
+                }
+                
                 this.$message.success('批量删除成功')
-            }).catch(() => {
-                // Cancel deletion
-            })
+                this.selectedDentists = []
+                this.getDentists() // 重新获取牙医列表
+            } catch (error) {
+                if (error !== 'cancel') {
+                    this.$message.error('批量删除失败')
+                    console.error('批量删除牙医失败:', error)
+                }
+            }
         }
     }
 }

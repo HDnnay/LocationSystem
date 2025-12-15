@@ -213,6 +213,7 @@
 
 <script>
 import { Plus, Search, Download, Edit, Delete } from '@element-plus/icons-vue'
+import api from '@/api'
 
 export default {
     name: 'DentalOffices',
@@ -234,47 +235,7 @@ export default {
             // 城市列表
             cities: ['北京', '上海', '广州', '深圳', '杭州', '成都', '武汉', '西安', '南京', '重庆'],
             // 牙科诊所列表
-            clinics: [
-                { 
-                    id: 'C001', 
-                    name: '牙科诊所A', 
-                    city: '北京', 
-                    address: '北京市朝阳区建国路88号', 
-                    phone: '010-88888888', 
-                    email: 'clinic-a@example.com',
-                    doctors: 15,
-                    beds: 30,
-                    status: 'open',
-                    openDate: '2018-05-15',
-                    description: '专业牙科诊所，提供全面的口腔医疗服务'
-                },
-                { 
-                    id: 'C002', 
-                    name: '牙科诊所B', 
-                    city: '上海', 
-                    address: '上海市浦东新区陆家嘴金融中心', 
-                    phone: '021-99999999', 
-                    email: 'clinic-b@example.com',
-                    doctors: 20,
-                    beds: 40,
-                    status: 'open',
-                    openDate: '2019-08-20',
-                    description: '高端牙科诊所，配备国际先进设备'
-                },
-                { 
-                    id: 'C003', 
-                    name: '牙科诊所C', 
-                    city: '广州', 
-                    address: '广州市天河区天河路385号', 
-                    phone: '020-77777777', 
-                    email: 'clinic-c@example.com',
-                    doctors: 12,
-                    beds: 25,
-                    status: 'closed',
-                    openDate: '2020-03-10',
-                    description: '社区牙科诊所，服务附近居民'
-                }
-            ],
+            clinics: [],
             // 分页
             currentPage: 1,
             pageSize: 10,
@@ -341,8 +302,20 @@ export default {
     },
     mounted() {
         this.updateDateTime()
+        this.getDentalOffices()
     },
     methods: {
+        // 获取牙科诊所列表
+        async getDentalOffices() {
+            try {
+                const response = await api.dentalOffices.getDentalOffices()
+                this.clinics = response.data
+            } catch (error) {
+                this.$message.error('获取牙科诊所列表失败')
+                console.error('获取牙科诊所列表失败:', error)
+            }
+        },
+        
         // 更新日期时间
         updateDateTime() {
             const now = new Date()
@@ -405,45 +378,47 @@ export default {
         },
         
         // 保存
-        handleSave() {
-            if (this.isEdit) {
-                // 编辑模式
-                const index = this.clinics.findIndex(c => c.id === this.formData.id)
-                if (index !== -1) {
-                    this.clinics.splice(index, 1, {...this.formData})
+        async handleSave() {
+            try {
+                if (this.isEdit) {
+                    // 编辑模式
+                    await api.dentalOffices.updateDentalOffice(this.formData.id, this.formData)
                     this.$message.success('牙科诊所信息更新成功')
+                } else {
+                    // 添加模式
+                    await api.dentalOffices.createDentalOffice(this.formData)
+                    this.$message.success('牙科诊所添加成功')
                 }
-            } else {
-                // 添加模式
-                const newId = 'C' + String(this.clinics.length + 1).padStart(3, '0')
-                const newClinic = {
-                    ...this.formData,
-                    id: newId
-                }
-                this.clinics.unshift(newClinic)
-                this.$message.success('牙科诊所添加成功')
+                this.dialogVisible = false
+                this.getDentalOffices() // 重新获取诊所列表
+            } catch (error) {
+                this.$message.error(this.isEdit ? '更新牙科诊所信息失败' : '添加牙科诊所失败')
+                console.error('保存牙科诊所失败:', error)
             }
-            this.dialogVisible = false
         },
         
         // 删除操作
-        handleDelete(id) {
+        async handleDelete(id) {
             this.$confirm('确定要删除这个牙科诊所吗？', '删除确认', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            }).then(() => {
-                const index = this.clinics.findIndex(c => c.id === id)
-                if (index !== -1) {
-                    this.clinics.splice(index, 1)
+            }).then(async () => {
+                try {
+                    await api.dentalOffices.deleteDentalOffice(id)
                     this.$message.success('删除成功')
+                    this.getDentalOffices() // 重新获取诊所列表
+                } catch (error) {
+                    this.$message.error('删除失败')
+                    console.error('删除牙科诊所失败:', error)
                 }
             }).catch(() => {
                 // 取消删除
             })
         },
         
-        handleBatchDelete() {
+        // 批量删除
+        async handleBatchDelete() {
             if (this.selectedOffices.length === 0) {
                 this.$message.warning('请选择要删除的牙科诊所')
                 return
@@ -453,11 +428,20 @@ export default {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            }).then(() => {
-                const idsToDelete = this.selectedOffices.map(c => c.id)
-                this.clinics = this.clinics.filter(c => !idsToDelete.includes(c.id))
-                this.selectedOffices = []
-                this.$message.success('批量删除成功')
+            }).then(async () => {
+                try {
+                    const idsToDelete = this.selectedOffices.map(c => c.id)
+                    // 为每个选中的诊所调用删除API
+                    for (const id of idsToDelete) {
+                        await api.dentalOffices.deleteDentalOffice(id)
+                    }
+                    this.$message.success('批量删除成功')
+                    this.selectedOffices = []
+                    this.getDentalOffices() // 重新获取诊所列表
+                } catch (error) {
+                    this.$message.error('批量删除失败')
+                    console.error('批量删除牙科诊所失败:', error)
+                }
             }).catch(() => {
                 // 取消删除
             })

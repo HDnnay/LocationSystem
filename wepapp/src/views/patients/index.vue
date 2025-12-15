@@ -216,6 +216,7 @@
 
 <script>
 import { Plus, Search, Download, Edit, Delete } from '@element-plus/icons-vue'
+import api from '@/api'
 
 export default {
     name: 'Patients',
@@ -237,13 +238,7 @@ export default {
             // 医生列表（用于下拉选择）
             doctors: ['张医生', '李医生', '王医生', '赵医生', '孙医生'],
             // 患者列表
-            patients: [
-                { id: 'P001', name: '张三', gender: 'male', age: 25, phone: '13900139001', address: '北京市朝阳区', lastVisit: '2025-01-15', status: 'completed', doctor: '张医生' },
-                { id: 'P002', name: '李四', gender: 'female', age: 32, phone: '13900139002', address: '上海市浦东新区', lastVisit: '2025-01-20', status: 'pending', doctor: '李医生' },
-                { id: 'P003', name: '王五', gender: 'male', age: 45, phone: '13900139003', address: '广州市天河区', lastVisit: '2025-01-18', status: 'completed', doctor: '王医生' },
-                { id: 'P004', name: '赵六', gender: 'female', age: 28, phone: '13900139004', address: '深圳市南山区', lastVisit: '2025-01-22', status: 'cancelled', doctor: '赵医生' },
-                { id: 'P005', name: '孙七', gender: 'male', age: 55, phone: '13900139005', address: '杭州市西湖区', lastVisit: '2025-01-19', status: 'pending', doctor: '孙医生' }
-            ],
+            patients: [],
             // 分页
             currentPage: 1,
             pageSize: 10,
@@ -309,8 +304,20 @@ export default {
     },
     mounted() {
         this.updateDateTime()
+        this.getPatients()
     },
     methods: {
+        // 获取患者列表
+        async getPatients() {
+            try {
+                const response = await api.patients.getPatients()
+                this.patients = response.data
+            } catch (error) {
+                this.$message.error('获取患者列表失败')
+                console.error('获取患者列表失败:', error)
+            }
+        },
+        
         // 更新日期时间
         updateDateTime() {
             const now = new Date()
@@ -371,45 +378,47 @@ export default {
         },
         
         // 保存
-        handleSave() {
-            if (this.isEdit) {
-                // 编辑模式
-                const index = this.patients.findIndex(p => p.id === this.formData.id)
-                if (index !== -1) {
-                    this.patients.splice(index, 1, {...this.formData})
+        async handleSave() {
+            try {
+                if (this.isEdit) {
+                    // 编辑模式
+                    await api.patients.updatePatient(this.formData.id, this.formData)
                     this.$message.success('患者信息更新成功')
+                } else {
+                    // 添加模式
+                    await api.patients.createPatient(this.formData)
+                    this.$message.success('患者添加成功')
                 }
-            } else {
-                // 添加模式
-                const newId = 'P' + String(this.patients.length + 1).padStart(3, '0')
-                const newPatient = {
-                    ...this.formData,
-                    id: newId
-                }
-                this.patients.unshift(newPatient)
-                this.$message.success('患者添加成功')
+                this.dialogVisible = false
+                this.getPatients() // 重新获取患者列表
+            } catch (error) {
+                this.$message.error(this.isEdit ? '更新患者信息失败' : '添加患者失败')
+                console.error('保存患者失败:', error)
             }
-            this.dialogVisible = false
         },
         
         // 删除操作
-        handleDelete(id) {
+        async handleDelete(id) {
             this.$confirm('确定要删除这位患者吗？', '警告', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            }).then(() => {
-                const index = this.patients.findIndex(p => p.id === id)
-                if (index !== -1) {
-                    this.patients.splice(index, 1)
+            }).then(async () => {
+                try {
+                    await api.patients.deletePatient(id)
                     this.$message.success('删除成功')
+                    this.getPatients() // 重新获取患者列表
+                } catch (error) {
+                    this.$message.error('删除失败')
+                    console.error('删除患者失败:', error)
                 }
             }).catch(() => {
                 // 取消删除
             })
         },
         
-        handleBatchDelete() {
+        // 批量删除
+        async handleBatchDelete() {
             if (this.selectedPatients.length === 0) {
                 this.$message.warning('请选择要删除的患者')
                 return
@@ -419,11 +428,20 @@ export default {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            }).then(() => {
-                const idsToDelete = this.selectedPatients.map(p => p.id)
-                this.patients = this.patients.filter(p => !idsToDelete.includes(p.id))
-                this.selectedPatients = []
-                this.$message.success('批量删除成功')
+            }).then(async () => {
+                try {
+                    const idsToDelete = this.selectedPatients.map(p => p.id)
+                    // 为每个选中的患者调用删除API
+                    for (const id of idsToDelete) {
+                        await api.patients.deletePatient(id)
+                    }
+                    this.$message.success('批量删除成功')
+                    this.selectedPatients = []
+                    this.getPatients() // 重新获取患者列表
+                } catch (error) {
+                    this.$message.error('批量删除失败')
+                    console.error('批量删除患者失败:', error)
+                }
             }).catch(() => {
                 // 取消删除
             })
