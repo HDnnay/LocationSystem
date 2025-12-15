@@ -24,7 +24,7 @@ namespace LocationSystem.Application.Features.Dentists.Commands.UpdateDentist
             var dentits = await _repository.GetByIdAsync(request.Id);
             if (dentits is null)
                 throw new NotFoundException("编辑的detits不存在");
-            dentits.UpdateName(dentits.Name);
+            dentits.UpdateName(request.Name);
             dentits.UpdateEmail(new Email(request.Email));
             try
             {
