@@ -31,6 +31,7 @@ namespace LocationSystem.Application.Features.Dentists.Commands.CreateDentist
                 throw new CustomVallidatorException(validationResult);
             }
             var model = new Dentist(request.Name,new Email(request.Email));
+            model.SetPasswordHash("123456");
             try
             {
                 await _unitOfWork.BeginTransactionAsync();

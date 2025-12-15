@@ -8,6 +8,7 @@ using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace LocationSystem.Application.Features.Patients.Command.CreatePatient
@@ -34,6 +35,8 @@ namespace LocationSystem.Application.Features.Patients.Command.CreatePatient
                 throw new CustomVallidatorException(validationResult);
             }
             var patient = new Patient(command.Name, new Email(command.Email));
+            patient.SetPasswordHash("123456");
+
             try
             {
                 await _unitOfWork.BeginTransactionAsync();

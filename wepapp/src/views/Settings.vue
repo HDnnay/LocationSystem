@@ -28,7 +28,7 @@
           <button type="submit" class="save-btn">保存设置</button>
         </form>
       </div>
-      安全设置 --<div class="setting-section">
+      <div class="setting-section">
         <h3 class="section-title">安全设置</h3>
         <form @submit.prevent="changePassword">
           <div class="form-group">
@@ -46,7 +46,7 @@
           <button type="submit" class="save-btn">修改密码</button>
         </form>
       </div>
-      系统信息 --<div class="setting-section">
+      <div class="setting-section">
         <h3 class="section-title">系统信息</h3>
         <div class="system-info">
           <p><strong>系统版本：</strong>{{ systemInfo.version }}</p>

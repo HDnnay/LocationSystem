@@ -11,7 +11,7 @@
                 <!-- 后台导航栏 -->
                 <el-header height="60px" style="background-color: #2c3e50; color: white; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                     <div class="logo">
-                        <h1 style="margin: 0; font-size: 1.5rem; font-weight: 500;">内容管理系统 - 后台管理</h1>
+                        <h1 style="margin: 0; font-size: 1.5rem; font-weight: 500;">管理系统 - 后台</h1>
                     </div>
                     <div class="header-actions">
                         <el-button type="text"
@@ -43,13 +43,37 @@
                             <el-menu-item index="/settings">
                                 <el-icon><Setting /></el-icon>
                                 <template #title>
-                                    系统设置
+                                    设置
+                                </template>
+                            </el-menu-item>
+                            <el-menu-item index="/dentists">
+                                <el-icon><User /></el-icon>
+                                <template #title>
+                                    医师
+                                </template>
+                            </el-menu-item>
+                            <el-menu-item index="/patients">
+                                <el-icon><UserFilled /></el-icon>
+                                <template #title>
+                                    患者
+                                </template>
+                            </el-menu-item>
+                            <el-menu-item index="/dental-offices">
+                                <el-icon><OfficeBuilding /></el-icon>
+                                <template #title>
+                                    牙科诊所
+                                </template>
+                            </el-menu-item>
+                            <el-menu-item index="/appointments">
+                                <el-icon><Calendar /></el-icon>
+                                <template #title>
+                                    预约
                                 </template>
                             </el-menu-item>
                             <el-menu-item index="/">
                                 <el-icon><House /></el-icon>
                                 <template #title>
-                                    返回前台
+                                    返回首页
                                 </template>
                             </el-menu-item>
                         </el-menu>
@@ -70,9 +94,17 @@
 </template>
 
 <script>
+import { Monitor, Setting, House, User, UserFilled, OfficeBuilding, Calendar } from '@element-plus/icons-vue'
     export default {
         name: 'RouterViewManager',
         components: {
+            Monitor,
+            Setting,
+            House,
+            User,
+            UserFilled,
+            OfficeBuilding,
+            Calendar
         },
         props: {
             sidebarOpen: {
