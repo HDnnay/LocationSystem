@@ -1,7 +1,10 @@
 ﻿using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Infrastructure;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
+using Scalar.AspNetCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,7 +14,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173/").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // 允许前端应用的来源
+        policy.WithOrigins("http://localhost:5173/", "http://localhost:5174/").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // 允许前端应用的来源
     });
 });
 
@@ -29,16 +32,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "LocationSystem API",
-        Version = "v1",
-        Description = "LocationSystem",
-        Contact = new OpenApiContact { Name = "LocationSystem", Email = "team@example.com" }
-    });
-});
+
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
@@ -50,10 +44,11 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    app.MapScalarApiReference(options =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "LocationSystem API V1");
+        options.AddDocument("v1", "Production API", "api/v1/openapi.json")
+           .AddDocument("v2-beta", "Beta API", "api/v2-beta/openapi.json", isDefault: true)
+           .AddDocument("internal", "Internal API", "internal/openapi.json");
     });
 }
 app.UseCustomExceptionHandler();
