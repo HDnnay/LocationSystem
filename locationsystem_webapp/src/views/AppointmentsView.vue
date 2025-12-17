@@ -100,40 +100,55 @@
                      label-width="100px"
                      label-position="left">
                 <el-form-item label="患者ID" required>
-                    <el-input v-model="formData.patientId"
-                              placeholder="请输入患者ID"
-                              maxlength="50"
-                              show-word-limit />
+                    <el-select v-model="formData.patientId"
+                               placeholder="请选择患者"
+                               style="width: 100%"
+                               :loading="patientsLoading">
+                        <el-option v-for="patient in patients"
+                                   :key="patient.id"
+                                   :label="`ID: ${patient.id} - ${patient.name || '未知患者'}`"
+                                   :value="patient.id" />
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="牙医ID" required>
-                    <el-input v-model="formData.dentistId"
-                              placeholder="请输入牙医ID"
-                              maxlength="50"
-                              show-word-limit />
+                    <el-select v-model="formData.dentistId"
+                               placeholder="请选择牙医"
+                               style="width: 100%"
+                               :loading="dentistsLoading">
+                        <el-option v-for="dentist in dentists"
+                                   :key="dentist.id"
+                                   :label="`ID: ${dentist.id} - ${dentist.name || '未知牙医'}`"
+                                   :value="dentist.id" />
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="诊所ID" required>
-                    <el-input v-model="formData.dentalOfficeId"
-                              placeholder="请输入诊所ID"
-                              maxlength="50"
-                              show-word-limit />
+                    <el-select v-model="formData.dentalOfficeId"
+                               placeholder="请选择诊所"
+                               style="width: 100%"
+                               :loading="dentalOfficesLoading">
+                        <el-option v-for="office in dentalOffices"
+                                   :key="office.id"
+                                   :label="`ID: ${office.id} - ${office.name || '未知诊所'}`"
+                                   :value="office.id" />
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="开始时间" required>
                     <el-date-picker
                         v-model="formData.startDate"
                         type="datetime"
                         placeholder="选择开始时间"
-                        style="width: 100%"
                         format="YYYY-MM-DD HH:mm:ss"
-                        value-format="YYYY-MM-DDTHH:mm:ssZ" />
+                        value-format="YYYY-MM-DD HH:mm:ss"
+                        style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="结束时间" required>
                     <el-date-picker
                         v-model="formData.endDate"
                         type="datetime"
                         placeholder="选择结束时间"
-                        style="width: 100%"
                         format="YYYY-MM-DD HH:mm:ss"
-                        value-format="YYYY-MM-DDTHH:mm:ssZ" />
+                        value-format="YYYY-MM-DD HH:mm:ss"
+                        style="width: 100%" />
                 </el-form-item>
                 <el-form-item label="状态" required>
                     <el-select v-model="formData.status" placeholder="选择状态" style="width: 100%">
@@ -175,7 +190,9 @@ import { ref, onMounted, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { getAppointments, createAppointment, updateAppointment } from '../api/appointments'
-
+import { getPatients } from '../api/patients'
+import { getDentists } from '../api/dentists'
+import { getDentalOffices } from '../api/dentalOffices'
 // 状态管理
 const searchQuery = ref('')
 const currentPage = ref(1)
@@ -189,6 +206,14 @@ const loading = ref(false)
 const total = ref(0)
 const appointments = ref([])
 const appointmentFormRef = ref(null)
+
+// 下拉选择数据
+const patients = ref([])
+const dentists = ref([])
+const dentalOffices = ref([])
+const patientsLoading = ref(false)
+const dentistsLoading = ref(false)
+const dentalOfficesLoading = ref(false)
 
 // 表单数据
 const formData = reactive({
@@ -229,6 +254,10 @@ const addAppointment = () => {
     showAddModal.value = true
     showEditModal.value = false
     resetForm()
+    // 加载下拉选择数据
+    loadPatients()
+    loadDentists()
+    loadDentalOffices()
 }
 
 
@@ -284,6 +313,57 @@ const loadAppointments = async () => {
     }
 }
 
+// 加载患者列表
+const loadPatients = async () => {
+    try {
+        patientsLoading.value = true
+        const response = await getPatients({
+            Page: 1,
+            PageSize: 100
+        })
+        patients.value = response.data.data || []
+    } catch (error) {
+        console.error('加载患者列表失败:', error)
+        // 不显示错误提示，避免影响用户体验
+    } finally {
+        patientsLoading.value = false
+    }
+}
+
+// 加载牙医列表
+const loadDentists = async () => {
+    try {
+        dentistsLoading.value = true
+        const response = await getDentists({
+            Page: 1,
+            PageSize: 100
+        })
+        dentists.value = response.data.data || []
+    } catch (error) {
+        console.error('加载牙医列表失败:', error)
+        // 不显示错误提示，避免影响用户体验
+    } finally {
+        dentistsLoading.value = false
+    }
+}
+
+// 加载诊所列表
+const loadDentalOffices = async () => {
+    try {
+        dentalOfficesLoading.value = true
+        const response = await getDentalOffices({
+            Page: 1,
+            PageSize: 100
+        })
+        dentalOffices.value = response.data.data || []
+    } catch (error) {
+        console.error('加载诊所列表失败:', error)
+        // 不显示错误提示，避免影响用户体验
+    } finally {
+        dentalOfficesLoading.value = false
+    }
+}
+
 // 搜索
 const onSearch = () => {
     currentPage.value = 1
@@ -308,6 +388,10 @@ const editAppointment = (appointment) => {
     editingId.value = appointment.id
     Object.assign(formData, appointment)
     showEditModal.value = true
+    // 加载下拉选择数据
+    loadPatients()
+    loadDentists()
+    loadDentalOffices()
 }
 
 // 确认删除
@@ -384,4 +468,6 @@ const saveAppointment = async () => {
     display: flex;
     justify-content: flex-end;
 }
+
+/* Element Plus 日期时间选择器已与系统样式保持一致，无需额外样式修复 */
 </style>

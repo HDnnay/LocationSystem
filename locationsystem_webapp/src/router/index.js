@@ -6,25 +6,17 @@ const routes = [
         path: '/',
         redirect: '/dentists',
         meta: {
-            requiresAuth: true
+
         }
     },
-    {
-        path: '/roles',
-        name: 'Roles',
-        component: () => import('../views/Roles.vue'),
-        meta: {
-            title: '角色管理',
-            requiresAuth: true
-        }
-    },
+
     {
         path: '/dental-offices',
         name: 'DentalOffices',
         component: () => import('../views/DentalOfficesView.vue'),
         meta: {
             title: '牙科诊所管理',
-            requiresAuth: true
+
         }
     },
     {
@@ -33,7 +25,7 @@ const routes = [
         component: () => import('../views/PatientsView.vue'),
         meta: {
             title: '患者管理',
-            requiresAuth: true
+
         }
     },
     {
@@ -42,7 +34,6 @@ const routes = [
         component: () => import('../views/DentistsView.vue'),
         meta: {
             title: '牙医管理',
-            requiresAuth: true
         }
     },
     {
@@ -51,9 +42,9 @@ const routes = [
         component: () => import('../views/AppointmentsView.vue'),
         meta: {
             title: '预约管理',
-            requiresAuth: true
         }
-    }
+    },
+
 ]
 
 const router = createRouter({
@@ -68,13 +59,9 @@ router.beforeEach((to, from, next) => {
     // 检查路由是否需要认证
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // 检查是否已登录
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
-        if (!isLoggedIn) {
             // 未登录则跳转到登录页
-            next({ path: '/login', query: { redirect: to.fullPath } })
-        } else {
-            next()
-        }
+          /* next({ path: '/login', query: { redirect: to.fullPath } })*/
+          next();
     } else {
         next()
     }

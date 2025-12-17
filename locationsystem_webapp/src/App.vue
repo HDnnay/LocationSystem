@@ -33,23 +33,23 @@
             window.addEventListener('resize', this.checkScreenSize)
 
             // 全局路由守卫
-            this.$router.beforeEach((to, from, next) => {
-                this.checkLoginStatus()
+            //this.$router.beforeEach((to, from, next) => {
+            //    this.checkLoginStatus()
 
-                // 判断是否是前台路由（不需要登录）
-                const isFrontendRoute = to.path === '/' || to.path.startsWith('/article/')
+            //    // 判断是否是前台路由（不需要登录）
+            //    const isFrontendRoute = to.path === '/' || to.path.startsWith('/article/')
 
-                // 前台路由、登录页和注册页可以自由访问
-                if (isFrontendRoute || to.path === '/login' || to.path === '/register') {
-                    next()
-                }
-                // 后台路由需要登录
-                else if (!this.isLoggedIn) {
-                    next('/login')
-                } else {
-                    next()
-                }
-            })
+            //    // 前台路由、登录页和注册页可以自由访问
+            //    if (isFrontendRoute || to.path === '/login' || to.path === '/register') {
+            //        next()
+            //    }
+            //    // 后台路由需要登录
+            //    else if (!this.isLoggedIn) {
+            //        next('/login')
+            //    } else {
+            //        next()
+            //    }
+            //})
         },
         beforeUnmount() {
             window.removeEventListener('resize', this.checkScreenSize)
@@ -71,7 +71,6 @@
                 // 清除登录状态并跳转到登录页
                 localStorage.removeItem('isLoggedIn')
                 this.isLoggedIn = false
-                this.$router.push('/login')
             }
         }
     }

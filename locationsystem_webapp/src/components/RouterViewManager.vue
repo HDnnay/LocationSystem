@@ -8,14 +8,14 @@
         <!-- 登录和注册页面模板 -->
         <template v-else-if="isAuthRoute">
             <transition name="fade" mode="out-in">
-                <div class="auth-view-container">
+                <div class="auth-view-container" :key="$route.path">
                     <router-view />
                 </div>
             </transition>
         </template>
 
-        <!-- 后台管理模板 - 仅在登录后显示 -->
-        <template v-else-if="isLoggedIn">
+        <!-- 后台管理模板 -->
+        <template v-else>
             <el-container style="min-height: 100vh; background-color: #f5f7fa;">
                 <!-- 后台导航栏 -->
                 <el-header height="60px" style="background-color: #2c3e50; color: white; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
@@ -58,58 +58,28 @@
                                  text-color="#ecf0f1"
                                  active-text-color="#409EFF"
                                  router>
-                            <el-menu-item index="/dashboard">
-                                <el-icon><Monitor /></el-icon>
+                            <el-menu-item index="/dentists">
+                                <el-icon><User /></el-icon>
                                 <template #title>
-                                    仪表盘
+                                    牙医管理
                                 </template>
                             </el-menu-item>
-                            <el-menu-item index="/articles">
-                                <el-icon><Document /></el-icon>
+                            <el-menu-item index="/patients">
+                                <el-icon><UserFilled /></el-icon>
                                 <template #title>
-                                    文章管理
+                                    患者管理
                                 </template>
                             </el-menu-item>
-                            <el-menu-item index="/categories">
-                                <el-icon><Notebook /></el-icon>
+                            <el-menu-item index="/dental-offices">
+                                <el-icon><OfficeBuilding /></el-icon>
                                 <template #title>
-                                    分类管理
+                                    牙科诊所管理
                                 </template>
                             </el-menu-item>
-                            <el-sub-menu index="userManagement">
+                            <el-menu-item index="/appointments">
+                                <el-icon><Calendar /></el-icon>
                                 <template #title>
-                                    <el-icon><User /></el-icon>
-                                    <span>用户与权限</span>
-                                </template>
-                                <el-menu-item index="/users">
-                                    <el-icon><UserFilled /></el-icon>
-                                    <template #title>
-                                        用户管理
-                                    </template>
-                                </el-menu-item>
-                                <el-menu-item index="/roles">
-                                    <el-icon><User /></el-icon>
-                                    <template #title>
-                                        角色管理
-                                    </template>
-                                </el-menu-item>
-                                <el-menu-item index="/permission/index">
-                                    <el-icon><Key /></el-icon>
-                                    <template #title>
-                                        权限管理
-                                    </template>
-                                </el-menu-item>
-                            </el-sub-menu>
-                            <el-menu-item index="/settings">
-                                <el-icon><Setting /></el-icon>
-                                <template #title>
-                                    系统设置
-                                </template>
-                            </el-menu-item>
-                            <el-menu-item index="/">
-                                <el-icon><House /></el-icon>
-                                <template #title>
-                                    返回前台
+                                    预约管理
                                 </template>
                             </el-menu-item>
                         </el-menu>
@@ -118,21 +88,13 @@
                     <!-- 后台内容区域 -->
                     <el-main style="padding: 20px;">
                         <transition name="fade" mode="out-in">
-                            <div class="content-view-container">
+                            <div class="content-view-container" :key="$route.path">
                                 <router-view />
                             </div>
                         </transition>
                     </el-main>
                 </el-container>
             </el-container>
-        </template>
-
-        <!-- 未登录状态但尝试访问后台页面时的提示 -->
-        <template v-else>
-            <div class="redirecting">
-                <p>请先登录...</p>
-                <router-link to="/login" class="login-link">前往登录</router-link>
-            </div>
         </template>
     </div>
 </template>
@@ -163,12 +125,12 @@
         computed: {
             // 判断当前路由是否为前台路由
             isFrontendRoute() {
-                return this.$route.path === '/' || this.$route.path.startsWith('/article/')
+                return false // 当前没有前台路由
             },
 
             // 判断当前路由是否为认证相关路由
             isAuthRoute() {
-                return this.$route.path === '/login' || this.$route.path === '/register'
+                return false // 当前没有认证相关路由
             }
         },
         methods: {
