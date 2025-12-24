@@ -412,11 +412,12 @@ const saveAppointment = async () => {
     try {
         loading.value = true
 
-        // 确保日期时间格式正确
+        // 直接使用格式化后的字符串，避免时区转换问题
         const submitData = {
             ...formData,
-            startDate: formData.startDate ? new Date(formData.startDate).toISOString() : '',
-            endDate: formData.endDate ? new Date(formData.endDate).toISOString() : ''
+            // 保留原有的YYYY-MM-DD HH:mm:ss格式，不转换为ISO字符串
+            startDate: formData.startDate,
+            endDate: formData.endDate
         }
 
         if (editingId.value) {
@@ -470,3 +471,4 @@ const saveAppointment = async () => {
 
 /* Element Plus 日期时间选择器已与系统样式保持一致，无需额外样式修复 */
 </style>
+
