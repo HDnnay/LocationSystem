@@ -17,7 +17,7 @@ namespace LocationSystem.Application.Features.Patients.Queries.GetPatienList
         }
         public async Task<PageResult<PatienListDto>> Handle(GetPatienListQuery request)
         {
-            var patients =await _patientRepository.GetAll();
+            var patients =await _patientRepository.GetPatientPage(request);
             var total= await _patientRepository.GetTotalCount();
             return new PageResult<PatienListDto>
             {
