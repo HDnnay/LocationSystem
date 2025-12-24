@@ -9,9 +9,6 @@ const service = axios.create({
     baseURL: "/", // API的基础URL
     
 });
-function redirectLogin() {
-    router?.push('/login')
-}
 
 let isRefreshing = false;
 
@@ -56,33 +53,7 @@ service.interceptors.response.use(
             if (isRefreshing) {
                 return service(originalRequest);
             }
-            isRefreshing = true;
-            originalRequest._retry = true;
-            try {
-                const refreshToken = localStorage.getItem('refresh_token');
-                if (refreshToken) {
-                    await service.post('/api/Login/RefreshToken', { RefreshToken: refreshToken }).then(res => {
-
-                        if (res.status === 200) {
-                            let newToken = res.data.accessToken;
-                            localStorage.setItem('access_token', res.data.accessToken);
-                            localStorage.removeItem('refresh_token', res.data.refreshToken);
-                            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                            return service(originalRequest);
-                        }
-                    });
-                }
-            } catch (err) {
-                localStorage.removeItem('access_token')
-                localStorage.removeItem('refresh_token');
-                // 跳转到登录页
-                if (router) {
-                    return router.push('/login');
-                }
-                return Promise.reject(err);
-            } finally {
-                isRefreshing = false;
-            }
+            
             // 清除token
             
         } else {

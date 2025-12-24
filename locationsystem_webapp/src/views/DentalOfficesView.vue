@@ -33,7 +33,7 @@
                                  :index="(index) => (currentPage - 1) * pageSize + index + 1"
                                  label="序号"
                                  width="80" />
-                <el-table-column prop="id" label="ID" min-width="150" />
+
                 <el-table-column prop="name" label="诊所名称" min-width="200" />
                 <el-table-column label="操作" min-width="100" fixed="right">
                     <template #default="scope">

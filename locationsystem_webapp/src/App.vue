@@ -20,37 +20,21 @@
             RouterViewManager
         },
         data() {
-            return {
-                sidebarOpen: false,
-                isMobile: false,
-                isLoggedIn: false,
-                openDropdown: null
-            }
-        },
-        mounted() {
-            this.checkScreenSize()
-            this.checkLoginStatus()
-            window.addEventListener('resize', this.checkScreenSize)
+        return {
+            sidebarOpen: false,
+            isMobile: false,
+            isLoggedIn: true, // 默认设置为已登录状态
+            openDropdown: null
+        }
+    },
+    mounted() {
+        this.checkScreenSize()
+        // 不再从localStorage读取登录状态，始终保持已登录
+        this.isLoggedIn = true
+        window.addEventListener('resize', this.checkScreenSize)
 
-            // 全局路由守卫
-            this.$router.beforeEach((to, from, next) => {
-                this.checkLoginStatus()
-
-                // 判断是否是前台路由（不需要登录）
-                const isFrontendRoute = to.path === '/' || to.path.startsWith('/article/')
-
-                // 前台路由、登录页和注册页可以自由访问
-                if (isFrontendRoute || to.path === '/login' || to.path === '/register') {
-                    next()
-                }
-                // 后台路由需要登录
-                else if (!this.isLoggedIn) {
-                    next('/login')
-                } else {
-                    next()
-                }
-            })
-        },
+        // 全局路由守卫已移除，不再需要登录检查
+    },
         beforeUnmount() {
             window.removeEventListener('resize', this.checkScreenSize)
         },
@@ -63,15 +47,9 @@
                     this.sidebarOpen = false
                 }
             },
-            checkLoginStatus() {
-                // 从localStorage检查登录状态
-                this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
-            },
             handleLogout() {
-                // 清除登录状态并跳转到登录页
-                localStorage.removeItem('isLoggedIn')
-                this.isLoggedIn = false
-                this.$router.push('/login')
+                // 保留退出登录方法，但不再清除登录状态
+                // 因为现在系统始终保持已登录状态
             }
         }
     }
