@@ -33,19 +33,18 @@
                                  :index="(index) => (currentPage - 1) * pageSize + index + 1"
                                  label="序号"
                                  width="80" />
-                <el-table-column prop="id" label="ID" min-width="150" />
-                <el-table-column prop="patientId" label="患者ID" min-width="120" />
-                <el-table-column prop="dentistId" label="牙医ID" min-width="120" />
-                <el-table-column prop="dentalOfficeId" label="诊所ID" min-width="120" />
-                <el-table-column prop="startDate" label="开始时间" min-width="160">
-                    <template #default="scope">
-                        {{ formatDateTime(scope.row.startDate) }}
-                    </template>
+                <el-table-column prop="patient.name" label="患者ID" min-width="120" />
+                <el-table-column prop="dentist.name" label="牙医ID" min-width="120" />
+                <el-table-column prop="dentalOffice.name" label="诊所ID" min-width="120" />
+                <el-table-column prop="startTime" label="开始时间" min-width="160">
+                  <template #default="scope">
+                    {{ formatDateTime(scope.row.startTime) }}
+                  </template>
                 </el-table-column>
-                <el-table-column prop="endDate" label="结束时间" min-width="160">
-                    <template #default="scope">
-                        {{ formatDateTime(scope.row.endDate) }}
-                    </template>
+                <el-table-column prop="endTime" label="结束时间" min-width="160">
+                  <template #default="scope">
+                    {{ formatDateTime(scope.row.endTime) }}
+                  </template>
                 </el-table-column>
                 <el-table-column prop="status" label="状态" min-width="100">
                     <template #default="scope">
