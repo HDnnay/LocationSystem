@@ -11,7 +11,7 @@ namespace LocationSystem.Application.Features.DentalOffices
         public static string DetalOfficePageKey = "DentalOffices:Page:*PageSize:*KeySize:*";
         public static string GetDetalOfficePageKey(int page,int pageSize,string keyWord)
         {
-            var key = $"DentalOffices:Page:{page}PageSize:{pageSize}KeySize:{keyWord}";
+            var key = $"DentalOffices:Page:{page}:PageSize:{pageSize}:KeySize:{keyWord}";
             return key;
         }
     }

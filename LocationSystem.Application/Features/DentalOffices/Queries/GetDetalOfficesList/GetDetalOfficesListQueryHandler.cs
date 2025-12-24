@@ -18,7 +18,7 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOffi
         }
         public async Task<PageResult<DentalOfficesListDto>> Handle(GetDetalOfficesListQuery request)
         {
-            var key = DentalOfficeCacheKey.DentalOfficeAllKey;
+            var key = DentalOfficeCacheKey.GetDetalOfficePageKey(request.Page,request.PageSize,request.keyWord);
             var model = await _CacheService.GetOrCreateAsync(key, async _ =>
             {
                 var result = await _repositoty.GetDentalOfficePage(request);
