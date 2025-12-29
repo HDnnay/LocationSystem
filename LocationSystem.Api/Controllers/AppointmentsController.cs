@@ -4,6 +4,7 @@ using LocationSystem.Application.Features.Appointments.Commands.UpdateAppointmen
 using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentDetail;
 using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentList;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Application.Utilities.RabbitMQs;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -16,9 +17,11 @@ namespace LocationSystem.Api.Controllers
     public class AppointmentsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public AppointmentsController(IMediator mediator) 
+        private readonly IRabbitMQService _rabbitMQService;
+        public AppointmentsController(IMediator mediator, IRabbitMQService rabbitMQService) 
         {
             _mediator = mediator;
+            _rabbitMQService = rabbitMQService;
         }
         // GET: api/<AppointmentsController>
         [HttpGet]
@@ -56,6 +59,7 @@ namespace LocationSystem.Api.Controllers
                 EndDate = model.EndDate,
             };
             var result = await _mediator.Send(command);
+            await _rabbitMQService.PublishAsync(exchange:"",routingKey:"my_queue",message:"appointment_created");
             return Ok(result);
         }
 

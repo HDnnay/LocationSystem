@@ -5,6 +5,7 @@ using LocationSystem.Application.Features.Patients.Command.UpdatePatient;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienDetail;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienList;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Application.Utilities.RabbitMQs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Update.Internal;
@@ -16,15 +17,20 @@ namespace LocationSystem.Api.Controllers
     public class PatientsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public PatientsController(IMediator mediator) 
+        private readonly IRabbitMQService _rabbitMQService;
+
+        public PatientsController(IMediator mediator, IRabbitMQService rabbitMQService) 
         {
             _mediator = mediator;
+            _rabbitMQService = rabbitMQService;
         }
         [HttpPost]
         public async Task<IActionResult> Post(CreatePatientDto model)
         {
             var command = new CreatePatientCommand() { Name = model.Name ,Email = model.Email};
             var result = await _mediator.Send(command);
+            await _rabbitMQService.PublishAsync(exchange: "", routingKey: "my_queue", message: "Patients_created");
+
             return Ok(result);
         }
         [HttpGet("{id}")]

@@ -89,7 +89,7 @@
 
         <!-- 添加/编辑预约模态框 -->
         <el-dialog :model-value="showAddModal || showEditModal"
-                   @update:model-value="val => this.handleModalClose(val)"
+                   @update:model-value="handleModalClose"
                    :title="showEditModal ? '编辑预约' : '添加预约'"
                    width="600px"
                    :close-on-click-modal="false"
@@ -132,19 +132,19 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="开始时间" required>
-                    <VueDatePicker
+                    <el-date-picker
                         v-model="formData.startDate"
-                        datetime
+                        type="datetime"
                         placeholder="选择开始时间"
-                        class="w-full"
+                        style="width: 100%"
                     />
                 </el-form-item>
                 <el-form-item label="结束时间" required>
-                    <VueDatePicker
+                    <el-date-picker
                         v-model="formData.endDate"
-                        datetime
+                        type="datetime"
                         placeholder="选择结束时间"
-                        class="w-full"
+                        style="width: 100%"
                     />
                 </el-form-item>
                 <el-form-item label="状态" required>
@@ -190,9 +190,14 @@ import { getAppointments, createAppointment, updateAppointment } from '../api/ap
 import { getPatients } from '../api/patients'
 import { getDentists } from '../api/dentists'
 import { getDentalOffices } from '../api/dentalOffices'
-// 导入 @vuepic/vue-datepicker 组件和样式
-import { VueDatePicker } from '@vuepic/vue-datepicker'
-import '@vuepic/vue-datepicker/dist/main.css'
+
+// 处理模态框关闭
+const handleModalClose = (val) => {
+    if (!val) {
+        closeModal()
+    }
+}
+
 // 状态管理
 const searchQuery = ref('')
 const currentPage = ref(1)
@@ -238,6 +243,7 @@ onMounted(() => {
 
 // 方法
 const resetForm = () => {
+    // 使用新的对象替换，确保Vue检测到变更
     Object.assign(formData, {
         id: '',
         patientId: '',
@@ -248,6 +254,22 @@ const resetForm = () => {
         status: 0
     })
     editingId.value = null
+    // 强制触发更新：先将属性设为不同的值，再设回 null
+    // 这样可以确保Vue检测到变化
+    const tempValue = 'temp_reset_value_' + Date.now()
+    formData.patientId = tempValue
+    formData.dentistId = tempValue
+    formData.dentalOfficeId = tempValue
+    formData.status = -1 // 使用不同的值
+    // 然后设回正确的初始值
+    formData.patientId = ''
+    formData.dentistId = ''
+    formData.dentalOfficeId = ''
+    formData.status = 0
+    formData.startDate = new Date('2000-01-01') // 临时值
+    formData.endDate = new Date('2000-01-01')   // 临时值
+    formData.startDate = null
+    formData.endDate = null
 }
 
 const addAppointment = () => {
@@ -485,7 +507,6 @@ const saveAppointment = async () => {
 
 /* Element Plus 日期时间选择器已与系统样式保持一致，无需额外样式修复 */
 </style>
-
 
 
 

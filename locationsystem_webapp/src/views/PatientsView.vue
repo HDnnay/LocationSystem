@@ -292,6 +292,13 @@ const savePatient = async () => {
         loading.value = false
     }
 }
+
+// 处理模态框关闭
+const handleModalClose = (val) => {
+    if (!val) {
+        closeModal()
+    }
+}
 </script>
 
 <style scoped>
@@ -323,3 +330,4 @@ const savePatient = async () => {
     justify-content: flex-end;
 }
 </style>
+

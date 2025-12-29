@@ -77,7 +77,7 @@
 
         <!-- 添加/编辑牙医模态框 -->
         <el-dialog :model-value="showAddModal || showEditModal"
-                   @update:model-value="val => this.handleModalClose(val)"
+                   @update:model-value="handleModalClose"
                    :title="showEditModal ? '编辑牙医' : '添加牙医'"
                    width="500px"
                    :close-on-click-modal="false"
@@ -292,6 +292,13 @@ const saveDentist = async () => {
         loading.value = false
     }
 }
+
+// 处理模态框关闭
+const handleModalClose = (val) => {
+    if (!val) {
+        closeModal()
+    }
+}
 </script>
 
 <style scoped>
@@ -323,3 +330,5 @@ const saveDentist = async () => {
     justify-content: flex-end;
 }
 </style>
+
+
