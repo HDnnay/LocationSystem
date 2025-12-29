@@ -57,7 +57,7 @@ namespace LocationSystem.Infrastructure.Repositories
             var query = _context.Appointments.Include(t => t.Patient)
                 .Include(t => t.DentalOffice)
                 .Include(t => t.Dentist)
-                .AsQueryable();
+                .AsQueryable().AsNoTracking();
             if (!string.IsNullOrWhiteSpace(filter.keyWord))
             {
                 query = query.Where(t =>

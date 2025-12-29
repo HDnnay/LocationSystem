@@ -132,22 +132,20 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="开始时间" required>
-                    <el-date-picker
+                    <VueDatePicker
                         v-model="formData.startDate"
-                        type="datetime"
+                        datetime
                         placeholder="选择开始时间"
-                        format="YYYY-MM-DD HH:mm:ss"
-                        value-format="YYYY-MM-DD HH:mm:ss"
-                        style="width: 100%" />
+                        class="w-full"
+                    />
                 </el-form-item>
                 <el-form-item label="结束时间" required>
-                    <el-date-picker
+                    <VueDatePicker
                         v-model="formData.endDate"
-                        type="datetime"
+                        datetime
                         placeholder="选择结束时间"
-                        format="YYYY-MM-DD HH:mm:ss"
-                        value-format="YYYY-MM-DD HH:mm:ss"
-                        style="width: 100%" />
+                        class="w-full"
+                    />
                 </el-form-item>
                 <el-form-item label="状态" required>
                     <el-select v-model="formData.status" placeholder="选择状态" style="width: 100%">
@@ -192,6 +190,9 @@ import { getAppointments, createAppointment, updateAppointment } from '../api/ap
 import { getPatients } from '../api/patients'
 import { getDentists } from '../api/dentists'
 import { getDentalOffices } from '../api/dentalOffices'
+// 导入 @vuepic/vue-datepicker 组件和样式
+import { VueDatePicker } from '@vuepic/vue-datepicker'
+import '@vuepic/vue-datepicker/dist/main.css'
 // 状态管理
 const searchQuery = ref('')
 const currentPage = ref(1)
@@ -220,8 +221,8 @@ const formData = reactive({
     patientId: '',
     dentistId: '',
     dentalOfficeId: '',
-    startDate: '',
-    endDate: '',
+    startDate: null,  // 初始值改为 null
+    endDate: null,    // 初始值改为 null
     status: 0
 })
 
@@ -242,8 +243,8 @@ const resetForm = () => {
         patientId: '',
         dentistId: '',
         dentalOfficeId: '',
-        startDate: '',
-        endDate: '',
+        startDate: null,  // 与初始化保持一致，使用 null
+        endDate: null,    // 与初始化保持一致，使用 null
         status: 0
     })
     editingId.value = null
@@ -412,30 +413,43 @@ const saveAppointment = async () => {
     try {
         loading.value = true
 
+        // 处理日期格式，确保转换为YYYY-MM-DD HH:mm:ss字符串
+        const formatDateString = (date) => {
+            if (!date) return null;
+            if (typeof date === 'string') return date; // 如果已经是字符串，直接返回
+            // 如果是Date对象，转换为YYYY-MM-DD HH:mm:ss格式
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        };
+
         // 直接使用格式化后的字符串，避免时区转换问题
         const submitData = {
             ...formData,
-            // 保留原有的YYYY-MM-DD HH:mm:ss格式，不转换为ISO字符串
-            startDate: formData.startDate,
-            endDate: formData.endDate
-        }
+            startDate: formatDateString(formData.startDate),
+            endDate: formatDateString(formData.endDate)
+        };
 
         if (editingId.value) {
             // 编辑模式
-            await updateAppointment(editingId.value, submitData)
-            ElMessage.success('更新预约成功')
+            await updateAppointment(editingId.value, submitData);
+            ElMessage.success('更新预约成功');
         } else {
             // 添加模式
-            await createAppointment(submitData)
-            ElMessage.success('添加预约成功')
+            await createAppointment(submitData);
+            ElMessage.success('添加预约成功');
         }
-        closeModal()
-        loadAppointments()
+        closeModal();
+        loadAppointments();
     } catch (error) {
-        console.error('保存预约失败:', error)
-        ElMessage.error(error.response?.data?.message || '保存预约失败，请重试')
+        console.error('保存预约失败:', error);
+        ElMessage.error(error.response?.data?.message || '保存预约失败，请重试');
     } finally {
-        loading.value = false
+        loading.value = false;
     }
 }
 </script>
@@ -471,4 +485,22 @@ const saveAppointment = async () => {
 
 /* Element Plus 日期时间选择器已与系统样式保持一致，无需额外样式修复 */
 </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

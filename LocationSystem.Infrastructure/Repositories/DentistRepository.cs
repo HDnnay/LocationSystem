@@ -19,7 +19,7 @@ namespace LocationSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<Dentist>> GetDentistPage(DentistListFilterDto fiter)
         {
-            var querable = _context.Dentists.AsQueryable();
+            var querable = _context.Dentists.AsQueryable().AsNoTracking();
             if (string.IsNullOrWhiteSpace(fiter.keyWord))
             {
                 querable.Where(t => t.Email.Value.Contains(fiter.keyWord) || t.Name.Contains(fiter.keyWord));

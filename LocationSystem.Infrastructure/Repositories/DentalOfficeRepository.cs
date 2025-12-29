@@ -19,7 +19,7 @@ namespace LocationSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<DentalOffice>> GetDentalOfficePage(DentalOfficeListFilter fiter)
         {
-            var query = _context.DentalOffices.AsQueryable();
+            var query = _context.DentalOffices.AsQueryable().AsNoTracking();
             var result = await query.Skip((fiter.Page-1)*fiter.PageSize).Take(fiter.PageSize).ToListAsync();
             return result;
         }
