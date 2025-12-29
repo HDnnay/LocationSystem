@@ -276,13 +276,6 @@ const handleModalClose = (val) => {
         closeModal()
     }
 }
-
-// 将 handleModalClose 绑定到模板中 dialog 的 update:model-value 事件
-// 已在模板中通过 @update:model-value="val => this.handleModalClose(val)" 使用，无需额外处理
-    if (!val) {
-        closeModal()
-    }
-}
 </script>
 
 <style scoped>
@@ -314,4 +307,5 @@ const handleModalClose = (val) => {
     justify-content: flex-end;
 }
 </style>
+
 
