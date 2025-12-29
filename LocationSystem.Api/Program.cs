@@ -1,5 +1,6 @@
 ﻿using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
+using LocationSystem.Application.Utilities.RabbitMQs;
 using LocationSystem.Infrastructure;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
@@ -38,7 +39,19 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
     options.InstanceName = "Sys_";
 });
+
+// 1️⃣ 注册 RabbitMQ 服务（单例）
+builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
+
+// 2️⃣ 注册消费者后台服务
+builder.Services.AddHostedService<RabbitMQConsumerService>();
 var app = builder.Build();
+
+// 4️⃣ 应用启动时，确保服务已启动
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    Console.WriteLine("✅ 应用已启动，所有后台服务正在运行");
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
