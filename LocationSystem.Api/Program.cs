@@ -44,7 +44,7 @@ builder.Services.AddStackExchangeRedisCache(options =>
 builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
 
 // 2️⃣ 注册消费者后台服务
-builder.Services.AddHostedService<RabbitMQConsumerService>();
+builder.Services.AddHostedService<RabbitMQTestService>();
 var app = builder.Build();
 
 // 4️⃣ 应用启动时，确保服务已启动

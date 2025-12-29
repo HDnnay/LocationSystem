@@ -71,7 +71,7 @@
 
         <!-- 添加/编辑诊所模态框 -->
         <el-dialog :model-value="showAddModal || showEditModal"
-                   @update:model-value="val => this.handleModalClose(val)"
+                   @update:model-value="handleModalClose"
                    :title="showEditModal ? '编辑诊所' : '添加诊所'"
                    width="500px"
                    :close-on-click-modal="false"
@@ -307,5 +307,6 @@ const handleModalClose = (val) => {
     justify-content: flex-end;
 }
 </style>
+
 
 

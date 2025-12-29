@@ -3,6 +3,7 @@ using LocationSystem.Application.Features.Dentists.Commands.DeleteDentist;
 using LocationSystem.Application.Features.Dentists.Commands.UpdateDentist;
 using LocationSystem.Application.Features.Dentists.Queries.GetDentistList;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Application.Utilities.RabbitMQs;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -16,9 +17,12 @@ namespace LocationSystem.Api.Controllers
     public class DentistsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public DentistsController(IMediator mediator) 
+        private readonly IRabbitMQService _rabbitMQService;
+
+        public DentistsController(IMediator mediator,IRabbitMQService rabbitMQService) 
         {
             _mediator = mediator;
+            _rabbitMQService = rabbitMQService;
         }
 
         // GET api/<DentistsController>/5
@@ -32,6 +36,8 @@ namespace LocationSystem.Api.Controllers
                 keyWord = model.keyWord
             };
             var result = await _mediator.Send(command);
+            await _rabbitMQService.PublishAsync(exchange: "", routingKey: "my_queue", message: "get list");
+
             return Ok(result);
         }
 

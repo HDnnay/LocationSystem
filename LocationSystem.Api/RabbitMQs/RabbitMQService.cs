@@ -22,6 +22,8 @@ namespace LocationSystem.Application.Utilities.RabbitMQs
 
         public bool IsConnected => _connection?.IsOpen ?? false;
 
+        public IConnection Connection => _connection?? throw new InvalidOperationException(nameof(_connection));
+
         public RabbitMQService(IConfiguration configuration, ILogger<RabbitMQService> logger)
         {
             _configuration = configuration;

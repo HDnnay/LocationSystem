@@ -8,6 +8,7 @@ namespace LocationSystem.Application.Utilities.RabbitMQs
 {
     public interface IRabbitMQService:IDisposable
     {
+        IConnection Connection { get; }
         Task<IChannel> CreateChannelAsync(CancellationToken cancellationToken = default);
         Task PublishAsync<T>(string exchange, string routingKey, T message, CancellationToken cancellationToken = default);
         bool IsConnected { get; }
