@@ -20,12 +20,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
+    <Folder Include="Migrations\" />
+    <Folder Include="Utilities\Common\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
-    <Folder Include="Utilities\Common\" />
+    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
   </ItemGroup>
 
 </Project>
