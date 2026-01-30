@@ -50,5 +50,12 @@ namespace LocationSystem.Infrastructure.Repositories
             _context.Update(entity);
             return Task.CompletedTask;
         }
+
+        public Task UpdateRangAsync(List<T> entities)
+        {
+            if (entities.Any())
+                _context.UpdateRange(entities);
+            return Task.CompletedTask;
+        }
     }
 }
