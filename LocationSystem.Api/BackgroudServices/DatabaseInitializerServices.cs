@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using LocationSystem.Application.Features.Companys.Commands.ProcessCompanyData;
+using LocationSystem.Application.Utilities;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 
 namespace LocationSystem.Api.BackgroudServices
@@ -10,10 +12,13 @@ namespace LocationSystem.Api.BackgroudServices
         private readonly ILogger<DatabaseInitializerServices> _logger;
         private long lastId = 0;
         bool hasMoreData = true;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public DatabaseInitializerServices(IConfiguration configuration,
+             IServiceScopeFactory scopeFactory,
             ILogger<DatabaseInitializerServices> logger)
         {
+            _scopeFactory = scopeFactory;
             _configuration = configuration;
             _logger = logger;
             _connectionString = configuration.GetConnectionString("SqliteConnectionString");
@@ -47,6 +52,7 @@ namespace LocationSystem.Api.BackgroudServices
                 {
                     // 查询一批数据
                     var companies = await GetCompaniesBatchAsync(lastId, pageSize);
+                    await ProcessBatchAsync(companies, stoppingToken);
                 }
                 catch (Exception ex)
                 {
@@ -107,34 +113,35 @@ namespace LocationSystem.Api.BackgroudServices
 
         private async Task ProcessBatchAsync(List<Company> companies, CancellationToken stoppingToken)
         {
-            foreach (var company in companies)
+
+            try
             {
-                if (stoppingToken.IsCancellationRequested)
-                    break;
-
-                try
+                List<ProcessCompanyDataDto> dtos = new List<ProcessCompanyDataDto>();
+                foreach (var item in companies)
                 {
-                    // 这里写你的处理逻辑
-                    await ProcessSingleCompanyAsync(company);
-
-                    _logger.LogDebug($"处理成功: {company.Name} (ID: {company.Id})");
+                    dtos.Add(item.ToDto());
                 }
-                catch (Exception ex)
+                using (var scope = _scopeFactory.CreateScope())
                 {
-                    _logger.LogError(ex, $"处理公司失败: {company.Name} (ID: {company.Id})");
-                    // 继续处理下一条，不因为单条失败而停止
+                    var _mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                    await _mediator.Send(new ProcessCompanyDataCommand { Data = dtos });
                 }
 
-                // 每条记录处理间隔（避免过快）
-                await Task.Delay(10, stoppingToken);
+                // 这里写你的处理逻辑
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                // 继续处理下一条，不因为单条失败而停止
+            }
+            // 每条记录处理间隔（避免过快）
+            await Task.Delay(10, stoppingToken);
         }
 
         private async Task ProcessSingleCompanyAsync(Company company)
         {
             // 这里写你的具体业务逻辑
             // 例如：发送到其他系统、数据转换、验证等
-
             await Task.Delay(50); // 模拟处理时间
             // _logger.LogDebug($"处理公司: {company.Name}");
         }
@@ -146,6 +153,17 @@ namespace LocationSystem.Api.BackgroudServices
         public string Name { get; set; }
         public string Address { get; set; }
         public string Phone { get; set; }
+        public ProcessCompanyDataDto ToDto()
+        {
+            return new ProcessCompanyDataDto
+            {
+                Id = Guid.NewGuid(),
+                CompanyName = this.Name,
+                Address = this.Address,
+                PhoneNumber = this.Phone
+            };
+
+        }
     }
 
 }

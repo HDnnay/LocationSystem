@@ -7,5 +7,6 @@ namespace LocationSystem.Application.Features.Companys.Commands.ProcessCompanyDa
 {
     public class ProcessCompanyDataCommand:IRequset
     {
+        public List<ProcessCompanyDataDto> Data { get; set; }
     }
 }

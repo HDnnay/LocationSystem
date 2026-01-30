@@ -6,11 +6,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LocationSystem.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class addAppointment2 : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Companies",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Companies", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "DentalOffices",
                 columns: table => new
@@ -24,29 +38,19 @@ namespace LocationSystem.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Dentists",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserType = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DenetistCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Dentists", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Patients",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(254)", maxLength: 254, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,20 +72,17 @@ namespace LocationSystem.Infrastructure.Migrations
                         name: "FK_Appointments_DentalOffices_DentalOfficeId",
                         column: x => x.DentalOfficeId,
                         principalTable: "DentalOffices",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Appointments_Dentists_DentistId",
+                        name: "FK_Appointments_Users_DentistId",
                         column: x => x.DentistId,
-                        principalTable: "Dentists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Users",
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Appointments_Patients_PatientId",
+                        name: "FK_Appointments_Users_PatientId",
                         column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -107,13 +108,13 @@ namespace LocationSystem.Infrastructure.Migrations
                 name: "Appointments");
 
             migrationBuilder.DropTable(
+                name: "Companies");
+
+            migrationBuilder.DropTable(
                 name: "DentalOffices");
 
             migrationBuilder.DropTable(
-                name: "Dentists");
-
-            migrationBuilder.DropTable(
-                name: "Patients");
+                name: "Users");
         }
     }
 }

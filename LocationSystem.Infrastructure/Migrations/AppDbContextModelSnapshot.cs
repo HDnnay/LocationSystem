@@ -67,8 +67,9 @@ namespace LocationSystem.Infrastructure.Migrations
 
             modelBuilder.Entity("LocationSystem.Domain.Entities.Company", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
                         .IsRequired()
