@@ -1,7 +1,10 @@
-﻿using LocationSystem.Api.Middlewares;
+﻿using LocationSystem.Api.BackgroudServices;
+using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Application.Utilities.RabbitMQs;
 using LocationSystem.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
@@ -32,6 +35,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddStackExchangeRedisCache(options =>
@@ -45,6 +49,7 @@ builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
 
 // 2️⃣ 注册消费者后台服务
 builder.Services.AddHostedService<RabbitMQTestService>();
+builder.Services.AddHostedService<DatabaseInitializerServices>();
 var app = builder.Build();
 
 // 4️⃣ 应用启动时，确保服务已启动

@@ -45,7 +45,7 @@ namespace LocationSystem.Application.Utilities.RabbitMQs
                 var factory = new ConnectionFactory
                 {
                     HostName = _configuration["RabbitMQ:HostName"] ?? "localhost",
-                    Port = _configuration.GetValue<int>("RabbitMQ:Port", 5672),
+                    Port = _configuration.GetValue<int>("RabbitMQ:Port", 15672),
                     UserName = _configuration["RabbitMQ:UserName"] ?? "guest",
                     Password = _configuration["RabbitMQ:Password"] ?? "guest",
                     VirtualHost = _configuration["RabbitMQ:VirtualHost"] ?? "/",
