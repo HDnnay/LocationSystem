@@ -18,11 +18,12 @@ namespace LocationSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Company>> GetCompanyPage(CompanyFilter filter)
+        public async Task<Dictionary<int,IEnumerable<Company>>> GetCompanyPage(CompanyFilter filter)
         {
             var query = _context.Companies.AsQueryable().AsNoTracking();
+            var count =await query.CountAsync();
             var result = await query.Skip((filter.Page-1)*filter.PageSize).Take(filter.PageSize).ToListAsync();
-            return result;
+            return new Dictionary<int, IEnumerable<Company>>() { { count,result} };
         }
     }
 }

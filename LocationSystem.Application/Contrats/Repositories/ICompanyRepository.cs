@@ -9,7 +9,7 @@ namespace LocationSystem.Application.Contrats.Repositories
 {
     public interface ICompanyRepository: IRepository<Company>
     {
-        Task<IEnumerable<Company>> GetCompanyPage(CompanyFilter filter);
+        Task<Dictionary<int,IEnumerable<Company>>> GetCompanyPage(CompanyFilter filter);
 
     }
 }

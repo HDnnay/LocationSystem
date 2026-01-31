@@ -20,12 +20,13 @@ namespace LocationSystem.Application.Features.Companys.Queries.ReadConpany
         public async Task<PageResult<CompanyDto>> Handle(ReadConpanyQuery request)
         {
             var result =await _repository.GetCompanyPage(request);
-            var convertResult = result.Select(t => new CompanyDto() { Id=t.Id, Address=t.Address, PhoneNumber=t.PhoneNumber }).ToList();
-            return new PageResult<CompanyDto>()
+            var pageResult = new PageResult<CompanyDto>();
+            foreach (var item in result)
             {
-                Data = convertResult,
-                Total = (await _repository.GetAll()).Count()
-            };
+                pageResult.Total=item.Key;
+                pageResult.Data = item.Value.Select(t => new CompanyDto() { Id=t.Id, Address= t.Address, Name=t.Name, PhoneNumber=t.PhoneNumber }).ToList();
+            }
+            return pageResult;
         }
     }
 }
