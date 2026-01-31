@@ -4,6 +4,7 @@ using LocationSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -18,12 +19,14 @@ namespace LocationSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<Dictionary<int,IEnumerable<Company>>> GetCompanyPage(CompanyFilter filter)
+        public async Task<ConcurrentDictionary<int, IEnumerable<Company>>> GetCompanyPage(CompanyFilter filter)
         {
             var query = _context.Companies.AsQueryable().AsNoTracking();
-            var count =await query.CountAsync();
+            var count = await query.CountAsync();
             var result = await query.Skip((filter.Page-1)*filter.PageSize).Take(filter.PageSize).ToListAsync();
-            return new Dictionary<int, IEnumerable<Company>>() { { count,result} };
+            var dic = new ConcurrentDictionary<int, IEnumerable<Company>>();
+            dic.TryAdd(count, result);
+            return dic;
         }
     }
 }

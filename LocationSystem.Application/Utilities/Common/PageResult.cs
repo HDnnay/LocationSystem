@@ -8,5 +8,6 @@ namespace LocationSystem.Application.Utilities.Common
     {
         public List<T> Data { get; set; }
         public int Total { get; set; }
+        public int CurrentPage { get; set; }
     }
 }

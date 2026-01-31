@@ -22,7 +22,7 @@ namespace LocationSystem.Api.Controllers
             var command = new ReadConpanyQuery()
             {
                 Page = request.Page,
-                PageSize = 1000,
+                PageSize = request.PageSize,
                 keyWord = request.keyWord
             };
             var model = await _mediator.Send(command);

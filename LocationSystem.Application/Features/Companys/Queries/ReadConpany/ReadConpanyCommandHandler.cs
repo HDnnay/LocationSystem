@@ -21,6 +21,7 @@ namespace LocationSystem.Application.Features.Companys.Queries.ReadConpany
         {
             var result =await _repository.GetCompanyPage(request);
             var pageResult = new PageResult<CompanyDto>();
+            pageResult.CurrentPage = request.Page;
             foreach (var item in result)
             {
                 pageResult.Total=item.Key;
