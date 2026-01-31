@@ -5,10 +5,12 @@ import * as appointments from './appointments'
 import * as dentalOffices from './dentalOffices'
 import * as company from './company'
 
-export {
+const api={
   dentists,
   patients,
   appointments,
   dentalOffices,
   company
-}
+};
+
+export default api;

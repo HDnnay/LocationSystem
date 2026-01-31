@@ -43,7 +43,15 @@ const routes = [
         meta: {
             title: '预约管理',
         }
-    },
+  },
+  {
+    path: '/company',
+    name: 'company',
+    component: () => import('../views/CompanyView.vue'),
+    meta: {
+      title: '信息管理',
+    }
+  }
 
 ]
 
