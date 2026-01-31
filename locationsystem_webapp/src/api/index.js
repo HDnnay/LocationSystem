@@ -3,10 +3,12 @@ import * as dentists from './dentists'
 import * as patients from './patients'
 import * as appointments from './appointments'
 import * as dentalOffices from './dentalOffices'
+import * as company from './company'
 
 export {
   dentists,
   patients,
   appointments,
-  dentalOffices
+  dentalOffices,
+  company
 }
