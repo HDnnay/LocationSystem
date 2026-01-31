@@ -73,6 +73,7 @@ async function request(url, options = {}) {
  */
 export async function getCompanies(params) {
   const url = buildUrl('/Company', params);
+  console.log(url)
   return request(url, { method: 'GET' });
 }
 

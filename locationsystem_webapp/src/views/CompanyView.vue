@@ -28,7 +28,7 @@
     beforeCreate() {
     },
     created() {
-     
+     this.getData()
     },
     beforeMount() {
     },
@@ -45,6 +45,23 @@
     destroyed() {
     },
     methods: {
+      async getData() {
+        try {
+         
+              const result = await api.company.getCompanies({
+                page: 1,
+                pageSize: 100
+              });
+              console.log(result)
+              // result 现在有完整的类型提示
+              this.companies = result.data;
+              console.log(`共 ${result.total} 条数据`);
+            
+
+        } catch {
+
+        }
+      }
     },
   });
 </script>
