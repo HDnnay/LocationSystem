@@ -2,7 +2,7 @@
   <div>
     <h1>公司管理</h1>
   </div>
-  
+
 </template>
 
 <script lang="ts">
@@ -28,7 +28,7 @@
     beforeCreate() {
     },
     created() {
-     this.getData()
+      this.getData()
     },
     beforeMount() {
     },
@@ -47,17 +47,14 @@
     methods: {
       async getData() {
         try {
-         
-              const result = await api.company.getCompanies({
-                page: 1,
-                pageSize: 100
-              });
-              console.log(result)
-              // result 现在有完整的类型提示
-              this.companies = result.data;
-              console.log(`共 ${result.total} 条数据`);
-            
-
+          const result = await api.company.getCompanies({
+            page: 1,
+            pageSize: 100
+          });
+          console.log(result)
+          // result 现在有完整的类型提示
+          this.companies = result.data;
+          console.log(`共 ${result.total} 条数据`);
         } catch {
 
         }
