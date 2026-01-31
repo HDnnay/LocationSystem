@@ -1,8 +1,12 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Features.Companys.Queries.ReadConpany;
 using LocationSystem.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
@@ -14,9 +18,11 @@ namespace LocationSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        public Task<IEnumerable<Company>> GetDentalOfficePage()
+        public async Task<IEnumerable<Company>> GetCompanyPage(CompanyFilter filter)
         {
-            throw new NotImplementedException();
+            var query = _context.Companies.AsQueryable().AsNoTracking();
+            var result = await query.Skip((filter.Page-1)*filter.PageSize).Take(filter.PageSize).ToListAsync();
+            return result;
         }
     }
 }

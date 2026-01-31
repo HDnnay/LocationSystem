@@ -21,7 +21,7 @@ namespace LocationSystem.Api.BackgroudServices
             _scopeFactory = scopeFactory;
             _configuration = configuration;
             _logger = logger;
-            _connectionString = configuration.GetConnectionString("SqliteConnectionString");
+            _connectionString = configuration.GetConnectionString("SqliteConnectionString")?? throw new ArgumentNullException("SqliteConnectionString");
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -44,7 +44,6 @@ namespace LocationSystem.Api.BackgroudServices
         private async Task ProcessAllCompaniesAsync(CancellationToken stoppingToken)
         {
             int pageSize = 1000;
-            int totalProcessed = 0;
             _logger.LogInformation($"开始处理公司数据，每批 {pageSize} 条");
             while (hasMoreData && !stoppingToken.IsCancellationRequested)
             {

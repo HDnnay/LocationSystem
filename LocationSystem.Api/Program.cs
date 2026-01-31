@@ -49,7 +49,7 @@ builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
 
 // 2️⃣ 注册消费者后台服务
 builder.Services.AddHostedService<RabbitMQTestService>();
-builder.Services.AddHostedService<DatabaseInitializerServices>();
+//builder.Services.AddHostedService<DatabaseInitializerServices>();
 var app = builder.Build();
 
 // 4️⃣ 应用启动时，确保服务已启动
