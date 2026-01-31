@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /LocationSystem.Api/Sqlite/test.db
+/LocationSystem.Infrastructure/Migrations/20260130150813_init.cs
+/LocationSystem.Infrastructure/Migrations/AppDbContextModelSnapshot.cs
