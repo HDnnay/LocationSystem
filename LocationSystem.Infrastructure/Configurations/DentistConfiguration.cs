@@ -14,7 +14,7 @@ namespace LocationSystem.Infrastructure.Configurations
             //builder.Property(t=>t.Name).HasMaxLength(50).IsRequired();
             //builder.ComplexProperty(t => t.Email, action =>
             //{
-            //    action.Property(e=>e.Value).HasColumnName("Email").HasMaxLength(50);
+            //    action.Property(e=>e.MonthlyRent).HasColumnName("Email").HasMaxLength(50);
             //});
         }
     }

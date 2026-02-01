@@ -19,6 +19,8 @@
 
   <ItemGroup>
     <Folder Include="Features\Dentists\Queries\GetDentistDetail\" />
+    <Folder Include="Features\RentHousies\Command\" />
+    <Folder Include="Features\RentHousies\Queries\GetRentHouseDetail\" />
   </ItemGroup>
 
 </Project>

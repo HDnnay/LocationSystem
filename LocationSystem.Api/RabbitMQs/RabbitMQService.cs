@@ -12,9 +12,9 @@ namespace LocationSystem.Application.Utilities.RabbitMQs
 {
     public class RabbitMQService : IRabbitMQService
     {
-        //根据之前的代码，_connectionTask 的初始化是在构造函数中，但是它的值是一个异步委托，这个委托只有在访问 _connectionTask.Value 时才会执行。
-        //所以，如果消费者服务一直在等待连接，而 _connectionTask.Value 没有被访问，那么连接就永远不会被建立。
-        //解决方案：在消费者服务中，我们需要触发连接初始化，即访问 _connectionTask.Value。
+        //根据之前的代码，_connectionTask 的初始化是在构造函数中，但是它的值是一个异步委托，这个委托只有在访问 _connectionTask.MonthlyRent 时才会执行。
+        //所以，如果消费者服务一直在等待连接，而 _connectionTask.MonthlyRent 没有被访问，那么连接就永远不会被建立。
+        //解决方案：在消费者服务中，我们需要触发连接初始化，即访问 _connectionTask.MonthlyRent。
         private readonly Lazy<Task<IConnection>> _connectionTask;
         private readonly ILogger<RabbitMQService> _logger;
         private readonly IConfiguration _configuration;

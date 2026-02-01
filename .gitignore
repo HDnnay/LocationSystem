@@ -178,7 +178,7 @@ DocProject/Help/html
 
 # Click-Once directory
 publish/
-
+/Migrations/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
@@ -355,7 +355,7 @@ healthchecksdb
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
-
+Migrations/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /LocationSystem.Api/Sqlite/test.db
 /LocationSystem.Infrastructure/Migrations/20260130150813_init.cs
 /LocationSystem.Infrastructure/Migrations/AppDbContextModelSnapshot.cs
+/LocationSystem.Infrastructure/Migrations/20260201071612_update_renthouse.cs

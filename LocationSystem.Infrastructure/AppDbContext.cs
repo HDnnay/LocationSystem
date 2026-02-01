@@ -28,5 +28,6 @@ namespace LocationSystem.Infrastructure
         public DbSet<Dentist> Dentists { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Company> Companies { get; set; }
-        }
+        public DbSet<RentHouse> RentHousies { get; set; }
+    }
 }
