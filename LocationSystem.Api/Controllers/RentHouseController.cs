@@ -12,10 +12,13 @@ namespace LocationSystem.Api.Controllers
     [ApiController]
     public class RentHouseController : ControllerBase
     {
+        private readonly IWebHostEnvironment _environment;
+
         private readonly IMediator _mediator;
-        public RentHouseController(IMediator mediator)
+        public RentHouseController(IMediator mediator, IWebHostEnvironment environment)
         {
             _mediator = mediator;
+            _environment = environment;
         }
         [HttpGet]
         public async Task<IActionResult> Get(GetRentHouseListFilter request)
@@ -30,13 +33,55 @@ namespace LocationSystem.Api.Controllers
             return Ok(data);
         }
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]CreateRentHouseDto model)
+        public async Task<IActionResult> Post([FromBody] CreateRentHouseDto model)
         {
             var command = new CreateRentHouseCommand() { Model=model };
             await _mediator.Send(command);
             return Ok();
         }
+        [HttpPost("upload-multiple")]
+        public async Task<IActionResult> UploadMultipleFiles(List<IFormFile> files)
+        {
+            // 处理文件上传和描述
+            if (files == null || files.Count == 0)
+                return BadRequest("没有上传文件");
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
-        
+            var uploadedFiles = new List<object>();
+
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    var extension = Path.GetExtension(file.FileName);
+                    var fileName = $"{Guid.NewGuid()}{extension}";
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
+
+                    uploadedFiles.Add(new
+                    {
+                        OriginalName = file.FileName,
+                        FileSize = file.Length,
+                        FileUrl = fileUrl
+                    });
+                }
+            }
+            return Ok();
+
+        }
+
+        public class FileUploadViewModel
+        {
+            public string Description { get; set; }
+            public IFormFile File { get; set; }
+        }
     }
 }
