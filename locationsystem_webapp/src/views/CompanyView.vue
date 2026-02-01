@@ -26,10 +26,11 @@
         <el-table-column type="index" class="company-table-column"
                          :index="(index)=>(currentPage - 1) * pageSize + index + 1"
                          label="序号"
+
                          width="58" />
-        <el-table-column prop="name" label="公司名" min-width="78" />
-        <el-table-column prop="address" label="地址" min-width="100%" />
-        <el-table-column prop="phoneNumber" label="电话" min-with="78" "/>
+        <el-table-column prop="name" label="公司名" show-overflow-tooltip min-width="78" />
+        <el-table-column prop="address" label="地址" show-overflow-tooltip min-width="100%" />
+        <el-table-column prop="phoneNumber" label="电话" show-overflow-tooltip min-with="78" />
       </el-table>
       <div class="pagination-container">
         <el-pagination v-model:current-page="currentPage"
@@ -88,9 +89,9 @@
     },
     deactivated() {
     },
-    beforeDestroy() {
+    beforeUnmount() {
     },
-    destroyed() {
+    unmounted() {
     },
     methods: {
       handleSizeChange() {
@@ -114,7 +115,6 @@
           this.currentPage = result.currentPage;
         } catch (error) {
           console.log(error)
-        } finally {
         }
       }
     },
@@ -126,5 +126,5 @@
     padding: 5;
     background-color: white;
   }
-  
+
 </style>
