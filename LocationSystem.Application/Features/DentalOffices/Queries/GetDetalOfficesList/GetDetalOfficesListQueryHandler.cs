@@ -18,17 +18,25 @@ namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOffi
         }
         public async Task<PageResult<DentalOfficesListDto>> Handle(GetDetalOfficesListQuery request)
         {
-            var key = DentalOfficeCacheKey.GetDetalOfficePageKey(request.Page,request.PageSize,request.keyWord);
-            var model = await _CacheService.GetOrCreateAsync(key, async _ =>
+            try
             {
-                var result = await _repositoty.GetDentalOfficePage(request);
-                return result.Select(t => t.MapToDto()).ToList();
-            });
-            return new PageResult<DentalOfficesListDto>()
+                var key = DentalOfficeCacheKey.GetDetalOfficePageKey(request.Page, request.PageSize, request.keyWord);
+                var model = await _CacheService.GetOrCreateAsync(key, async _ =>
+                {
+                    var result = await _repositoty.GetDentalOfficePage(request);
+                    return result.Select(t => t.MapToDto()).ToList();
+                });
+                return new PageResult<DentalOfficesListDto>()
+                {
+                    Data = model!,
+                    Total = await _repositoty.GetTotalCount()
+                };
+            }
+            catch(Exception ex)
             {
-                Data = model!,
-                Total = await _repositoty.GetTotalCount()
-            };
+                Console.WriteLine(ex.Message);
+            }
+            return default;
         }
     }
 }
