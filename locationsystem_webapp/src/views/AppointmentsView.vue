@@ -33,9 +33,9 @@
                                  :index="(index) => (currentPage - 1) * pageSize + index + 1"
                                  label="序号"
                                  width="80" />
-                <el-table-column prop="patient.name" label="患者ID" min-width="120" />
-                <el-table-column prop="dentist.name" label="牙医ID" min-width="120" />
-                <el-table-column prop="dentalOffice.name" label="诊所ID" min-width="120" />
+                <el-table-column prop="patient.name" label="患者姓名" min-width="120" />
+                <el-table-column prop="dentist.name" label="牙医姓名" min-width="120" />
+                <el-table-column prop="dentalOffice.name" label="诊所" min-width="120" />
                 <el-table-column prop="startTime" label="开始时间" min-width="160">
                   <template #default="scope">
                     {{ formatDateTime(scope.row.startTime) }}

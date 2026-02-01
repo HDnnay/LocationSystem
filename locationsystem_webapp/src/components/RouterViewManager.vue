@@ -51,38 +51,44 @@
                     <!-- 后台侧边栏 -->
                     <el-aside :width="sidebarOpen ? '240px' : '64px'"
                               style="background-color: #2c3e50; color: white; transition: width 0.3s ease;">
-                        <el-menu :default-active="$route.path"
-                                 class="el-menu-vertical-demo"
-                                 :collapse="!sidebarOpen"
-                                 background-color="#2c3e50"
-                                 text-color="#ecf0f1"
-                                 active-text-color="#409EFF"
-                                 router>
-                            <el-menu-item index="/dentists">
-                                <el-icon><User /></el-icon>
-                                <template #title>
-                                    牙医管理
-                                </template>
-                            </el-menu-item>
-                            <el-menu-item index="/patients">
-                                <el-icon><UserFilled /></el-icon>
-                                <template #title>
-                                    患者管理
-                                </template>
-                            </el-menu-item>
-                            <el-menu-item index="/dental-offices">
-                                <el-icon><OfficeBuilding /></el-icon>
-                                <template #title>
-                                    牙科诊所管理
-                                </template>
-                            </el-menu-item>
-                            <el-menu-item index="/appointments">
-                                <el-icon><Calendar /></el-icon>
-                                <template #title>
-                                    预约管理
-                                </template>
-                            </el-menu-item>
-                        </el-menu>
+                      <el-menu :default-active="$route.path"
+                               class="el-menu-vertical-demo"
+                               :collapse="!sidebarOpen"
+                               background-color="#2c3e50"
+                               text-color="#ecf0f1"
+                               active-text-color="#409EFF"
+                               router>
+                        <el-menu-item index="/dentists">
+                          <el-icon><User /></el-icon>
+                          <template #title>
+                            牙医管理
+                          </template>
+                        </el-menu-item>
+                        <el-menu-item index="/patients">
+                          <el-icon><UserFilled /></el-icon>
+                          <template #title>
+                            患者管理
+                          </template>
+                        </el-menu-item>
+                        <el-menu-item index="/dental-offices">
+                          <el-icon><OfficeBuilding /></el-icon>
+                          <template #title>
+                            牙科诊所管理
+                          </template>
+                        </el-menu-item>
+                        <el-menu-item index="/appointments">
+                          <el-icon><Calendar /></el-icon>
+                          <template #title>
+                            预约管理
+                          </template>
+                        </el-menu-item>
+                        <el-menu-item index="/company">
+                          <el-icon><Calendar /></el-icon>
+                          <template #title>
+                            公司管理
+                          </template>
+                        </el-menu-item>
+                      </el-menu>
                     </el-aside>
 
                     <!-- 后台内容区域 -->
