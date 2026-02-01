@@ -1,4 +1,5 @@
-﻿using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList;
+﻿using LocationSystem.Application.Features.RentHousies.Command.CreateRentHose;
+using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList;
 using LocationSystem.Application.Features.RentHousies.Queries.QueryRentHouseList;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
@@ -29,8 +30,9 @@ namespace LocationSystem.Api.Controllers
             return Ok(data);
         }
         [HttpPost]
-        public async Task<IActionResult> Post()
+        public async Task<IActionResult> Post([FromBody]CreateRentHouseDto model)
         {
+
             return Ok();
         }
 

@@ -8,6 +8,6 @@ namespace LocationSystem.Application.Features.RentHousies.Command.CreateRentHose
 {
     public class CreateRentHouseCommand:IRequset<RentHouseDto>
     {
-
+        public CreateRentHouseDto Model { get; set; }
     }
 }
