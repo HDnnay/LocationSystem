@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.RentHousies.Command.CreateRentHose
 {
-    public class CreateRentHouseCommand:IRequset<RentHouseDto>
+    public class CreateRentHouseCommand:IRequset
     {
         public CreateRentHouseDto Model { get; set; }
     }

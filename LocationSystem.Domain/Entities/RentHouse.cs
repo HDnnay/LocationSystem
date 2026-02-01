@@ -40,7 +40,8 @@ namespace LocationSystem.Domain.Entities
         /// 押金
         /// </summary>
         public decimal Deposit { get; set; }
-        public DateTime CreateTime { get; set; } 
+        public DateTime CreateTime { get; set; }
+        public string ImageSrc { get; set; }
         public void SetOrUpdateTitle(string title)
         {
             if (string.IsNullOrWhiteSpace(title))

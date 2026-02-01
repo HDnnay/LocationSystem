@@ -32,7 +32,8 @@ namespace LocationSystem.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]CreateRentHouseDto model)
         {
-
+            var command = new CreateRentHouseCommand() { Model=model };
+            await _mediator.Send(command);
             return Ok();
         }
 
