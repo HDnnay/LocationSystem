@@ -25,12 +25,16 @@
                 border>
         <el-table-column type="index" class="company-table-column"
                          :index="(index)=>(currentPage - 1) * pageSize + index + 1"
-                         label="序号"
-
-                         width="58" />
-        <el-table-column prop="name" label="公司名" show-overflow-tooltip min-width="78" />
-        <el-table-column prop="address" label="地址" show-overflow-tooltip min-width="100%" />
-        <el-table-column prop="phoneNumber" label="电话" show-overflow-tooltip min-with="78" />
+                         label="序号"/>
+        <el-table-column prop="name" label="公司名" show-overflow-tooltip min-width="98" />
+        <el-table-column prop="address" label="地址" show-overflow-tooltip min-width="100" />
+        <el-table-column prop="phoneNumber" label="电话" show-overflow-tooltip min-with="*" />
+        <el-table-column  label="操作" fixed="right">
+          <template #default="scope">
+            <el-button type="primary" @click="CopyData(scope.row)">复制</el-button>
+             <!-- 可以添加更多按钮 -->
+          </template>
+        </el-table-column>
       </el-table>
       <div class="pagination-container">
         <el-pagination v-model:current-page="currentPage"
@@ -94,6 +98,35 @@
     unmounted() {
     },
     methods: {
+      async copyToClipboard(text) {
+          try {
+            // 现代浏览器的 Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+              await navigator.clipboard.writeText(text)
+            } else {
+              // 兼容旧版浏览器的写法
+              const textArea = document.createElement('textarea')
+              textArea.value = text
+              textArea.style.position = 'fixed'
+              textArea.style.left = '-999999px'
+              textArea.style.top = '-999999px'
+              document.body.appendChild(textArea)
+              textArea.focus()
+              textArea.select()
+              document.execCommand('copy')
+              textArea.remove()
+            }
+            console.log('复制成功:')
+          } catch (error) {
+            console.error('复制失败:', error)
+          }
+      },
+     async CopyData(rowData){
+        console.log(rowData)
+        var str = `${rowData.name},${rowData.address},${rowData.phoneNumber}`
+        await this.copyToClipboard(str)
+      },
+
       handleSizeChange() {
         alert("handleSizeChange");
       },
