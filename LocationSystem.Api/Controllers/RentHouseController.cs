@@ -1,4 +1,5 @@
-﻿using LocationSystem.Application.Features.RentHousies.Command.CreateRentHose;
+﻿using LocationSystem.Api.Filters;
+using LocationSystem.Application.Features.RentHousies.Command.CreateRentHose;
 using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList;
 using LocationSystem.Application.Features.RentHousies.Queries.QueryRentHouseList;
 using LocationSystem.Application.Utilities;
@@ -42,6 +43,7 @@ namespace LocationSystem.Api.Controllers
         [HttpPost("upload-multiple")]
         [RequestSizeLimit(5 * 1024 * 1024)]  // 限制整个请求最大5MB
         [RequestFormLimits(MultipartBodyLengthLimit = 5 * 1024 * 1024)]  // 限制multipart表单数据最大5MB
+        [FileCountLimit(5)]
         public async Task<IActionResult> UploadMultipleFiles([FromForm]List<IFormFile> files)
         {
             // 处理文件上传和描述

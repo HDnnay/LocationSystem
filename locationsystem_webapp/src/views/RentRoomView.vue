@@ -5,8 +5,10 @@
       :show-file-list="true"
       :on-change="handleFileChange"
       :on-remove="handleRemove"
+      :on-exceed="handleExceed"
       :file-list="fileList"
-      :limit="5"
+      :limit="limit"
+      multiple
       list-type="picture"
       :auto-upload="false"
       ref="uploadRef"
@@ -15,12 +17,12 @@
       <el-button style="margin-left: 10px"
                  size="small"
                  type="success"
-                 @click.stop="submitUpload"="submitUpload"
+                 @click.stop="submitUpload"
                  :loading="uploading">
         {{ uploading ? '上传中...' : '上传到服务器' }}
       </el-button>
       <div slot="tip" class="el-upload__tip">
-        支持多文件上传，每个文件不超过5MB
+        支持多文件上传，最多支持选择{{limit}}个文件，每个文件不超过5MB
       </div>
     </el-upload>
   </div>
@@ -32,12 +34,16 @@
   export default {
     data() {
       return {
+        limit:5,
         fileList: [],
         uploading: false,
         selectedFiles: []
       }
     },
     methods: {
+      handleExceed(files, fileList) {
+        this.$message.warning(`最多只能选择 ${this.limit} 个文件，当前已选择 ${fileList.length + files.length} 个文件`);
+      },
       // 文件选择变化
       handleFileChange(file, fileList) {
         this.fileList = fileList
