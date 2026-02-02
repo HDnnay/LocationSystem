@@ -365,3 +365,4 @@ FodyWeavers.xsd
 /LocationSystem.Infrastructure/Migrations/20260130150813_init.cs
 /LocationSystem.Infrastructure/Migrations/AppDbContextModelSnapshot.cs
 /LocationSystem.Infrastructure/Migrations/20260201071612_update_renthouse.cs
+/LocationSystem.Api/wwwroot/uploads

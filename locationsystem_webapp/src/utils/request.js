@@ -23,7 +23,10 @@ service.interceptors.request.use(
                 config.headers['Authorization'] = "Bearer "+token;
             }
         }
-        config.headers['Content-Type'] = "application/json";
+        // 只有在不是文件上传时才设置Content-Type为application/json
+        if (!config.headers['Content-Type'] || config.headers['Content-Type'] !== 'multipart/form-data') {
+            config.headers['Content-Type'] = "application/json";
+        }
         return config;
     },
     error => {

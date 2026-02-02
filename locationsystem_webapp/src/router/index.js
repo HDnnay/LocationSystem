@@ -51,6 +51,14 @@ const routes = [
     meta: {
       title: '信息管理',
     }
+  },
+  {
+    path: '/rent',
+    name: 'rent',
+    component: () => import('../views/RentRoomView.vue'),
+    meta: {
+      title: '租房管理',
+    }
   }
 
 ]

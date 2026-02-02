@@ -4,13 +4,14 @@ import * as patients from './patients'
 import * as appointments from './appointments'
 import * as dentalOffices from './dentalOffices'
 import * as company from './company'
-
+import * as rent from './renthouse'
 const api={
   dentists,
   patients,
   appointments,
   dentalOffices,
-  company
+  company,
+  rent
 };
 
 export default api;

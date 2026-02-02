@@ -40,7 +40,7 @@ namespace LocationSystem.Api.Controllers
             return Ok();
         }
         [HttpPost("upload-multiple")]
-        public async Task<IActionResult> UploadMultipleFiles(List<IFormFile> files)
+        public async Task<IActionResult> UploadMultipleFiles([FromForm]List<IFormFile> files)
         {
             // 处理文件上传和描述
             if (files == null || files.Count == 0)
