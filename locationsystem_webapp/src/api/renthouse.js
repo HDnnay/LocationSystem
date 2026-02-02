@@ -4,7 +4,7 @@
 // 如果项目使用不同路径，请调整 import 路径以匹配项目结构。
 
 import request from '@/api/request';
-
+import { compressImages as compressImageUtil, formatFileSize } from '@/utils/imageProcessor';
 /**
  * 获取租房列表（支持分页与筛选）
  * @param {Object} params - 查询参数（如 page, pageSize, status, keyword 等）
@@ -17,16 +17,27 @@ export function fetchRentHouses(params) {
     params,
   });
 }
-export function uploadRoomImage(files, onProgress = null) {
+export async function uploadRoomImage(files, onProgress = null, compressOptions = {}) {
+  // 压缩图片
+  const compressionResult = await compressImageUtil(files, compressOptions);
+
   const formData = new FormData();
-  console.log("文件：")
-  console.log(files)
+  console.log("压缩前总大小:", formatFileSize(compressionResult.totalOriginalSize));
+  console.log("压缩后总大小:", formatFileSize(compressionResult.totalCompressedSize));
+  console.log("整体压缩率:", compressionResult.overallCompressionRatio + '%');
+  console.log("\n详细信息:");
+
   // 添加所有文件到 FormData
-  files.forEach((file, index) => {
-    console.log(`文件 ${index}:`, file.name, file.size, file.type);
+  compressionResult.files.forEach((file, index) => {
+    const stat = compressionResult.stats[index];
+    console.log(`${file.name}:`);
+    console.log(`  压缩前: ${formatFileSize(stat.originalSize)}`);
+    console.log(`  压缩后: ${formatFileSize(stat.compressedSize)}`);
+    console.log(`  压缩率: ${stat.compressionRatio}%`);
     formData.append('files', file);
   });
-  console.log(formData);
+
+  console.log("\n上传中...");
   return request({
     url: '/api/RentHouse/upload-multiple',
     method: 'post',

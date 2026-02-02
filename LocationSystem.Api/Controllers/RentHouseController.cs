@@ -40,6 +40,8 @@ namespace LocationSystem.Api.Controllers
             return Ok();
         }
         [HttpPost("upload-multiple")]
+        [RequestSizeLimit(5 * 1024 * 1024)]  // 限制整个请求最大5MB
+        [RequestFormLimits(MultipartBodyLengthLimit = 5 * 1024 * 1024)]  // 限制multipart表单数据最大5MB
         public async Task<IActionResult> UploadMultipleFiles([FromForm]List<IFormFile> files)
         {
             // 处理文件上传和描述
@@ -56,7 +58,8 @@ namespace LocationSystem.Api.Controllers
                 if (file.Length > 0)
                 {
                     var extension = Path.GetExtension(file.FileName);
-                    var fileName = $"{Guid.NewGuid()}{extension}";
+                    string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
+                    var fileName = $"{timestamp}{extension}";
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
