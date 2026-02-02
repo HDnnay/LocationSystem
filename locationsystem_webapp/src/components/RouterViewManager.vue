@@ -88,7 +88,14 @@
                             公司管理
                           </template>
                         </el-menu-item>
+                        <el-menu-item index="/rent">
+                          <el-icon><Calendar /></el-icon>
+                          <template #title>
+                            租房管理
+                          </template>
+                        </el-menu-item>
                       </el-menu>
+
                     </el-aside>
 
                     <!-- 后台内容区域 -->

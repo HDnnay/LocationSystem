@@ -1,4 +1,5 @@
-﻿using LocationSystem.Api.BackgroudServices;
+﻿using AspNetCoreRateLimit;
+using LocationSystem.Api.BackgroudServices;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Application.Utilities.RabbitMQs;
@@ -23,7 +24,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:5173/", "http://localhost:5174/").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // 允许前端应用的来源
     });
 });
-
+//// 加载限流配置
+builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
@@ -37,8 +39,15 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
-
+#region 使用Redis存储
+builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
+builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+#endregion
+#region open api
 builder.Services.AddOpenApi();
+#endregion
 builder.Services.Configure<FormOptions>(options =>
 {
     options.ValueLengthLimit = int.MaxValue;
@@ -58,7 +67,7 @@ builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
 builder.Services.AddHostedService<RabbitMQTestService>();
 //builder.Services.AddHostedService<DatabaseInitializerServices>();
 var app = builder.Build();
-
+app.UseIpRateLimiting();
 // 4️⃣ 应用启动时，确保服务已启动
 app.Lifetime.ApplicationStarted.Register(() =>
 {
