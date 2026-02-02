@@ -34,6 +34,7 @@
   export default {
     data() {
       return {
+        renthouse: {},
         limit:5,
         fileList: [],
         uploading: false,

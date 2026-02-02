@@ -1,0 +1,13 @@
+﻿using LocationSystem.Application.Features.RentHousies.Queries.ShareDtos;
+using LocationSystem.Application.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseDetail
+{
+    public class GetRentHouseDetailQuery:IRequset<RentHouseDto>
+    {
+        public required Guid Id { get; set; }
+    }
+}

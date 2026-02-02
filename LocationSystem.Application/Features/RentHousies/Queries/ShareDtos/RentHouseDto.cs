@@ -7,6 +7,7 @@ namespace LocationSystem.Application.Features.RentHousies.Queries.ShareDtos
 {
     public class RentHouseDto
     {
+        public RentHouseDto() { }
         public Guid Id { get; set; }
         public required string Title { get; set; }
         public required string Address { get; set; }
@@ -23,6 +24,7 @@ namespace LocationSystem.Application.Features.RentHousies.Queries.ShareDtos
         /// </summary>
         public decimal Deposit { get; set; }
         public DateTime CreateTime { get; set; }
+        public string ImageSrc { get; set; }
 
     }
 }

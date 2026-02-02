@@ -1,4 +1,5 @@
 ﻿using LocationSystem.Api.Filters;
+using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentDetail;
 using LocationSystem.Application.Features.RentHousies.Command.CreateRentHose;
 using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList;
 using LocationSystem.Application.Features.RentHousies.Queries.QueryRentHouseList;
@@ -32,6 +33,17 @@ namespace LocationSystem.Api.Controllers
             };
             var data = await _mediator.Send(query);
             return Ok(data);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            if(id==Guid.Empty)
+                return BadRequest("Id不能为默认值");
+            var query = new GetAppointmentDetailQuery { Id= id };
+            var model = await _mediator.Send(query);
+            if (model == null)
+                return BadRequest("该信息不存在");
+            return Ok(model);
         }
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateRentHouseDto model)
