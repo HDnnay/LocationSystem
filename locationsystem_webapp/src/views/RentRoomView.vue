@@ -15,7 +15,7 @@
       <el-button style="margin-left: 10px"
                  size="small"
                  type="success"
-                 @click.stop="submitUpload"
+                 @click.stop="submitUpload"="submitUpload"
                  :loading="uploading">
         {{ uploading ? '上传中...' : '上传到服务器' }}
       </el-button>
