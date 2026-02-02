@@ -22,18 +22,18 @@ export async function uploadRoomImage(files, onProgress = null, compressOptions 
   const compressionResult = await compressImageUtil(files, compressOptions);
 
   const formData = new FormData();
-  console.log("压缩前总大小:", formatFileSize(compressionResult.totalOriginalSize));
-  console.log("压缩后总大小:", formatFileSize(compressionResult.totalCompressedSize));
-  console.log("整体压缩率:", compressionResult.overallCompressionRatio + '%');
-  console.log("\n详细信息:");
+  //console.log("压缩前总大小:", formatFileSize(compressionResult.totalOriginalSize));
+  //console.log("压缩后总大小:", formatFileSize(compressionResult.totalCompressedSize));
+  //console.log("整体压缩率:", compressionResult.overallCompressionRatio + '%');
+  //console.log("\n详细信息:");
 
   // 添加所有文件到 FormData
-  compressionResult.files.forEach((file, index) => {
-    const stat = compressionResult.stats[index];
-    console.log(`${file.name}:`);
-    console.log(`  压缩前: ${formatFileSize(stat.originalSize)}`);
-    console.log(`  压缩后: ${formatFileSize(stat.compressedSize)}`);
-    console.log(`  压缩率: ${stat.compressionRatio}%`);
+  compressionResult.files.forEach((file) => {
+    //const stat = compressionResult.stats[index];
+    //console.log(`${file.name}:`);
+    //console.log(`  压缩前: ${formatFileSize(stat.originalSize)}`);
+    //console.log(`  压缩后: ${formatFileSize(stat.compressedSize)}`);
+    //console.log(`  压缩率: ${stat.compressionRatio}%`);
     formData.append('files', file);
   });
 
