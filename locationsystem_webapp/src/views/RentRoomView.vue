@@ -1,18 +1,21 @@
 <template>
   <div>
-    <el-upload class="upload-demo"
-               :show-file-list="true"
-               :on-change="handleFileChange"
-               :on-remove="handleRemove"
-               :file-list="fileList"
-               list-type="picture"
-               :auto-upload="false"
-               ref="uploadRef">
+    <el-upload
+      class="upload-demo"
+      :show-file-list="true"
+      :on-change="handleFileChange"
+      :on-remove="handleRemove"
+      :file-list="fileList"
+      :limit="5"
+      list-type="picture"
+      :auto-upload="false"
+      ref="uploadRef"
+      @click.stop>
       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
       <el-button style="margin-left: 10px"
                  size="small"
                  type="success"
-                 @click="submitUpload"
+                 @click.stop="submitUpload"
                  :loading="uploading">
         {{ uploading ? '上传中...' : '上传到服务器' }}
       </el-button>
@@ -37,8 +40,16 @@
     methods: {
       // 文件选择变化
       handleFileChange(file, fileList) {
+        this.fileList = fileList
         this.selectedFiles = fileList
       },
+
+      // 文件移除
+      handleRemove(file, fileList) {
+        this.fileList = fileList
+        this.selectedFiles = fileList
+      },
+
 
       // 手动提交上传
       async submitUpload() {
@@ -68,9 +79,11 @@
             this.$message.success(`成功上传 ${this.selectedFiles.length} 个文件`)
           }
 
-          // 清空文件列表
-          this.selectedFiles = []
-          this.fileList = []
+          // 延迟清空文件列表，避免触发组件状态异常
+          setTimeout(() => {
+            this.selectedFiles = []
+            this.fileList = []
+          }, 300)
 
         } catch (error) {
           console.error('上传失败:', error)

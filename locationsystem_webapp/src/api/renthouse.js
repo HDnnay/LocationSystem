@@ -51,6 +51,7 @@ export async function uploadRoomImage(files, onProgress = null, compressOptions 
     headers: {
       'Content-Type': 'multipart/form-data'
     },
+    responseType: 'json', // 明确指定响应类型
     onUploadProgress: onProgress
   });
 }

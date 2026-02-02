@@ -77,7 +77,12 @@ namespace LocationSystem.Api.Controllers
                     });
                 }
             }
-            return Ok();
+            return Ok(new
+            {
+                message = "文件上传成功",
+                count = uploadedFiles.Count,
+                files = uploadedFiles
+            });
 
         }
 
