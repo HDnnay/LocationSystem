@@ -4,17 +4,31 @@
  * @param {Object} options - 压缩选项
  * @param {number} options.maxWidth - 最大宽度
  * @param {number} options.quality - 压缩质量 (0-1)
+ * @param {number} options.minSizeToCompress - 最小压缩阈值（字节），默认2MB
  * @returns {Promise<Object>} 包含压缩后文件和大小信息的对象
  */
 export function compressImage(file, options = {}) {
   return new Promise((resolve, reject) => {
-    const { maxWidth = 1920, quality = 0.8 } = options;
+    const { maxWidth = 1920, quality = 0.8, minSizeToCompress = 2 * 1024 * 1024 } = options;
     const originalSize = file.size;
-    
+
+    // 如果文件大小小于阈值，直接返回原始文件
+    if (originalSize < minSizeToCompress) {
+      resolve({
+        file: file,
+        originalSize: originalSize,
+        compressedSize: originalSize,
+        compressionRatio: '100.00',
+        skipped: true,
+        reason: '文件大小小于压缩阈值'
+      });
+      return;
+    }
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const img = new Image();
-    
+
     img.onload = () => {
       // 计算压缩后的尺寸
       let { width, height } = img;
@@ -22,13 +36,13 @@ export function compressImage(file, options = {}) {
         height = (height * maxWidth) / width;
         width = maxWidth;
       }
-      
+
       canvas.width = width;
       canvas.height = height;
-      
+
       // 绘制压缩后的图片
       ctx.drawImage(img, 0, 0, width, height);
-      
+
       // 转换为Blob
       canvas.toBlob((blob) => {
         if (blob) {
@@ -48,11 +62,11 @@ export function compressImage(file, options = {}) {
         }
       }, file.type, quality);
     };
-    
+
     img.onerror = () => {
       reject(new Error('图片加载失败'));
     };
-    
+
     img.src = URL.createObjectURL(file);
   });
 }
@@ -66,7 +80,7 @@ export function compressImage(file, options = {}) {
 export async function compressImages(files, options = {}) {
   const compressedFiles = [];
   const compressionStats = [];
-  
+
   for (const file of files) {
     try {
       // 只压缩图片文件
@@ -102,14 +116,14 @@ export async function compressImages(files, options = {}) {
       });
     }
   }
-  
+
   return {
     files: compressedFiles,
     stats: compressionStats,
     totalOriginalSize: compressionStats.reduce((sum, stat) => sum + stat.originalSize, 0),
     totalCompressedSize: compressionStats.reduce((sum, stat) => sum + stat.compressedSize, 0),
-    overallCompressionRatio: compressionStats.length > 0 
-      ? ((compressionStats.reduce((sum, stat) => sum + stat.compressedSize, 0) / 
+    overallCompressionRatio: compressionStats.length > 0
+      ? ((compressionStats.reduce((sum, stat) => sum + stat.compressedSize, 0) /
          compressionStats.reduce((sum, stat) => sum + stat.originalSize, 0) * 100).toFixed(2))
       : '0.00'
   };

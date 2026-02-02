@@ -28,12 +28,18 @@ export async function uploadRoomImage(files, onProgress = null, compressOptions 
   //console.log("\n详细信息:");
 
   // 添加所有文件到 FormData
-  compressionResult.files.forEach((file) => {
-    //const stat = compressionResult.stats[index];
-    //console.log(`${file.name}:`);
-    //console.log(`  压缩前: ${formatFileSize(stat.originalSize)}`);
-    //console.log(`  压缩后: ${formatFileSize(stat.compressedSize)}`);
-    //console.log(`  压缩率: ${stat.compressionRatio}%`);
+  compressionResult.files.forEach((file, index) => {
+    const stat = compressionResult.stats[index];
+    console.log(`${file.name}:`);
+    console.log(`  压缩前: ${formatFileSize(stat.originalSize)}`);
+    if (stat.skipped) {
+      console.log(`  状态: 跳过压缩 (${stat.reason})`);
+      console.log(`  压缩后: ${formatFileSize(stat.compressedSize)}`);
+      console.log(`  压缩率: ${stat.compressionRatio}%`);
+    } else {
+      console.log(`  压缩后: ${formatFileSize(stat.compressedSize)}`);
+      console.log(`  压缩率: ${stat.compressionRatio}%`);
+    }
     formData.append('files', file);
   });
 
