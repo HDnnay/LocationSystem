@@ -22,6 +22,11 @@ namespace LocationSystem.Api.Controllers
             _mediator = mediator;
             _environment = environment;
         }
+        [HttpGet("test")]
+        public IActionResult GetTest()
+        {
+            return Ok("测试成功");
+        }
         [HttpGet]
         public async Task<IActionResult> Get(GetRentHouseListFilter request)
         {
