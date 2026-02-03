@@ -10,5 +10,6 @@ namespace LocationSystem.Application.Contrats.Repositories
     public interface IRentHouseRepository: IRepository<RentHouse>
     {
         public Task<Dictionary<int, IEnumerable<RentHouse>>> GetRentHousePage(GetRentHouseListFilter filter);
+        public Task<(int, IEnumerable<RentHouse>)> GetRentHouseTuplePage(GetRentHouseListFilter filter);
     }
 }

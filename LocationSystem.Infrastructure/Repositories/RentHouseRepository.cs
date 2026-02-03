@@ -27,5 +27,13 @@ namespace LocationSystem.Infrastructure.Repositories
             dic.Add(count, result);
             return dic;
         }
+
+        public async Task<(int, IEnumerable<RentHouse>)> GetRentHouseTuplePage(GetRentHouseListFilter filter)
+        {
+            var query = _context.RentHousies.AsQueryable().AsNoTracking();
+            var count = await query.CountAsync();
+            var result = await query.Paginate(filter.Page, filter.PageSize).ToListAsync();
+            return (count, result);
+        }
     }
 }
