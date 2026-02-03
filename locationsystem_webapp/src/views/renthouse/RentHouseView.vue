@@ -35,13 +35,13 @@
           <el-table-column prop="id" label="ID" show-overflow-tooltip min-width="200" v-if="showIdColumn" />
 
           <!-- 标题 -->
-          <el-table-column prop="title" label="标题" width="100" show-overflow-tooltip />
+          <el-table-column prop="title" label="标题" min-width="80" show-overflow-tooltip />
 
           <!-- 地址 -->
-          <el-table-column prop="address" label="地址" width="100" show-overflow-tooltip />
+          <el-table-column prop="address" label="地址" min-width="80" show-overflow-tooltip />
 
           <!-- 描述 -->
-          <el-table-column prop="description" label="描述" width="100" show-overflow-tooltip>
+          <el-table-column prop="description" label="描述" min-width="80" show-overflow-tooltip>
             <template #default="scope">
               <span v-if="scope.row.description">{{ scope.row.description }}</span>
               <span v-else style="color: #999;">无描述</span>
@@ -49,7 +49,7 @@
           </el-table-column>
 
           <!-- 类型 -->
-          <el-table-column prop="type" label="类型" width="80" align="center">
+          <el-table-column prop="type" label="类型" min-width="70" align="center">
             <template #default="scope">
               <el-tag :type="getTypeTagType(scope.row.type)" size="small">
                 {{ getTypeLabel(scope.row.type) }}
@@ -58,24 +58,24 @@
           </el-table-column>
 
           <!-- 电话 -->
-          <el-table-column prop="phone" label="电话" width="120" align="center" show-overflow-tooltip />
+          <el-table-column prop="phone" label="电话" min-width="100" align="center" show-overflow-tooltip />
 
           <!-- 月租 -->
-          <el-table-column prop="monthlyRent" label="月租(元)" width="90" align="center">
+          <el-table-column prop="monthlyRent" label="月租(元)" min-width="80" align="center">
             <template #default="scope">
               <span>{{ formatMoney(scope.row.monthlyRent) }}</span>
             </template>
           </el-table-column>
 
           <!-- 押金 -->
-          <el-table-column prop="deposit" label="押金(元)" width="90" align="center">
+          <el-table-column prop="deposit" label="押金(元)" min-width="80" align="center">
             <template #default="scope">
               <span>{{ formatMoney(scope.row.deposit) }}</span>
             </template>
           </el-table-column>
 
           <!-- 创建时间 -->
-          <el-table-column prop="createTime" label="创建时间" width="160" align="center">
+          <el-table-column prop="createTime" label="创建时间" min-width="140" align="center">
             <template #default="scope">
               {{ formatDateTime(scope.row.createTime) }}
             </template>
@@ -85,10 +85,10 @@
           <el-table-column prop="createUserId" label="创建人ID" show-overflow-tooltip min-width="180" v-if="showCreateUserId" />
 
           <!-- 操作列 -->
-          <el-table-column label="操作" min-width="120" align="center" ref="actionColumn">
+          <el-table-column label="操作" min-width="100" align="center">
             <template #default="scope">
               <div style="display: flex; justify-content: center; align-items: center; padding: 4px 0; width: 100%;">
-                <el-button type="primary" size="small" @click="CopyData(scope.row)" style="margin-right: 8px;">复制</el-button>
+                <el-button type="primary" size="small" @click="CopyData(scope.row)" style="margin-right: 5px;">复制</el-button>
                 <el-button type="success" size="small" @click="viewDetails(scope.row)">查看</el-button>
               </div>
             </template>
