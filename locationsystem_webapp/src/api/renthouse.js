@@ -11,6 +11,8 @@ import { compressImages as compressImageUtil, formatFileSize } from '@/utils/ima
  * @returns {Promise}
  */
 export function fetchRentHouses(params) {
+  console.log("租房借口获取：");
+  console.log(params);
   return request({
     url: '/api/renthouse',
     method: 'get',

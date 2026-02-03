@@ -28,16 +28,24 @@ namespace LocationSystem.Api.Controllers
             return Ok("测试成功");
         }
         [HttpGet]
-        public async Task<IActionResult> Get(GetRentHouseListFilter request)
+        public async Task<IActionResult> Get([FromQuery]GetRentHouseListFilter request)
         {
-            var query = new GetRentHouseListQuery()
+            try
             {
-                Page = request.Page,
-                PageSize = request.PageSize,
-                keyWord = request.keyWord
-            };
-            var data = await _mediator.Send(query);
-            return Ok(data);
+                var query = new GetRentHouseListQuery()
+                {
+                    Page = request.Page,
+                    PageSize = request.PageSize,
+                    keyWord = request.keyWord
+                };
+                var data = await _mediator.Send(query);
+                return Ok(data);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)

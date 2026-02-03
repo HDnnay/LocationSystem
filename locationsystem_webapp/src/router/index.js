@@ -55,7 +55,15 @@ const routes = [
   {
     path: '/rent',
     name: 'rent',
-    component: () => import('../views/renthouse/RentRoomView.vue'),
+    component: () => import('../views/renthouse/RentHouseView.vue'),
+    meta: {
+      title: '租房管理',
+    }
+  },
+  {
+    path: '/rent/create',
+    name: 'create-rent',
+    component: () => import('../views/renthouse/CreateRentHouseView.vue'),
     meta: {
       title: '租房管理',
     }

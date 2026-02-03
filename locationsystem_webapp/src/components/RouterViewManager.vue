@@ -88,12 +88,27 @@
                             公司管理
                           </template>
                         </el-menu-item>
-                        <el-menu-item index="/rent">
-                          <el-icon><Calendar /></el-icon>
+                        <el-sub-menu index="/rent">
                           <template #title>
-                            租房管理
+                            <el-icon><Calendar /></el-icon>
+                            <span>租房管理</span>
                           </template>
-                        </el-menu-item>
+
+                          <el-menu-item index="/rent">
+                            <el-icon><List /></el-icon>
+                            <template #title>
+                              租房列表
+                            </template>
+                          </el-menu-item>
+
+                          <el-menu-item index="/rent/create">
+                            <el-icon><Document /></el-icon>
+                            <template #title>
+                              租房创建
+                            </template>
+                          </el-menu-item>
+                          <!-- 可以继续添加更多子菜单 -->
+                        </el-sub-menu>
                       </el-menu>
 
                     </el-aside>

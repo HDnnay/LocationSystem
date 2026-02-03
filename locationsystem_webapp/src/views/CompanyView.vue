@@ -138,7 +138,7 @@
       async getData() {
         try {
           const result = await api.company.getCompanies({
-            page: this.page,
+            page: this.currentPage,
             pageSize: this.pageSize
           });
           console.log(result)

@@ -29,4 +29,23 @@ namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseLi
             get; set;
         }
     }
+    public static class RentHouseExtensions
+    {
+        public static RentHouseListDto ToPageListDto(this RentHouse rentHouse)
+        {
+            return new RentHouseListDto
+            {
+                Id = rentHouse.Id,
+                Title = rentHouse.Title,
+                Address = rentHouse.Address,
+                Description = rentHouse.Description,
+                Phone = rentHouse.Phone,
+                Type = rentHouse.Type,
+                MonthlyRent = rentHouse.MonthlyRent,
+                Deposit = rentHouse.Deposit,
+                CreateTime = rentHouse.CreateTime,
+                CreateUserId = rentHouse.CreateUserId
+            };
+        }
+    }
 }
