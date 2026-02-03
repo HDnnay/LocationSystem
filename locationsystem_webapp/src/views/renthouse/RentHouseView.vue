@@ -18,7 +18,7 @@
       </div>
     </el-card>
     <el-card class="table-card " shadow="hover">
-      <el-table v-loading="loading" :data="companies"
+      <el-table v-loading="loading" :data="rent_houses"
                 height="400"
                 style="width: 100%"
                 stripe
@@ -26,9 +26,9 @@
         <el-table-column type="index" class="company-table-column"
                          :index="(index)=>(currentPage - 1) * pageSize + index + 1"
                          label="序号" />
-        <el-table-column prop="name" label="公司名" show-overflow-tooltip min-width="98" />
+        <el-table-column prop="title" label="标题" show-overflow-tooltip min-width="98" />
         <el-table-column prop="address" label="地址" show-overflow-tooltip min-width="100" />
-        <el-table-column prop="phoneNumber" label="电话" show-overflow-tooltip min-with="*" />
+        <el-table-column prop="phone" label="电话" show-overflow-tooltip min-with="*" />
         <el-table-column label="操作" fixed="right">
           <template #default="scope">
             <el-button type="primary" @click="CopyData(scope.row)">复制</el-button>
@@ -37,14 +37,13 @@
         </el-table-column>
       </el-table>
       <div class="pagination-container">
-        <el-pagination v-model:current-page="currentPage"
-                       v-model:page-size="pageSize"
+        <el-pagination :current-page="currentPage"
+                       :page-size="pageSize"
                        :page-sizes="[10, 20, 50, 100]"
-                       layout="total, sizes, prev, pager, next, jumper"
                        :total="total"
-                       @size-change="handleSizeChange"
-                       @current-change="handleCurrentChange"
-                       :disabled="loading" />
+                       layout="total, sizes, prev, pager, next, jumper"
+                       @update:current-page="handleCurrentChange"
+                       @update:page-size="handleSizeChange" />
       </div>
     </el-card>
   </div>
@@ -54,6 +53,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
   import api from "../../api"
+import { el } from 'element-plus/es/locale';
   export default defineComponent({
     components: {
     },
@@ -65,7 +65,7 @@
     },
     data() {
       return {
-        companies: [],
+        rent_houses: [],
         searchQuery: "",
         loading: false,
         currentPage: 1,
@@ -137,8 +137,15 @@
         
       },
       handleCurrentChange(newPage) {
-        this.page = newPage;
-        this.getData();
+        //后端返回当前也设置了,会导致触发该函数，要判断newPage == this.currentPage，
+        //要不然连续请求两次api -> this.getData();
+        if (newPage == this.currentPage)
+          return;
+        else {
+          this.currentPage = newPage;
+          this.getData();
+        }
+        
       },
       onSearch() { console.log('defined later') },
       async getData() {
@@ -149,9 +156,12 @@
           });
           console.log(result)
           // result 现在有完整的类型提示
-          this.data = result.data;
-          this.total = result.total;
-          this.currentPage = result.currentPage;
+          this.rent_houses = result.data.data;
+          console.log("赋值后总记录："+this.rent_houses)
+          this.total = result.data.total;
+          console.log("赋值后总页数："+this.total);
+          this.currentPage = result.data.currentPage;
+          console.log("赋值后当前页："+this.currentPage);
         } catch (error) {
           console.log(error)
         }

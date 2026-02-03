@@ -9,24 +9,20 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList
 {
-    public class GetRentHouseListQueryHandler : IRequestHandler<GetRentHouseListFilter, PageResult<RentHouseListDto>>
+    public class GetRentHouseListQueryHandler : IRequestHandler<GetRentHouseListQuery, PageResult<RentHouseListDto>>
     {
         private readonly IRentHouseRepository _repository;
         public GetRentHouseListQueryHandler(IRentHouseRepository repository)
         {
             _repository=repository;
         }
-        public async Task<PageResult<RentHouseListDto>> Handle(GetRentHouseListFilter request)
+        public async Task<PageResult<RentHouseListDto>> Handle(GetRentHouseListQuery request)
         {
-            Dictionary<int,IEnumerable<RentHouse>> model = await _repository.GetRentHousePage(request);
+            var (total,result) = await _repository.GetRentHouseTuplePage(request);
             var pageResult = new PageResult<RentHouseListDto>();
-            foreach (var item in model)
-            {
-                pageResult.Total = item.Key;
-                pageResult.CurrentPage = request.Page;
-                pageResult.Data = item.Value.Any() ? item.Value.Select(t=>t.ToPageListDto()).ToList(): [];
-                break;
-            }
+            pageResult.Total = total;
+            pageResult.CurrentPage = request.Page;
+            pageResult.Data = result.Any() ? result.Select(t => t.ToPageListDto()).ToList() : [];
             return pageResult;
         }
     }
