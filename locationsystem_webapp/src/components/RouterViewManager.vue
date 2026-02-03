@@ -22,12 +22,12 @@
                     <div class="logo">
                         <h1 style="margin: 0; font-size: 1.5rem; font-weight: 500;">内容管理系统 - 后台管理</h1>
                     </div>
-                    <div class="header-actions">
+                    <div class="header-actions" style="display: flex; align-items: center;">
                         <el-button type="text"
-                                   icon="el-icon-Menu"
+                                   icon="Menu"
                                    @click="toggleSidebar"
-                                   v-if="isMobile"
                                    style="color: white; margin-right: 10px;">
+                            {{ sidebarOpen ? '收起菜单' : '展开菜单' }}
                         </el-button>
                         <el-dropdown>
                             <span class="el-dropdown-link" style="color: white; cursor: pointer; display: flex; align-items: center;">
@@ -51,6 +51,7 @@
                     <!-- 后台侧边栏 -->
                     <el-aside :width="sidebarOpen ? '240px' : '64px'"
                               style="background-color: #2c3e50; color: white; transition: width 0.3s ease;">
+
                       <el-menu :default-active="$route.path"
                                class="el-menu-vertical-demo"
                                :collapse="!sidebarOpen"
@@ -114,9 +115,15 @@
                     </el-aside>
 
                     <!-- 后台内容区域 -->
-                    <el-main style="padding: 20px;">
+                    <el-main :style="{
+                        padding: sidebarOpen ? '20px' : '20px 20px 20px 10px',
+                        transition: 'all 0.3s ease',
+                        minWidth: 0
+                    }">
                         <transition name="fade" mode="out-in">
-                            <div class="content-view-container" :key="$route.path">
+                            <div class="content-view-container"
+                                 :key="$route.path"
+                                 style="width: 100%; minWidth: 0;">
                                 <router-view />
                             </div>
                         </transition>
