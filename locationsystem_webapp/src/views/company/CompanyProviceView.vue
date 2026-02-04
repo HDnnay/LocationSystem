@@ -39,7 +39,7 @@
         const myChart = echarts.init(document.getElementById('mychart'));
         const option = {
           title: {
-            text: '各省份数据统计',
+            text: '各省份美容院数据统计',
             left: 'center'
           },
           tooltip: {
@@ -58,14 +58,14 @@
           },
           yAxis: {
             type: 'value',
-            name: '数量'
+            name: '美容院数量'
           },
           series: [{
             name: '数量',
             type: 'bar',
             data: this.provice_count,
             itemStyle: {
-              color: '#5470c6' // 自定义柱状图颜色
+              color: 'green' // 自定义柱状图颜色
             },
             // 添加数据标签显示
             label: {
@@ -111,8 +111,6 @@
     methods: {
       async getData() {
         var respone = await api.company.getProviceCompany();
-        console.log("请求数据：");
-        console.log(respone.proviceConpany);
         const provinces = respone.proviceConpany.map(item => Object.keys(item)[0]);;
         this.provices = provinces;
         const values = respone.proviceConpany.map(item => Object.values(item)[0]);
