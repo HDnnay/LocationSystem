@@ -12,5 +12,8 @@ namespace LocationSystem.Domain.Entities
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
 
+        public string Province { get; set; }
+
+
     }
 }
