@@ -56,5 +56,14 @@ namespace LocationSystem.Infrastructure.Repositories
             if (entities.Any())
               await  _context.AddRangeAsync(entities);
         }
+
+        public void UpdateRangAsync(IEnumerable<T> entities)
+        {
+            if (entities.Any())
+            {
+                _context.UpdateRange(entities);
+                
+            }
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<IEnumerable<T>> GetAll();
         Task<T> AddAsync(T entity);
         Task UpdateAsync(T entity);
+        void UpdateRangAsync(IEnumerable<T> entities);
         Task AddRangAsync(List<T> entities);
         Task DeleteAsync(T entity);
         Task<int> GetTotalCount(Expression<Func<T, bool>> predicate=null);

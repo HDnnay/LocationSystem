@@ -1,2 +1,2 @@
- Add-Migration xxx -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
+ Add-Migration update -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
  Update-Database -Project LocationSystem.Infrastructure -StartupProject LocationSystem.Api

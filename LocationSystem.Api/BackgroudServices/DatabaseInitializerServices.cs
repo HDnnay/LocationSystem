@@ -60,9 +60,9 @@ namespace LocationSystem.Api.BackgroudServices
             }
         }
 
-        private async Task<List<Company>> GetCompaniesBatchAsync(long lastId, int batchSize)
+        private async Task<List<CompanyModel>> GetCompaniesBatchAsync(long lastId, int batchSize)
         {
-            var companies = new List<Company>();
+            var companies = new List<CompanyModel>();
 
             try
             {
@@ -74,7 +74,7 @@ namespace LocationSystem.Api.BackgroudServices
                 // 简单的分页查询，按ID排序
                 command.CommandText = @"
                     SELECT Id, Name, Address, Phone
-                    FROM Company
+                    FROM CompanyModel
                     WHERE Id > @LastId
                     ORDER BY Id
                     LIMIT @BatchSize";
@@ -86,7 +86,7 @@ namespace LocationSystem.Api.BackgroudServices
 
                 while (await reader.ReadAsync())
                 {
-                    companies.Add(new Company
+                    companies.Add(new CompanyModel
                     {
                         Id = reader.GetInt64(0),
                         Name = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
@@ -110,7 +110,7 @@ namespace LocationSystem.Api.BackgroudServices
             return companies;
         }
 
-        private async Task ProcessBatchAsync(List<Company> companies, CancellationToken stoppingToken)
+        private async Task ProcessBatchAsync(List<CompanyModel> companies, CancellationToken stoppingToken)
         {
 
             try
@@ -137,7 +137,7 @@ namespace LocationSystem.Api.BackgroudServices
             await Task.Delay(10, stoppingToken);
         }
 
-        private async Task ProcessSingleCompanyAsync(Company company)
+        private async Task ProcessSingleCompanyAsync(CompanyModel company)
         {
             // 这里写你的具体业务逻辑
             // 例如：发送到其他系统、数据转换、验证等
@@ -146,7 +146,7 @@ namespace LocationSystem.Api.BackgroudServices
         }
     }
 
-    public class Company
+    public class CompanyModel
     {
         public long Id { get; set; }
         public string Name { get; set; }
