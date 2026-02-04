@@ -39,7 +39,9 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
                 });
                 var result = from item in tastkResult
                              group item by item.Provice into provinceGroup
-                             select new Tuple<string, int>(provinceGroup.Key, provinceGroup.Count());
+                             let count = provinceGroup.Count()
+                             orderby count descending
+                             select new Tuple<string, int>(provinceGroup.Key, count);
                 return new GetProviceCompanyDto() { ProviceConpany = result.ToList() };
             },600);
             return model!;

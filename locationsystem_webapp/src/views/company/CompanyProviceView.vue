@@ -1,5 +1,5 @@
 <template>
-  <div id="mychart" style="height: 400px;"></div>
+  <div id="mychart" style="height: 400px;" :loadding="loading"></div>
 </template>
 
 <script lang="ts">
@@ -19,7 +19,8 @@
     data() {
       return {
         provices: [],
-
+        provice_count: [],
+        loading:false
       }
     },
     computed: {
@@ -34,16 +35,66 @@
     beforeMount() {
     },
     mounted() {
-      this.getData().then(res=>{
-        console.log("请求数据：");
-        console.log(res);
+      this.getData().then(() => {
         const myChart = echarts.init(document.getElementById('mychart'));
         const option = {
-              xAxis: { type: 'category', data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
-              yAxis: { type: 'value' },
-              series: [{ data: [120, 200, 150, 80, 70, 110, 130], type: 'bar' }]
+          title: {
+            text: '各省份数据统计',
+            left: 'center'
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'shadow'
+            }
+          },
+          xAxis: {
+            type: 'category',
+            data: this.provices,
+            axisLabel: {
+              rotate: 45, // 如果省份名称太长，可以旋转45度显示
+              interval: 0 // 显示所有标签
+            }
+          },
+          yAxis: {
+            type: 'value',
+            name: '数量'
+          },
+          series: [{
+            name: '数量',
+            type: 'bar',
+            data: this.provice_count,
+            itemStyle: {
+              color: '#5470c6' // 自定义柱状图颜色
+            },
+            // 添加数据标签显示
+            label: {
+              show: true,
+              position: 'top',
+              formatter: '{c}'
+            }
+          }],
+          // 添加滚动条，适合数据较多的情况
+          dataZoom: [
+            {
+              type: 'inside',
+              start: 0,
+              end: 100
+            },
+            {
+              show: true,
+              type: 'slider',
+              top: '90%',
+              start: 0,
+              end: 100
+            }
+          ]
         };
+
         myChart.setOption(option);
+        window.addEventListener('resize', () => {
+          myChart.resize();
+        });
       })
 
     },
@@ -59,8 +110,13 @@
     },
     methods: {
       async getData() {
-        var respone =await api.company.getProviceCompany();
-        console.log(respone)
+        var respone = await api.company.getProviceCompany();
+        console.log("请求数据：");
+        console.log(respone.proviceConpany);
+        const provinces = respone.proviceConpany.map(item => item.item1);
+        this.provices = provinces;
+        const values = respone.proviceConpany.map(item => item.item2);
+        this.provice_count = values;
       }
     },
   });
