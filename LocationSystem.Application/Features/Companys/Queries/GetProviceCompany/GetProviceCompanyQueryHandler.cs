@@ -41,7 +41,7 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
                              group item by item.Provice into provinceGroup
                              let count = provinceGroup.Count()
                              orderby count descending
-                             select new Tuple<string, int>(provinceGroup.Key, count);
+                             select new Dictionary<string, int>() { { provinceGroup.Key,count} };
                 return new GetProviceCompanyDto() { ProviceConpany = result.ToList() };
             },600);
             return model!;

@@ -6,6 +6,6 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
 {
     public class GetProviceCompanyDto
     {
-        public List<Tuple<string,int>>? ProviceConpany { get; set; }
+        public List<Dictionary<string,int>>? ProviceConpany { get; set; }
     }
 }

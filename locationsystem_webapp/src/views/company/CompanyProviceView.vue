@@ -113,9 +113,9 @@
         var respone = await api.company.getProviceCompany();
         console.log("请求数据：");
         console.log(respone.proviceConpany);
-        const provinces = respone.proviceConpany.map(item => item.item1);
+        const provinces = respone.proviceConpany.map(item => Object.keys(item)[0]);;
         this.provices = provinces;
-        const values = respone.proviceConpany.map(item => item.item2);
+        const values = respone.proviceConpany.map(item => Object.values(item)[0]);
         this.provice_count = values;
       }
     },
