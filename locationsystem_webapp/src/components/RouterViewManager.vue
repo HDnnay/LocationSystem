@@ -83,12 +83,24 @@
                             预约管理
                           </template>
                         </el-menu-item>
-                        <el-menu-item index="/company">
-                          <el-icon><Calendar /></el-icon>
+                        <el-sub-menu index="/company">
                           <template #title>
-                            公司管理
+                            <el-icon><Calendar /></el-icon>
+                            <span>公司管理</span>
                           </template>
-                        </el-menu-item>
+                          <el-menu-item index="/company">
+                            <el-icon><List /></el-icon>
+                            <template #title>
+                              公司列表
+                            </template>
+                          </el-menu-item>
+                          <el-menu-item index="/company/provice">
+                            <el-icon><List /></el-icon>
+                            <template #title>
+                              统计管理
+                            </template>
+                          </el-menu-item>
+                        </el-sub-menu>
                         <el-sub-menu index="/rent">
                           <template #title>
                             <el-icon><Calendar /></el-icon>

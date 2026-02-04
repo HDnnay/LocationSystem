@@ -53,7 +53,7 @@
 
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import api from "../api"
+  import api from "../../api"
   import { ElMessage } from 'element-plus'
 
   export default defineComponent({

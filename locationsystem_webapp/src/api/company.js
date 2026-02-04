@@ -76,7 +76,11 @@ export async function getCompanies(params) {
   console.log(url)
   return request(url, { method: 'GET' });
 }
-
+export async function getProviceCompany() {
+  const url = buildUrl("/company/get/provice", null);
+  console.log(url);
+  return request(url, { method: 'GET' });
+}
 /**
  * 根据 id 获取公司详情
  * @param {string|number} id

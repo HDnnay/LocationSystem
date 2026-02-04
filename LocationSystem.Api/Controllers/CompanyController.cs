@@ -1,4 +1,5 @@
 ﻿using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentList;
+using LocationSystem.Application.Features.Companys.Queries.GetProviceConpany;
 using LocationSystem.Application.Features.Companys.Queries.ReadConpany;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -26,6 +27,13 @@ namespace LocationSystem.Api.Controllers
                 keyWord = request.keyWord
             };
             var model = await _mediator.Send(command);
+            return Ok(model);
+        }
+        [HttpGet("get/provice")]
+        public async Task<IActionResult> GetProvice()
+        {
+            var query = new GetProviceCompanyQuery();
+            var model = await _mediator.Send(query);
             return Ok(model);
         }
     }

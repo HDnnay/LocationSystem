@@ -47,9 +47,17 @@ const routes = [
   {
     path: '/company',
     name: 'company',
-    component: () => import('../views/CompanyView.vue'),
+    component: () => import('../views/company/CompanyView.vue'),
     meta: {
       title: '信息管理',
+    }
+  },
+  {
+    path: '/company/provice',
+    name: 'company_provice',
+    component: () => import('../views/company/CompanyProviceView.vue'),
+    meta: {
+      title: '统计管理',
     }
   },
   {
