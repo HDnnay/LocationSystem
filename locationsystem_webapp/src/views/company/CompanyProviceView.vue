@@ -20,7 +20,9 @@
       return {
         provices: [],
         provice_count: [],
-        loading:false
+        loading:false,
+
+
       }
     },
     computed: {
