@@ -68,7 +68,7 @@ builder.Services.AddHostedService<RabbitMQTestService>();
 //处理数据库sqlite迁移值系统持久化
 //builder.Services.AddHostedService<DatabaseInitializerServices>();
 //更新数据库省份字段，数据大约有10000条
-builder.Services.AddHostedService<CompanyUpdateBackgroundService>();
+//builder.Services.AddHostedService<CompanyUpdateBackgroundService>();
 
 var app = builder.Build();
 app.UseIpRateLimiting();
