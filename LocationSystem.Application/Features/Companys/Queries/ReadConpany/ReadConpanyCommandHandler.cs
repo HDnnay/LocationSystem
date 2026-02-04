@@ -25,7 +25,7 @@ namespace LocationSystem.Application.Features.Companys.Queries.ReadConpany
             foreach (var item in result)
             {
                 pageResult.Total=item.Key;
-                pageResult.Data = item.Value.Select(t => new CompanyDto() { Id=t.Id, Address= t.Address, Name=t.Name, PhoneNumber=t.PhoneNumber }).ToList();
+                pageResult.Data = item.Value.Select(t => new CompanyDto() { Id=t.Id, Address= t.Address, Name=t.Name, PhoneNumber=t.PhoneNumber,Province=t.Province }).ToList();
             }
             return pageResult;
         }

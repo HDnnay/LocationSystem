@@ -7,8 +7,9 @@ namespace LocationSystem.Application.Features.Companys.Queries.ReadConpany
     public class CompanyDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
+        public string? Name { get; set; }
+        public string? Address { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Province { get; set; }
     }
 }
