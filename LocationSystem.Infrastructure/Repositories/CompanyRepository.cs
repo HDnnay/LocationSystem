@@ -23,6 +23,10 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             var query = _context.Companies.AsQueryable().AsNoTracking();
             var count = await query.CountAsync();
+            if(!string.IsNullOrWhiteSpace(filter.keyWord))
+            {
+                query = query.Where(t => t.Address.Contains(filter.keyWord)||t.Name.Contains(filter.keyWord)||t.PhoneNumber.Contains(filter.keyWord));
+            }
             var result = await query.Skip((filter.Page-1)*filter.PageSize).Take(filter.PageSize).ToListAsync();
             var dic = new ConcurrentDictionary<int, IEnumerable<Company>>();
             dic.TryAdd(count, result);

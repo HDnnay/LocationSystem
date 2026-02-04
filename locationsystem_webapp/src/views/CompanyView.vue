@@ -54,6 +54,8 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
   import api from "../api"
+  import { ElMessage } from 'element-plus'
+
   export default defineComponent({
     components: {
     },
@@ -134,12 +136,29 @@
         this.page = newPage;
         this.getData();
       },
-      onSearch() { console.log('defined later') },
+      onSearch() {
+        
+        if (this.searchQuery.trim() === "") {
+          return;
+        } else {
+          var reg = /[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
+          if (reg.test(this.searchQuery)) {
+            ElMessage.error('包含非法字符！')
+            return;
+          } else {
+            const self = this;
+            this.getData().then(() => {
+              self.searchQuery=''
+            });
+          }
+        }
+      },
       async getData() {
         try {
           const result = await api.company.getCompanies({
             page: this.currentPage,
-            pageSize: this.pageSize
+            pageSize: this.pageSize,
+            keyWord: this.searchQuery
           });
           console.log(result)
           // result 现在有完整的类型提示
