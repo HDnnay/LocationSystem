@@ -158,7 +158,17 @@ export default {
       },
       editorRef: null,
       toolbarConfig: {
-        excludeKeys: ['fullScreen', 'code', 'todo']
+        excludeKeys: [
+          'fullScreen',
+          'code',
+          'todo',
+          'uploadImage',  // 排除上传图片
+          'insertImage',   // 排除插入图片
+          'uploadVideo',   // 排除上传视频
+          'insertVideo',   // 排除插入视频
+          'group-image',   // 排除图片组
+          'group-video'    // 排除视频组
+        ]
       },
       editorConfig: {
         placeholder: '请输入描述',
