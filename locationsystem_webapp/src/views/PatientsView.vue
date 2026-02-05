@@ -292,13 +292,6 @@ const savePatient = async () => {
         loading.value = false
     }
 }
-
-// 处理模态框关闭
-const handleModalClose = (val) => {
-    if (!val) {
-        closeModal()
-    }
-}
 </script>
 
 <style scoped>

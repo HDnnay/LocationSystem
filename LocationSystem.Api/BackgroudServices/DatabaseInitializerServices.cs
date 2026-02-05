@@ -74,7 +74,7 @@ namespace LocationSystem.Api.BackgroudServices
                 // 简单的分页查询，按ID排序
                 command.CommandText = @"
                     SELECT Id, Name, Address, Phone
-                    FROM CompanyModel
+                    FROM Company
                     WHERE Id > @LastId
                     ORDER BY Id
                     LIMIT @BatchSize";

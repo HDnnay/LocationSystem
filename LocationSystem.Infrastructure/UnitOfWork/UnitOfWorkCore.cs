@@ -16,9 +16,9 @@ namespace LocationSystem.Infrastructure.UnitOfWork
         }
         public async Task CommitAsync()
         {
-            await _context.SaveChangesAsync();
             if (_transaction != null)
             {
+                await _context.SaveChangesAsync();
                 await _transaction.CommitAsync();      // 提交事务
                 await _transaction.DisposeAsync();     // 释放事务资源
                 _transaction = null;                   // 重置事务状态

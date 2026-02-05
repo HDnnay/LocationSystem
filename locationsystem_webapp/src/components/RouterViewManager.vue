@@ -23,7 +23,7 @@
                         <h1 style="margin: 0; font-size: 1.5rem; font-weight: 500;">内容管理系统 - 后台管理</h1>
                     </div>
                     <div class="header-actions" style="display: flex; align-items: center;">
-                        <el-button type="text"
+                        <el-button link
                                    icon="Menu"
                                    @click="toggleSidebar"
                                    style="color: white; margin-right: 10px;">

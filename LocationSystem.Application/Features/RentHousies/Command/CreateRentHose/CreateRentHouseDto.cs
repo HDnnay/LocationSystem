@@ -16,5 +16,6 @@ namespace LocationSystem.Application.Features.RentHousies.Command.CreateRentHose
         public required decimal MonthlyRent { get; set; }
 
         public required decimal Deposit { get; set; }
+        public string? ImageSrc { get; set; }
     }
 }
