@@ -303,7 +303,7 @@ export default {
               // 重置表单
               this.resetForm()
               // 跳转到列表页面
-              this.$router.push('/renthouse')
+              this.$router.push('/rent')
             }
           } catch (error) {
             console.error('创建失败:', error)
