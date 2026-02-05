@@ -94,7 +94,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 app.UseCustomExceptionHandler();
-app.UseCors("AllowFrontend"); // // 1. 添加自定义中间件来拦截静态文件请求
+app.UseCors("AllowFrontend");
+// // 1. 添加自定义中间件来拦截静态文件请求
 app.Use(async (context, next) =>
 {
     var path = context.Request.Path.Value?.ToLower() ?? "";
@@ -104,8 +105,7 @@ app.Use(async (context, next) =>
     {
         "/uploads/",    // 上传文件目录
         "/private/",    // 私有文件目录
-        ".config",      // 配置文件
-        ".json",        // JSON文件
+        ".config",      // 配置文件      // JSON文件
         ".xml",         // XML文件
         ".db"           // 数据库文件
     };
