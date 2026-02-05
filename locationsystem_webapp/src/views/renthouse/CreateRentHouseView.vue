@@ -33,7 +33,7 @@
                   :mode="'default'"
                   @on-created="editorCreated"
                   @on-change="editorChange"
-                  style="height: 300px; overflow-y: hidden;"
+                  style="height: 168px; overflow-y: hidden;"
                 />
               </div>
             </el-form-item>
@@ -50,9 +50,9 @@
           <el-col :span="6">
             <el-form-item label="类型" prop="type">
               <el-select v-model="form.type" placeholder="请选择类型">
-                <el-option label="整租" value="1" />
-                <el-option label="合租" value="2" />
-                <el-option label="公寓" value="3" />
+                <el-option label="一房一厅" value="1" />
+                <el-option label="两房一厅" value="2" />
+                <el-option label="三方一厅" value="3" />
               </el-select>
             </el-form-item>
           </el-col>

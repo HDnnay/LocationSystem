@@ -385,10 +385,9 @@
       // 获取类型标签文本
       getTypeLabel(type) {
         const typeLabels = {
-          1: '整租',
-          2: '合租',
-          3: '短租',
-          4: '其他'
+          1: '一房一厅',
+          2: '两房一厅',
+          3: '三房一厅',
         }
         return typeLabels[type] || `类型${type}`
       },
