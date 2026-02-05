@@ -94,8 +94,8 @@ namespace LocationSystem.Api.Controllers
                         await file.CopyToAsync(stream);
                     }
 
-                    var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
-                    //var fileUrl = $"/uploads/{fileName}";
+                    //var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
+                    var fileUrl = $"/uploads/{fileName}";
                     uploadedFiles.Add(new
                     {
                         OriginalName = file.FileName,

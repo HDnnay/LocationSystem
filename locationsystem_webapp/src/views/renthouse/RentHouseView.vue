@@ -43,7 +43,7 @@
           <!-- 描述 -->
           <el-table-column prop="description" label="描述" min-width="80" show-overflow-tooltip>
             <template #default="scope">
-              <span v-if="scope.row.description">{{ scope.row.description }}</span>
+              <span v-if="scope.row.description">{{ escapeHtml(scope.row.description) }}</span>
               <span v-else style="color: #999;">无描述</span>
             </template>
           </el-table-column>
@@ -225,6 +225,12 @@
     unmounted() {
     },
     methods: {
+      // 转义HTML标签，用于显示富文本内容为纯文本
+      escapeHtml(html) {
+        if (!html) return ''
+        return html.replace(/<[^>]*>/g, '')
+      },
+
       // 计算表格宽度
       calculateTableWidth() {
         this.$nextTick(() => {

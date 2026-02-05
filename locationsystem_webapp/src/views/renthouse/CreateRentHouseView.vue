@@ -76,9 +76,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="图片路径" prop="imageSrc">
-              <el-input v-model="form.imageSrc" placeholder="上传图片后自动填充" readonly />
-            </el-form-item>
+
           </el-col>
         </el-row>
 
@@ -253,12 +251,18 @@ export default {
 
         console.log('上传结果:', response.data)
 
-        // 如果后端返回的是Ok()，没有数据
+        // 处理后端返回的数据
         if (response.status === 200) {
-          this.$message.success(`成功上传 ${this.selectedFiles.length} 个文件`)
-          // 假设后端返回的是图片路径数组，这里简化处理
-          // 实际情况需要根据后端返回的数据结构来处理
-          this.form.imageSrc = 'uploaded-images/' + this.selectedFiles[0].name
+          const data = response.data
+          if (data && data.files && data.files.length > 0) {
+            // 拼接所有fileUrl为一个字符串，用逗号分隔
+            const fileUrls = data.files.map(file => file.fileUrl).join(',')
+            this.form.imageSrc = fileUrls
+            console.log('拼接后的imageSrc:', this.form.imageSrc)
+            this.$message.success(`成功上传 ${data.count} 个文件`)
+          } else {
+            this.$message.success(`成功上传 ${this.selectedFiles.length} 个文件`)
+          }
         }
 
         // 延迟清空文件列表，避免触发组件状态异常
@@ -270,6 +274,7 @@ export default {
       } catch (error) {
         console.error('上传失败:', error)
         this.$message.error('文件上传失败: ' + (error.response?.data || error.message))
+        throw error // 抛出错误，让调用者知道上传失败
       } finally {
         this.uploading = false
       }
@@ -280,8 +285,19 @@ export default {
       this.$refs.form.validate(async (valid) => {
         if (valid) {
           try {
+            // 检查是否有文件需要上传
+            if (this.selectedFiles.length > 0) {
+              // 先上传文件
+              await this.submitUpload()
+            }
+
             // 调用API创建租房信息
-            const response = await api.rent.create(this.form)
+            // 确保数据格式与后端CreateRentHouseDto一致
+            const requestData = {
+              ...this.form,
+              type: parseInt(this.form.type) // 将type转换为数字，匹配后端的枚举类型
+            }
+            const response = await api.rent.createRentHouse(requestData)
             if (response.status === 200) {
               this.$message.success('创建成功')
               // 重置表单
@@ -380,7 +396,8 @@ export default {
 }
 
 :deep(.el-upload-list__item) {
-  width: calc(20% - 8px); /* 5个文件一行，减去gap */
+  flex: 1 1 calc(20% - 8px); /* 5个文件一行，减去gap，支持自适应 */
+  min-width: 120px; /* 设置最小宽度，确保在文件数量少时也有合适的大小 */
   margin-bottom: 0 !important;
 }
 
@@ -392,7 +409,8 @@ export default {
 }
 
 :deep(.el-upload-list--picture .el-upload-list__item) {
-  width: calc(20% - 8px); /* 5个文件一行，减去gap */
+  flex: 1 1 calc(20% - 8px); /* 5个文件一行，减去gap，支持自适应 */
+  min-width: 120px; /* 设置最小宽度，确保在文件数量少时也有合适的大小 */
   margin-bottom: 0 !important;
 }
 </style>
