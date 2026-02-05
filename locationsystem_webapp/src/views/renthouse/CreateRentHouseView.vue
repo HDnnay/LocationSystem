@@ -164,8 +164,10 @@ export default {
       },
       editorConfig: {
         placeholder: '请输入描述',
+        height: 300,
         MENU_CONF: {}
       },
+
       rules: {
         title: [
           { required: true, message: '请输入标题', trigger: 'blur' }
@@ -357,5 +359,16 @@ export default {
 /* 调整上传组件按钮大小 */
 .el-upload__trigger {
   margin-right: 10px;
+}
+
+/* 确保编辑器高度为300px，优先级高于默认样式 */
+:deep(.w-e-text-container) {
+  min-height: 300px !important;
+  height: 300px !important;
+}
+
+:deep(.w-e-scroll) {
+  min-height: 300px !important;
+  height: 300px !important;
 }
 </style>
