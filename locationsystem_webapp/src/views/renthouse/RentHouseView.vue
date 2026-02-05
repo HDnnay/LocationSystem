@@ -225,10 +225,24 @@
     unmounted() {
     },
     methods: {
-      // 转义HTML标签，用于显示富文本内容为纯文本
+      // 转义HTML标签和特殊字符，用于显示富文本内容为纯文本
       escapeHtml(html) {
         if (!html) return ''
-        return html.replace(/<[^>]*>/g, '')
+        // 移除所有HTML标签
+        let plainText = html.replace(/<[^>]*>/g, '')
+        // 处理HTML实体
+        plainText = plainText
+          .replace(/&lt;/g, '<')
+          .replace(/&gt;/g, '>')
+          .replace(/&amp;/g, '&')
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&nbsp;/g, ' ')
+          .replace(/&copy;/g, '©')
+          .replace(/&reg;/g, '®')
+        // 处理多余的空白字符
+        plainText = plainText.replace(/\s+/g, ' ').trim()
+        return plainText
       },
 
       // 计算表格宽度

@@ -318,7 +318,9 @@ export default {
 
     // 重置表单
     resetForm() {
-      this.$refs.form.resetFields()
+      if (this.$refs.form) {
+        this.$refs.form.resetFields()
+      }
       this.fileList = []
       this.selectedFiles = []
     }
