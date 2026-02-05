@@ -58,12 +58,12 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="月租(元)" prop="monthlyRent">
-              <el-input v-model.number="form.monthlyRent" type="number" placeholder="请输入月租" />
+              <el-input v-model.number="form.monthlyRent" type="number" :min="1" placeholder="请输入月租" />
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="押金(元)" prop="deposit">
-              <el-input v-model.number="form.deposit" type="number" placeholder="请输入押金" />
+              <el-input v-model.number="form.deposit" type="number" :min="1" placeholder="请输入押金" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -249,8 +249,6 @@ export default {
           console.log(`上传进度: ${percentCompleted}%`)
         })
 
-        console.log('上传结果:', response.data)
-
         // 处理后端返回的数据
         if (response.status === 200) {
           const data = response.data
@@ -258,7 +256,6 @@ export default {
             // 拼接所有fileUrl为一个字符串，用逗号分隔
             const fileUrls = data.files.map(file => file.fileUrl).join(',')
             this.form.imageSrc = fileUrls
-            console.log('拼接后的imageSrc:', this.form.imageSrc)
             this.$message.success(`成功上传 ${data.count} 个文件`)
           } else {
             this.$message.success(`成功上传 ${this.selectedFiles.length} 个文件`)
