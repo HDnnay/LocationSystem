@@ -371,4 +371,28 @@ export default {
   min-height: 300px !important;
   height: 300px !important;
 }
+
+/* 上传文件列表横向排列 */
+:deep(.el-upload-list) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+:deep(.el-upload-list__item) {
+  width: calc(20% - 8px); /* 5个文件一行，减去gap */
+  margin-bottom: 0 !important;
+}
+
+/* 确保图片预览也横向排列 */
+:deep(.el-upload-list--picture) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+:deep(.el-upload-list--picture .el-upload-list__item) {
+  width: calc(20% - 8px); /* 5个文件一行，减去gap */
+  margin-bottom: 0 !important;
+}
 </style>
