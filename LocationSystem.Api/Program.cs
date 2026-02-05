@@ -11,6 +11,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:5173/", "http://localhost:5174/").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // 允许前端应用的来源
     });
 });
+
 //// 加载限流配置
 builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -68,8 +70,10 @@ builder.Services.AddHostedService<RabbitMQTestService>();
 //处理数据库sqlite迁移值系统持久化
 //builder.Services.AddHostedService<DatabaseInitializerServices>();
 //更新数据库省份字段，数据大约有10000条
-builder.Services.AddHostedService<CompanyUpdateBackgroundService>();
-//builder.Services.AddHostedService<HostLoadCachBackgroupService>();
+//builder.Services.AddHostedService<CompanyUpdateBackgroundService>();
+builder.Services.AddHostedService<HostLoadCachBackgroupService>();
+
+
 var app = builder.Build();
 app.UseIpRateLimiting();
 // 4️⃣ 应用启动时，确保服务已启动
@@ -90,16 +94,54 @@ if (app.Environment.IsDevelopment())
     });
 }
 app.UseCustomExceptionHandler();
-app.UseCors("AllowFrontend"); // 使用CORS策略
+app.UseCors("AllowFrontend"); // // 1. 添加自定义中间件来拦截静态文件请求
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path.Value?.ToLower() ?? "";
+
+    // 定义需要保护的目录和文件类型
+    var protectedPatterns = new[]
+    {
+        "/uploads/",    // 上传文件目录
+        "/private/",    // 私有文件目录
+        ".config",      // 配置文件
+        ".json",        // JSON文件
+        ".xml",         // XML文件
+        ".db"           // 数据库文件
+    };
+
+    // 检查当前请求是否匹配受保护的模式
+    var isProtected = protectedPatterns.Any(pattern =>
+        pattern.StartsWith("/") ? path.Contains(pattern) : path.EndsWith(pattern));
+
+    if (isProtected)
+    {
+        // 验证访问权限
+        context.Response.StatusCode = 403;
+        context.Response.ContentType = "text/plain; charset=utf-8";
+        await context.Response.WriteAsync("拒绝访问",Encoding.UTF8);
+        return;
+        // 可选：记录访问日志
+        Console.WriteLine($"Protected file accessed: {path} by {context.User.Identity.Name}");
+    }
+
+    await next();
+});
+
+
+
+
 //app.UseStaticFiles();
-if(!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads")))
+if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads")))
     Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads"));
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
         Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads")),
     RequestPath = "/uploads"
-});
+
+})
+;
 app.UseAuthorization();
 
 app.MapControllers();

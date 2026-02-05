@@ -251,7 +251,7 @@ export default {
           console.log(`上传进度: ${percentCompleted}%`)
         })
 
-        console.log('上传结果:', response)
+        console.log('上传结果:', response.data)
 
         // 如果后端返回的是Ok()，没有数据
         if (response.status === 200) {

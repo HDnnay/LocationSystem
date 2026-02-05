@@ -95,7 +95,7 @@ namespace LocationSystem.Api.Controllers
                     }
 
                     var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
-
+                    //var fileUrl = $"/uploads/{fileName}";
                     uploadedFiles.Add(new
                     {
                         OriginalName = file.FileName,
