@@ -186,7 +186,7 @@
 import { ref, onMounted, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { getAppointments, createAppointment, updateAppointment } from '../api/appointments'
+import { getAppointments, createAppointment, updateAppointment, deleteAppointment } from '../api/appointments'
 import { getPatients } from '../api/patients'
 import { getDentists } from '../api/dentists'
 import { getDentalOffices } from '../api/dentalOffices'
@@ -433,6 +433,24 @@ const cancelDelete = () => {
 }
 
 // 删除预约
+const handleDeleteAppointment = async () => {
+    if (deletingId.value) {
+        try {
+            loading.value = true
+            await deleteAppointment(deletingId.value)
+            ElMessage.success('删除预约成功')
+            cancelDelete()
+            // 删除成功后重新加载数据
+            loadAppointments()
+        } catch (error) {
+            console.error('删除预约失败:', error)
+            ElMessage.error(error.response?.data?.message || '删除预约失败，请重试')
+            cancelDelete()
+        } finally {
+            loading.value = false
+        }
+    }
+}
 
 // 保存预约（添加或编辑）
 const saveAppointment = async () => {
@@ -484,8 +502,6 @@ const saveAppointment = async () => {
             ElMessage.success('更新预约成功');
         } else {
           // 添加模式
-            delete submitData.id;
-            delete submitData.status;
             await createAppointment(submitData);
             ElMessage.success('添加预约成功');
         }
