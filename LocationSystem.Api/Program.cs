@@ -122,13 +122,10 @@ app.Use(async (context, next) =>
         await context.Response.WriteAsync("拒绝访问",Encoding.UTF8);
         return;
         // 可选：记录访问日志
-        Console.WriteLine($"Protected file accessed: {path} by {context.User.Identity.Name}");
     }
 
     await next();
 });
-
-
 
 
 //app.UseStaticFiles();
