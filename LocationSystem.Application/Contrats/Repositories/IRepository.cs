@@ -15,6 +15,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task AddRangAsync(List<T> entities);
         Task DeleteAsync(T entity);
         Task<int> GetTotalCount(Expression<Func<T, bool>> predicate=null);
+        Task<IEnumerable<TResult>> GetSelectedFields<TResult>(Expression<Func<T, TResult>> selector);
 
     }
 }

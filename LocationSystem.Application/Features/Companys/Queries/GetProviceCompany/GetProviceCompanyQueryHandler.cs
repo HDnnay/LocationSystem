@@ -1,11 +1,8 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos.Interfaces;
 using LocationSystem.Application.Extentions;
+using LocationSystem.Application.Features.Companys.Queries.GetProviceCompany;
 using LocationSystem.Application.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
 {
@@ -22,37 +19,63 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
         {
             var model =await _cacheService.GetOrCreateAsync("count_provice", async _ =>
             {
-                var data = await _companyRepository.GetAll();
-                var tastkResult = await Task.Run(async () =>
+               
+                var data = await _companyRepository.GetSelectedFields(u => new ProvinceDto
                 {
-                    var matchedResults = new List<ProviceCompanyModel>();
-                    foreach (var item in data)
+                    Address = u.Address,
+                    Province = u.Province
+                });
+
+                if (data.Any()&&!string.IsNullOrWhiteSpace(data.FirstOrDefault().Province))
+                {
+                   return GroupProvinceCompany(data);
+                }
+                else
+                {
+                    var tastkResult = await Task.Run(async () =>
                     {
-                        foreach (var item2 in ProvinceDataExtentions.ReverseProvinceMap)
+                        var matchedResults = new List<ICompanyEntity>();
+                        foreach (var item in data)
                         {
-                            if (item.Address.StartsWith(item2.Key))
+                            foreach (var item2 in ProvinceDataExtentions.ReverseProvinceMap)
                             {
-                                matchedResults.Add(new ProviceCompanyModel { Id = item.Id, Name = item.Name, Address = item.Address, Provice = item2.Key });
+                                if (item.Address.StartsWith(item2.Key))
+                                {
+                                    matchedResults.Add(new BasiceCompnay {Address = item.Address, Province = item2.Key });
+                                }
                             }
                         }
-                    }
-                    return matchedResults;
-                });
-                var result = from item in tastkResult
-                             group item by item.Provice into provinceGroup
-                             let count = provinceGroup.Count()
-                             orderby count descending
-                             select new Dictionary<string, int>() { { provinceGroup.Key,count} };
-                return new GetProviceCompanyDto() { ProviceConpany = result.ToList() };
+                        return matchedResults;
+                    });
+                    return GroupProvinceCompany(tastkResult);
+                }
+
+
             },600);
             return model!;
         }
+
+        private static GetProviceCompanyDto? GroupProvinceCompany<T>(IEnumerable<T> tastkResult) where T:ICompanyEntity
+        {
+            var result = from item in tastkResult
+                         group item by item.Province into provinceGroup
+                         let count = provinceGroup.Count()
+                         orderby count descending
+                         select new Dictionary<string, int>() { { provinceGroup.Key, count } };
+            return new GetProviceCompanyDto() { ProviceConpany = result.ToList() };
+        }
     }
-    public class ProviceCompanyModel
+    public class ProviceCompanyModel:ICompanyEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
-        public string? Provice { get; set; }
+        public string? Province { get; set; }
     }
+    public class BasiceCompnay : ICompanyEntity
+    {
+        public string? Address { get; set; }
+        public string? Province { get; set; }
+    }
+
 }

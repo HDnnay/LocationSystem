@@ -30,7 +30,12 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             return await _context.Set<T>().ToListAsync();
         }
-
+        public async Task<IEnumerable<TResult>> GetSelectedFields<TResult>(Expression<Func<T, TResult>> selector)
+        {
+            return await _context.Set<T>()
+                .Select(selector)
+                .ToListAsync();
+        }
         public async Task<T?> GetByIdAsync(Guid id)
         {
             return await _context.Set<T>().FindAsync(id);

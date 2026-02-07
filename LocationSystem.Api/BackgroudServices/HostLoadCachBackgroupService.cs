@@ -37,14 +37,14 @@ namespace LocationSystem.Api.BackgroudServices
                        {
                            if (item.Address.StartsWith(item2.Key))
                            {
-                               matchedResults.Add(new ProviceCompanyModel { Id = item.Id, Name = item.Name, Address = item.Address, Provice = item2.Key });
+                               matchedResults.Add(new ProviceCompanyModel { Id = item.Id, Name = item.Name, Address = item.Address, Province = item2.Key });
                            }
                        }
                    }
                    return matchedResults;
                });
                var result = from item in tastkResult
-                            group item by item.Provice into provinceGroup
+                            group item by item.Province into provinceGroup
                             let count = provinceGroup.Count()
                             orderby count descending
                             select new Dictionary<string, int>() { { provinceGroup.Key, count } };
