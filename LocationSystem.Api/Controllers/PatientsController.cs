@@ -57,14 +57,14 @@ namespace LocationSystem.Api.Controllers
                 Email = dto.Email,
             };
             await _mediator.Send(command);
-            return NoContent();
+            return Ok();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var command = new DeletePatientCommand { Id =id};
             await _mediator.Send(command);
-            return NoContent();
+            return Ok();
         }
     }
 }

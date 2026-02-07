@@ -57,7 +57,7 @@ namespace LocationSystem.Api.Controllers
         {
             var command = new UpdateDentistCommand() { Id = id, Name = model.Name, Email = model.Email };
             await _mediator.Send(command);
-            return NoContent();
+            return Ok();
         }
             // DELETE api/<DentistsController>/5
         [HttpDelete("{id}")]
@@ -65,7 +65,7 @@ namespace LocationSystem.Api.Controllers
         {
             var command = new DeleteDentistCommand() { Id = id };
             await _mediator.Send(command);
-            return NoContent();
+            return Ok();
         }
     }
 }
