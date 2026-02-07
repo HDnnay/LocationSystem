@@ -7,6 +7,7 @@ export const getAppointments = (params) => {
 
 // 创建预约
 export const createAppointment = (data) => {
+  console.log(data);
   return request.post('/api/Appointments', data)
 }
 

@@ -223,9 +223,9 @@ const dentalOfficesLoading = ref(false)
 // 表单数据
 const formData = reactive({
     id: '',
-    patientId: '',
-    dentistId: '',
-    dentalOfficeId: '',
+    patientId: null,
+    dentistId: null,
+    dentalOfficeId: null,
     startDate: null,  // 初始值改为 null
     endDate: null,    // 初始值改为 null
     status: 0
@@ -246,9 +246,9 @@ const resetForm = () => {
     // 使用新的对象替换，确保Vue检测到变更
     Object.assign(formData, {
         id: '',
-        patientId: '',
-        dentistId: '',
-        dentalOfficeId: '',
+        patientId: null,
+        dentistId: null,
+        dentalOfficeId: null,
         startDate: null,  // 与初始化保持一致，使用 null
         endDate: null,    // 与初始化保持一致，使用 null
         status: 0
@@ -262,9 +262,9 @@ const resetForm = () => {
     formData.dentalOfficeId = tempValue
     formData.status = -1 // 使用不同的值
     // 然后设回正确的初始值
-    formData.patientId = ''
-    formData.dentistId = ''
-    formData.dentalOfficeId = ''
+    formData.patientId = null
+    formData.dentistId = null
+    formData.dentalOfficeId = null
     formData.status = 0
     formData.startDate = new Date('2000-01-01') // 临时值
     formData.endDate = new Date('2000-01-01')   // 临时值
@@ -437,25 +437,43 @@ const cancelDelete = () => {
 // 保存预约（添加或编辑）
 const saveAppointment = async () => {
     try {
+        // 验证必填字段
+        if (formData.patientId === null) {
+            ElMessage.warning('请选择患者');
+            return;
+        }
+        if (formData.dentistId === null) {
+            ElMessage.warning('请选择牙医');
+            return;
+        }
+        if (formData.dentalOfficeId === null) {
+            ElMessage.warning('请选择诊所');
+            return;
+        }
+        if (!formData.startDate) {
+            ElMessage.warning('请选择开始时间');
+            return;
+        }
+        if (!formData.endDate) {
+            ElMessage.warning('请选择结束时间');
+            return;
+        }
+
         loading.value = true
 
-        // 处理日期格式，确保转换为YYYY-MM-DD HH:mm:ss字符串
+        // 处理日期格式，确保转换为ISO 8601格式，以便后端C# DateTime正确解析
         const formatDateString = (date) => {
             if (!date) return null;
             if (typeof date === 'string') return date; // 如果已经是字符串，直接返回
-            // 如果是Date对象，转换为YYYY-MM-DD HH:mm:ss格式
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            const seconds = String(date.getSeconds()).padStart(2, '0');
-            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            // 如果是Date对象，转换为ISO 8601格式
+            return date.toISOString();
         };
 
         // 直接使用格式化后的字符串，避免时区转换问题
         const submitData = {
-            ...formData,
+            patientId: formData.patientId,
+            dentistId: formData.dentistId,
+            dentalOfficeId: formData.dentalOfficeId,
             startDate: formatDateString(formData.startDate),
             endDate: formatDateString(formData.endDate)
         };
@@ -465,7 +483,9 @@ const saveAppointment = async () => {
             await updateAppointment(editingId.value, submitData);
             ElMessage.success('更新预约成功');
         } else {
-            // 添加模式
+          // 添加模式
+            delete submitData.id;
+            delete submitData.status;
             await createAppointment(submitData);
             ElMessage.success('添加预约成功');
         }
