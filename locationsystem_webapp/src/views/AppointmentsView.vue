@@ -270,6 +270,10 @@ const resetForm = () => {
     formData.endDate = new Date('2000-01-01')   // 临时值
     formData.startDate = null
     formData.endDate = null
+    // 重置表单验证状态
+    if (appointmentFormRef.value) {
+        appointmentFormRef.value.resetFields()
+    }
 }
 
 const addAppointment = () => {

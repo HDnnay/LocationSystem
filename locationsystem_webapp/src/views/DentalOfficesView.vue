@@ -157,6 +157,10 @@ const resetForm = () => {
         name: ''
     })
     editingId.value = null
+    // 重置表单验证状态
+    if (dentalOfficeFormRef.value) {
+        dentalOfficeFormRef.value.resetFields()
+    }
 }
 
 const addDentalOffice = () => {

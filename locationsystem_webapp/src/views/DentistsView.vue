@@ -174,6 +174,10 @@ const resetForm = () => {
     })
     emailError.value = ''
     editingId.value = null
+    // 重置表单验证状态
+    if (dentistFormRef.value) {
+        dentistFormRef.value.resetFields()
+    }
 }
 
 const addDentist = () => {

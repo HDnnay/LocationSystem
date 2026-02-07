@@ -77,7 +77,7 @@
 
         <!-- 添加/编辑患者模态框 -->
         <el-dialog :model-value="showAddModal || showEditModal"
-                   @update:model-value="val => this.handleModalClose(val)"
+                   @update:model-value="handleModalClose"
                    :title="showEditModal ? '编辑患者' : '添加患者'"
                    width="500px"
                    :close-on-click-modal="false"
@@ -174,6 +174,10 @@ const resetForm = () => {
     })
     emailError.value = ''
     editingId.value = null
+    // 重置表单验证状态
+    if (patientFormRef.value) {
+        patientFormRef.value.resetFields()
+    }
 }
 
 const addPatient = () => {
@@ -290,6 +294,13 @@ const savePatient = async () => {
         ElMessage.error(error.response?.data?.message || '保存患者失败，请重试')
     } finally {
         loading.value = false
+    }
+}
+
+// 处理模态框关闭
+const handleModalClose = (val) => {
+    if (!val) {
+        closeModal()
     }
 }
 </script>
