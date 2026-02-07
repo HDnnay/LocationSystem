@@ -71,7 +71,7 @@ builder.Services.AddHostedService<RabbitMQTestService>();
 //builder.Services.AddHostedService<DatabaseInitializerServices>();
 //更新数据库省份字段，数据大约有10000条
 //builder.Services.AddHostedService<CompanyUpdateBackgroundService>();
-builder.Services.AddHostedService<HostLoadCachBackgroupService>();
+//builder.Services.AddHostedService<HostLoadCachBackgroupService>();
 
 
 var app = builder.Build();

@@ -28,11 +28,11 @@ namespace LocationSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<T>> GetAll()
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
         }
-        public async Task<IEnumerable<TResult>> GetSelectedFields<TResult>(Expression<Func<T, TResult>> selector)
+        public async Task<IEnumerable<TResult>> GetAllFromSelectedFields<TResult>(Expression<Func<T, TResult>> selector)
         {
-            return await _context.Set<T>()
+            return await _context.Set<T>().AsNoTracking()
                 .Select(selector)
                 .ToListAsync();
         }

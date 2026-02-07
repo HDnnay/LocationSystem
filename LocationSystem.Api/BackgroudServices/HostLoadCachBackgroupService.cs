@@ -1,5 +1,6 @@
 ﻿
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos.Interfaces;
 using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.Companys.Queries.GetProviceConpany;
 using LocationSystem.Application.Utilities;
@@ -26,32 +27,46 @@ namespace LocationSystem.Api.BackgroudServices
             var companyRepository = scope.ServiceProvider.GetService<ICompanyRepository>();
             var cachService = scope.ServiceProvider.GetService<ICacheService>();
             var model = await cachService.GetOrCreateAsync("count_provice", async _ =>
-           {
-               var data = await companyRepository.GetAll();
-               var tastkResult = await Task.Run(async () =>
-               {
-                   var matchedResults = new List<ProviceCompanyModel>();
-                   foreach (var item in data)
-                   {
-                       foreach (var item2 in ProvinceDataExtentions.ReverseProvinceMap)
-                       {
-                           if (item.Address.StartsWith(item2.Key))
-                           {
-                               matchedResults.Add(new ProviceCompanyModel { Id = item.Id, Name = item.Name, Address = item.Address, Province = item2.Key });
-                           }
-                       }
-                   }
-                   return matchedResults;
-               });
-               var result = from item in tastkResult
-                            group item by item.Province into provinceGroup
-                            let count = provinceGroup.Count()
-                            orderby count descending
-                            select new Dictionary<string, int>() { { provinceGroup.Key, count } };
-               return new GetProviceCompanyDto() { ProviceConpany = result.ToList() };
-           }, 600);
+            {
+                var data = await companyRepository.GetAllFromSelectedFields(t => new CompanyViewModel { Address=t.Address,Province= t.Province });
+                if (data.Any()&&!string.IsNullOrWhiteSpace(data.FirstOrDefault().Province))
+                {
+                    return GetGroupProvince(data);
+                }
+                var tastkResult = await Task.Run(async () =>
+                {
+                    var matchedResults = new List<ICompanyEntity>();
+                    foreach (var item in data)
+                    {
+                        foreach (var item2 in ProvinceDataExtentions.ReverseProvinceMap)
+                        {
+                            if (item.Address.StartsWith(item2.Key))
+                            {
+                                matchedResults.Add(new CompanyViewModel { Address=item.Address, Province=item2.Key });
+                            }
+                        }
+                    }
+                    return matchedResults;
+                });
+                return GetGroupProvince(tastkResult);
+            }, 600);
 
             #endregion
         }
+
+        private static GetProviceCompanyDto? GetGroupProvince(IEnumerable<ICompanyEntity> tastkResult)
+        {
+            var result = from item in tastkResult
+                         group item by item.Province into provinceGroup
+                         let count = provinceGroup.Count()
+                         orderby count descending
+                         select new Dictionary<string, int>() { { provinceGroup.Key, count } };
+            return new GetProviceCompanyDto() { ProviceConpany = result.ToList() };
+        }
+    }
+    public class CompanyViewModel : ICompanyEntity
+    {
+        public string? Address { get; set; }
+        public string? Province { get; set; }
     }
 }

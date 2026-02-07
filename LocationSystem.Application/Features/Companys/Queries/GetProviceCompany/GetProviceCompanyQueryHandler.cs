@@ -20,7 +20,7 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
             var model =await _cacheService.GetOrCreateAsync("count_provice", async _ =>
             {
                
-                var data = await _companyRepository.GetSelectedFields(u => new ProvinceDto
+                var data = await _companyRepository.GetAllFromSelectedFields(u => new ProvinceDto
                 {
                     Address = u.Address,
                     Province = u.Province
