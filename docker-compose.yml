@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: LocationSystem.Api/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - ASPNETCORE_URLS=http://+:8082
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__SqlServerConnectionString=Server=host.docker.internal;Database=LocationSystemDb;User Id=sa;Password=123456;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - ConnectionStrings__Redis=host.docker.internal:6379,password=123456,abortConnect=false
+      - RabbitMQ__HostName=host.docker.internal
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__Port=5672
+      - RabbitMQ__VirtualHost=/
+    volumes:
+      - ./uploads:/app/wwwroot/uploads
+    restart: unless-stopped
