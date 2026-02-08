@@ -119,5 +119,44 @@ namespace LocationSystem.Api.Controllers
             public string Description { get; set; }
             public IFormFile File { get; set; }
         }
+
+        [HttpGet("preview/{fileName}")]
+        public IActionResult PreviewImage(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+                return BadRequest("文件名不能为空");
+
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound("文件不存在");
+
+            var extension = Path.GetExtension(fileName).ToLower();
+            var contentType = GetContentType(extension);
+
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, contentType);
+        }
+
+        private string GetContentType(string extension)
+        {
+            switch (extension)
+            {
+                case ".jpg":
+                case ".jpeg":
+                    return "image/jpeg";
+                case ".png":
+                    return "image/png";
+                case ".gif":
+                    return "image/gif";
+                case ".bmp":
+                    return "image/bmp";
+                case ".webp":
+                    return "image/webp";
+                default:
+                    return "application/octet-stream";
+            }
+        }
     }
 }
