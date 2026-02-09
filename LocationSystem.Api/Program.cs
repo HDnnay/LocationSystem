@@ -113,7 +113,31 @@ if (app.Environment.IsProduction())
             try
             {
                 Console.WriteLine($"🔄 尝试数据库迁移 (尝试 {i+1}/{maxRetries})...");
-                dbContext.Database.Migrate();
+                
+                // 检查数据库是否存在
+                bool databaseExists = dbContext.Database.CanConnect();
+                
+                if (!databaseExists)
+                {
+                    // 数据库不存在，执行迁移创建数据库
+                    Console.WriteLine("数据库不存在，正在创建并执行迁移...");
+                    dbContext.Database.Migrate();
+                }
+                else
+                {
+                    // 数据库存在，检查是否有未应用的迁移
+                    var pendingMigrations = dbContext.Database.GetPendingMigrations();
+                    if (pendingMigrations.Any())
+                    {
+                        Console.WriteLine($"发现 {pendingMigrations.Count()} 个未应用的迁移，正在执行...");
+                        dbContext.Database.Migrate();
+                    }
+                    else
+                    {
+                        Console.WriteLine("数据库已存在且无未应用的迁移，跳过迁移操作...");
+                    }
+                }
+                
                 Console.WriteLine("✅ 数据库迁移完成");
                 break;
             }
