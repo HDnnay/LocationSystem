@@ -9,6 +9,14 @@ export const login = (data) => {
   })
 }
 
+export const register = (data) => {
+  return request({
+    url: '/api/auth/register',
+    method: 'post',
+    data
+  })
+}
+
 export const refreshToken = (data) => {
   return request({
     url: '/api/auth/refresh-token',

@@ -12,9 +12,18 @@ const routes = [
     {
         path: '/login',
         name: 'Login',
-        component: () => import('../views/LoginView.vue'),
+        component: () => import('../views/auth/LoginView.vue'),
         meta: {
             title: '用户登录',
+            requiresAuth: false
+        }
+    },
+    {
+        path: '/register',
+        name: 'Register',
+        component: () => import('../views/auth/RegisterView.vue'),
+        meta: {
+            title: '用户注册',
             requiresAuth: false
         }
     },

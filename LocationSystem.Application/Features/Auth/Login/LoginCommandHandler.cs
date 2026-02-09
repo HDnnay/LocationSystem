@@ -73,5 +73,6 @@ namespace LocationSystem.Application.Features.Auth.Login
         Task<Patient?> GetPatientByEmail(string email);
         Task SaveRefreshToken(Guid userId, string refreshToken);
         Task<string?> GetRefreshToken(Guid userId);
+        Task AddAsync(User user);
     }
 }

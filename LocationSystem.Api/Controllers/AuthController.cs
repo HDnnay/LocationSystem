@@ -1,5 +1,6 @@
 using LocationSystem.Application.Features.Auth.Login;
 using LocationSystem.Application.Features.Auth.RefreshToken;
+using LocationSystem.Application.Features.Auth.Register;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,21 @@ namespace LocationSystem.Api.Controllers
             try
             {
                 var command = new LoginCommand { Request = request };
+                var response = await _mediator.Send(command);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
+        {
+            try
+            {
+                var command = new RegisterCommand { Request = request };
                 var response = await _mediator.Send(command);
                 return Ok(response);
             }
