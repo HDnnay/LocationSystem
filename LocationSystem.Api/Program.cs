@@ -1,14 +1,17 @@
-﻿using AspNetCoreRateLimit;
+using AspNetCoreRateLimit;
 using LocationSystem.Api.BackgroudServices;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
+using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Application.Utilities.RabbitMQs;
 using LocationSystem.Infrastructure;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using System.Text;
@@ -56,6 +59,27 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = long.MaxValue; // 如果不限制，设置为long.MaxValue
     options.MemoryBufferThreshold = int.MaxValue;
 });
+
+// 配置JWT设置
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
+// 添加JWT认证
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+            ValidateIssuer = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidateAudience = true,
+            ValidAudience = jwtSettings.Audience,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
@@ -95,6 +119,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCustomExceptionHandler();
 app.UseCors("AllowFrontend");
+app.UseAuthentication();
 // // 1. 添加自定义中间件来拦截静态文件请求
 app.Use(async (context, next) =>
 {

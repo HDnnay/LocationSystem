@@ -16,12 +16,9 @@ let isRefreshing = false;
 service.interceptors.request.use(
     config => {
         // 在发送请求之前做一些处理，比如添加token
-
-        if (config.url != "/api/Login/Login?type=user") {
-            const token = localStorage.getItem('access_token');
-            if (token) {
-                config.headers['Authorization'] = "Bearer "+token;
-            }
+        const token = localStorage.getItem('access_token');
+        if (token) {
+            config.headers['Authorization'] = "Bearer "+token;
         }
         // 只有在不是文件上传时才设置Content-Type为application/json
         if (!config.headers['Content-Type'] || config.headers['Content-Type'] !== 'multipart/form-data') {
@@ -58,31 +55,33 @@ service.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const refreshToken = localStorage.getItem('refresh_token');
-                if (refreshToken) {
-                    await service.post('/api/Login/RefreshToken', { RefreshToken: refreshToken }).then(res => {
-
+                const userType = localStorage.getItem('user_type');
+                if (refreshToken && userType) {
+                    await service.post('/api/auth/refresh-token', {
+                        RefreshToken: refreshToken,
+                        Type: parseInt(userType)
+                    }).then(res => {
                         if (res.status === 200) {
-                            let newToken = res.data.accessToken;
-                            localStorage.setItem('access_token', res.data.accessToken);
-                            localStorage.removeItem('refresh_token', res.data.refreshToken);
+                            let newToken = res.data.data.accessToken;
+                            let newRefreshToken = res.data.data.refreshToken;
+                            localStorage.setItem('access_token', newToken);
+                            localStorage.setItem('refresh_token', newRefreshToken);
                             originalRequest.headers.Authorization = `Bearer ${newToken}`;
                             return service(originalRequest);
                         }
                     });
                 }
             } catch (err) {
-                localStorage.removeItem('access_token')
+                localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user_type');
+                localStorage.removeItem('user_info');
                 // 跳转到登录页
-
-
-
+                window.location.href = '/login';
                 return Promise.reject(err);
             } finally {
                 isRefreshing = false;
             }
-            // 清除token
-
         } else {
             return Promise.reject(error);
         }

@@ -5,13 +5,15 @@ import * as appointments from './appointments'
 import * as dentalOffices from './dentalOffices'
 import * as company from './company'
 import * as rent from './renthouse'
+import * as auth from './auth'
 const api={
   dentists,
   patients,
   appointments,
   dentalOffices,
   company,
-  rent
+  rent,
+  auth
 };
 
 export default api;

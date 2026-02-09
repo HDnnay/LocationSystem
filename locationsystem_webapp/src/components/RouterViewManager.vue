@@ -6,7 +6,7 @@
         </template>
 
         <!-- 登录和注册页面模板 -->
-        <template v-else-if="isAuthRoute">
+        <template v-else-if="isAuthRoute || !isLoggedIn">
             <transition name="fade" mode="out-in">
                 <div class="auth-view-container" :key="$route.path">
                     <router-view />
@@ -177,7 +177,8 @@
 
             // 判断当前路由是否为认证相关路由
             isAuthRoute() {
-                return false // 当前没有认证相关路由
+                const authRoutes = ['/login']
+                return authRoutes.includes(this.$route.path)
             }
         },
         methods: {

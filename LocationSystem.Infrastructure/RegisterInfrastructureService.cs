@@ -1,5 +1,6 @@
-﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
+using LocationSystem.Application.Features.Auth.Login;
 using LocationSystem.Infrastructure.Repositories;
 using LocationSystem.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,7 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<IAppointmentRepository,AppointmentRepository>();
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IRentHouseRepository, RentHouseRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
             return services;
         }

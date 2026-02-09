@@ -23,14 +23,14 @@
         return {
             sidebarOpen: false,
             isMobile: false,
-            isLoggedIn: true, // 默认设置为已登录状态
+            isLoggedIn: false, // 默认设置为未登录状态
             openDropdown: null
         }
     },
     mounted() {
         this.checkScreenSize()
-        // 不再从localStorage读取登录状态，始终保持已登录
-        this.isLoggedIn = true
+        // 从localStorage读取登录状态
+        this.isLoggedIn = localStorage.getItem('access_token') !== null
         window.addEventListener('resize', this.checkScreenSize)
 
         // 全局路由守卫已移除，不再需要登录检查
@@ -48,8 +48,17 @@
                 }
             },
             handleLogout() {
-                // 保留退出登录方法，但不再清除登录状态
-                // 因为现在系统始终保持已登录状态
+                // 清除localStorage中的token和用户信息
+                localStorage.removeItem('access_token')
+                localStorage.removeItem('refresh_token')
+                localStorage.removeItem('user_type')
+                localStorage.removeItem('user_info')
+
+                // 更新登录状态
+                this.isLoggedIn = false
+
+                // 跳转到登录页
+                this.$router.push('/login')
             }
         }
     }

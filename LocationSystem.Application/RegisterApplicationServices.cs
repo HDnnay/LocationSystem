@@ -1,10 +1,11 @@
-﻿using FluentValidation;
+using FluentValidation;
 using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Commands.DeleteDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Commands.UpdateDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOfficesDetail;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Application.Utilities.Jwt;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,7 @@ namespace LocationSystem.Application
             .AddClasses(c => c.AssignableTo(typeof(IRequestHandler<>))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IRequestHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(ICacheService))).AsImplementedInterfaces().WithScopedLifetime()
+            .AddClasses(c=>c.AssignableToAny(typeof(IJwtService))).AsImplementedInterfaces().WithSingletonLifetime()
             );
             return services;
         }
