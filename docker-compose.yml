@@ -1,22 +1,45 @@
 version: '3.8'
 
 services:
-  api:
+  backend:
     build:
       context: .
       dockerfile: LocationSystem.Api/Dockerfile
     ports:
-      - "8082:8082"
+      - "8000:8080"
     environment:
-      - ASPNETCORE_URLS=http://+:8082
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__SqlServerConnectionString=Server=host.docker.internal;Database=LocationSystemDb;User Id=sa;Password=123456;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - ConnectionStrings__SqlServerConnectionString=Server=db;Database=LocationSystem;User Id=sa;Password=Password123!;TrustServerCertificate=True;
       - ConnectionStrings__Redis=host.docker.internal:6379,password=123456,abortConnect=false
       - RabbitMQ__HostName=host.docker.internal
+      - RabbitMQ__Port=5672
       - RabbitMQ__UserName=guest
       - RabbitMQ__Password=guest
-      - RabbitMQ__Port=5672
       - RabbitMQ__VirtualHost=/
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  frontend:
+    build:
+      context: ./locationsystem_webapp
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - "1434:1433"
+    environment:
+      - SA_PASSWORD=Password123!
+      - ACCEPT_EULA=Y
     volumes:
-      - ./uploads:/app/wwwroot/uploads
+      - sqlserver_data:/var/opt/mssql
     restart: unless-stopped
+
+volumes:
+  sqlserver_data:

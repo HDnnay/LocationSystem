@@ -1,4 +1,9 @@
-# 构建阶段
+# 使用官方ASP.NET Core运行时作为基础镜像
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+# 使用官方SDK镜像进行构建
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
@@ -17,12 +22,13 @@ RUN dotnet restore LocationSystem.Api/LocationSystem.Api.csproj
 # 构建项目
 RUN dotnet build LocationSystem.Api/LocationSystem.Api.csproj -c Release -o /app/build
 
-# 发布项目
+# 发布应用
 FROM build AS publish
+WORKDIR /src
 RUN dotnet publish LocationSystem.Api/LocationSystem.Api.csproj -c Release -o /app/publish
 
-# 运行阶段
-FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+# 构建最终镜像
+FROM base AS final
 WORKDIR /app
 
 # 复制发布文件
@@ -31,12 +37,8 @@ COPY --from=publish /app/publish .
 # 创建上传目录
 RUN mkdir -p wwwroot/uploads
 
-# 设置环境变量
-ENV ASPNETCORE_URLS=http://+:8082
-ENV ASPNETCORE_ENVIRONMENT=Production
-
 # 暴露端口
-EXPOSE 8082
+EXPOSE 80
 
 # 运行应用
 ENTRYPOINT ["dotnet", "LocationSystem.Api.dll"]
