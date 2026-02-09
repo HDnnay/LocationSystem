@@ -85,9 +85,28 @@ namespace LocationSystem.Api.Controllers
             {
                 if (file.Length > 0)
                 {
+                    // 计算文件哈希值用于重复检测
+                    var fileHash = await CalculateFileHash(file.OpenReadStream());
                     var extension = Path.GetExtension(file.FileName);
+                    
+                    // 检查是否已存在相同哈希值的文件
+                    var existingFile = FindExistingFile(uploadsFolder, fileHash);
+                    if (existingFile != null)
+                    {
+                        // 文件已存在，直接返回已存在的文件信息
+                        uploadedFiles.Add(new
+                        {
+                            OriginalName = file.FileName,
+                            FileSize = file.Length,
+                            FileUrl = Path.GetFileName(existingFile),
+                            IsDuplicate = true
+                        });
+                        continue;
+                    }
+
+                    // 文件不存在，正常上传
                     string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
-                    var fileName = $"{timestamp}{extension}";
+                    var fileName = $"{fileHash.Substring(0, 8)}_{timestamp}{extension}";
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
@@ -96,12 +115,13 @@ namespace LocationSystem.Api.Controllers
                     }
 
                     //var fileUrl = $"{Request.Scheme}://{Request.Host}/uploads/{fileName}";
-                    var fileUrl = $"/uploads/{fileName}";
+                    var fileUrl = $"{fileName}";
                     uploadedFiles.Add(new
                     {
                         OriginalName = file.FileName,
                         FileSize = file.Length,
-                        FileUrl = fileUrl
+                        FileUrl = fileUrl,
+                        IsDuplicate = false
                     });
                 }
             }
@@ -112,6 +132,34 @@ namespace LocationSystem.Api.Controllers
                 files = uploadedFiles
             });
 
+        }
+
+        // 计算文件哈希值
+        private async Task<string> CalculateFileHash(Stream stream)
+        {
+            using (var sha1 = System.Security.Cryptography.SHA1.Create())
+            {
+                stream.Position = 0;
+                var hash = await sha1.ComputeHashAsync(stream);
+                stream.Position = 0;
+                return BitConverter.ToString(hash).Replace("-", "").ToLower();
+            }
+        }
+
+        // 查找已存在的文件
+        private string FindExistingFile(string directory, string fileHash)
+        {
+            var files = Directory.GetFiles(directory);
+            foreach (var filePath in files)
+            {
+                var fileName = Path.GetFileName(filePath);
+                // 检查文件名是否包含哈希值前缀
+                if (fileName.StartsWith(fileHash.Substring(0, 8)))
+                {
+                    return filePath;
+                }
+            }
+            return null;
         }
 
         public class FileUploadViewModel

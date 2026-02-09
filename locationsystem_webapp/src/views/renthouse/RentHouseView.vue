@@ -109,51 +109,86 @@
     </el-card>
 
     <!-- 查看详情对话框 -->
-    <el-dialog v-model="detailDialogVisible" title="租房详情" width="600px">
+    <el-dialog v-model="detailDialogVisible" title="租房详情" width="800px">
       <div class="detail-container">
-        <div class="detail-item">
-          <span class="detail-label">标题:</span>
-          <span class="detail-value">{{ currentDetail.title }}</span>
+        <!-- 左侧信息区域 -->
+        <div class="detail-info-section">
+          <div class="detail-item">
+            <span class="detail-label">标题:</span>
+            <span class="detail-value">{{ currentDetail.title }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">地址:</span>
+            <span class="detail-value">{{ currentDetail.address }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">描述:</span>
+            <span class="detail-value">{{ currentDetail.description || '无描述' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">类型:</span>
+            <span class="detail-value">
+              <el-tag :type="getTypeTagType(currentDetail.type)" size="small">
+                {{ getTypeLabel(currentDetail.type) }}
+              </el-tag>
+            </span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">电话:</span>
+            <span class="detail-value">{{ currentDetail.phone }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">月租:</span>
+            <span class="detail-value">{{ formatMoney(currentDetail.monthlyRent) }}元</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">押金:</span>
+            <span class="detail-value">{{ formatMoney(currentDetail.deposit) }}元</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">创建时间:</span>
+            <span class="detail-value">{{ formatDateTime(currentDetail.createTime) }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">创建人ID:</span>
+            <span class="detail-value">{{ currentDetail.createUserId }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">记录ID:</span>
+            <span class="detail-value">{{ currentDetail.id }}</span>
+          </div>
         </div>
-        <div class="detail-item">
-          <span class="detail-label">地址:</span>
-          <span class="detail-value">{{ currentDetail.address }}</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">描述:</span>
-          <span class="detail-value">{{ currentDetail.description || '无描述' }}</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">类型:</span>
-          <span class="detail-value">
-            <el-tag :type="getTypeTagType(currentDetail.type)" size="small">
-              {{ getTypeLabel(currentDetail.type) }}
-            </el-tag>
-          </span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">电话:</span>
-          <span class="detail-value">{{ currentDetail.phone }}</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">月租:</span>
-          <span class="detail-value">{{ formatMoney(currentDetail.monthlyRent) }}元</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">押金:</span>
-          <span class="detail-value">{{ formatMoney(currentDetail.deposit) }}元</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">创建时间:</span>
-          <span class="detail-value">{{ formatDateTime(currentDetail.createTime) }}</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">创建人ID:</span>
-          <span class="detail-value">{{ currentDetail.createUserId }}</span>
-        </div>
-        <div class="detail-item">
-          <span class="detail-label">记录ID:</span>
-          <span class="detail-value">{{ currentDetail.id }}</span>
+
+        <!-- 右侧图片区域 -->
+        <div class="detail-image-section">
+          <div v-if="currentDetail.images && currentDetail.images.length > 0" class="image-preview-container">
+            <div class="image-preview-main">
+              <img :src="getImageUrl(currentDetail.images[currentImageIndex])" :alt="currentDetail.title" class="main-image">
+              <div class="image-navigation">
+                <el-button type="primary" circle @click="prevImage" :disabled="currentImageIndex === 0">
+                  <el-icon><ArrowLeft /></el-icon>
+                </el-button>
+                <span class="image-counter">{{ currentImageIndex + 1 }} / {{ currentDetail.images.length }}</span>
+                <el-button type="primary" circle @click="nextImage" :disabled="currentImageIndex === currentDetail.images.length - 1">
+                  <el-icon><ArrowRight /></el-icon>
+                </el-button>
+              </div>
+            </div>
+            <div class="image-thumbnails">
+              <div
+                v-for="(image, index) in currentDetail.images"
+                :key="index"
+                class="thumbnail-item"
+                :class="{ active: index === currentImageIndex }"
+                @click="currentImageIndex = index"
+              >
+                <img :src="getImageUrl(image)" :alt="`缩略图 ${index + 1}`" class="thumbnail-image">
+              </div>
+            </div>
+          </div>
+          <div v-else class="no-image">
+            <span style="color: #999;">无图片</span>
+          </div>
         </div>
       </div>
       <template #footer>
@@ -169,9 +204,12 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
   import api from "../../api"
+  import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
 
   export default defineComponent({
     components: {
+      ArrowLeft,
+      ArrowRight
     },
     directives: {
     },
@@ -194,6 +232,8 @@
         // 详情对话框
         detailDialogVisible: false,
         currentDetail: {},
+        // 当前图片索引
+        currentImageIndex: 0,
         // 表格宽度
         tableWidth: 0
       }
@@ -342,8 +382,44 @@
 
       // 查看详情
       viewDetails(rowData) {
+        console.log('查看详情:')
+        console.log(rowData)
         this.currentDetail = { ...rowData }
+        // 处理ImageSrc字段，转换为数组
+        if (rowData.imageSrc) {
+          this.currentDetail.images = rowData.imageSrc.split(',').filter(img => img.trim())
+        } else {
+          this.currentDetail.images = []
+        }
+        this.currentImageIndex = 0 // 重置图片索引
         this.detailDialogVisible = true
+      },
+
+      // 获取图片URL
+      getImageUrl(image) {
+        if (!image) return ''
+        // 如果是完整URL，直接返回
+        if (image.startsWith('http://') || image.startsWith('https://')) {
+          return image
+        }
+        // 否则使用相对路径，自动适配当前端口
+        // 确保路径格式正确，去除首尾空格
+        const cleanImageName = image.trim()
+        return `/api/renthouse/preview/${cleanImageName}`
+      },
+
+      // 上一张图片
+      prevImage() {
+        if (this.currentImageIndex > 0) {
+          this.currentImageIndex--
+        }
+      },
+
+      // 下一张图片
+      nextImage() {
+        if (this.currentDetail.images && this.currentImageIndex < this.currentDetail.images.length - 1) {
+          this.currentImageIndex++
+        }
       },
 
       // 格式化金额
@@ -484,6 +560,43 @@
     align-items: center;
   }
 
+  /* 详情容器布局 */
+  .detail-container {
+    display: flex !important;
+    gap: 20px;
+    width: 100%;
+    flex-direction: row !important;
+  }
+
+  /* 左侧信息区域 */
+  .detail-info-section {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* 右侧图片区域 */
+  .detail-image-section {
+    width: 300px;
+    min-width: 300px;
+  }
+
+  /* 无图片状态 */
+  .no-image {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f5f5f5;
+  }
+
+  /* 图片预览主区域 */
+  .image-preview-main {
+    height: 250px;
+  }
+
   /* 移动端响应式 */
   @media (max-width: 768px) {
     .table-container {
@@ -529,12 +642,6 @@
     margin-top: 20px;
   }
 
-  .detail-container {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
   .detail-item {
     display: flex;
     line-height: 28px;
@@ -552,5 +659,102 @@
     flex: 1;
     color: #303133;
     word-break: break-all;
+  }
+
+  /* 图片预览样式 */
+  .image-preview-container {
+    width: 100%;
+  }
+
+  .image-preview-main {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background-color: #f5f5f5;
+  }
+
+  .main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .image-navigation {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 6px 12px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 260px;
+    justify-content: center;
+  }
+
+  .image-counter {
+    color: white;
+    font-size: 12px;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .image-thumbnails {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 8px 0;
+  }
+
+  .thumbnail-item {
+    width: 80px;
+    height: 80px;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .thumbnail-item:hover {
+    border-color: #409eff;
+    transform: scale(1.05);
+  }
+
+  .thumbnail-item.active {
+    border-color: #409eff;
+    box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.2);
+  }
+
+  .thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 滚动条样式 */
+  .image-thumbnails::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .image-thumbnails::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  .image-thumbnails::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+
+  .image-thumbnails::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
   }
 </style>

@@ -16,6 +16,7 @@ namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseLi
         public required HouserType Type { get; set; }
         public Guid CreateUserId { get; set; }
         public string? Phone { get; set; }
+        public string? ImageSrc { get; set; }
         /// <summary>
         /// 月租
         /// </summary>
@@ -44,7 +45,8 @@ namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseLi
                 MonthlyRent = rentHouse.MonthlyRent,
                 Deposit = rentHouse.Deposit,
                 CreateTime = rentHouse.CreateTime,
-                CreateUserId = rentHouse.CreateUserId
+                CreateUserId = rentHouse.CreateUserId,
+                ImageSrc = rentHouse.ImageSrc
             };
         }
     }

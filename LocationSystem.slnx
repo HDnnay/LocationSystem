@@ -17,4 +17,7 @@
     <Project Path="LocationSystem.Tests/LocationSystem.Tests.csproj" />
   </Folder>
   <Folder Name="/Web/" />
+  <Folder Name="/解决方案项/">
+    <File Path="docker-compose.yml" />
+  </Folder>
 </Solution>
