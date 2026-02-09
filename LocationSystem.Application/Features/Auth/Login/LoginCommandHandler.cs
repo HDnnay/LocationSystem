@@ -29,7 +29,6 @@ namespace LocationSystem.Application.Features.Auth.Login
             {
                 user = await _userRepository.GetPatientByEmail(loginRequest.Email);
             }
-
             if (user == null)
             {
                 throw new Exception("用户不存在");
