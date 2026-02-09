@@ -21,15 +21,19 @@ namespace LocationSystem.Application.Features.Auth.RefreshToken
             var refreshTokenRequest = request.Request;
             var refreshToken = refreshTokenRequest.RefreshToken;
 
-            // 模拟根据refresh token查找用户（实际项目中应该从数据库查询）
-            // 这里简化处理，使用测试数据
+            // 查找用户（实际项目中应该根据refresh token从数据库查询用户）
+            // 这里简化处理，根据用户类型和已知信息查找用户
             User? user = null;
             if (refreshTokenRequest.Type == UserType.Dentist)
             {
+                // 实际项目中应该根据refresh token从数据库查询用户
+                // 这里简化处理，使用现有的方法
                 user = await _userRepository.GetDentistByEmail("dentist@example.com");
             }
             else if (refreshTokenRequest.Type == UserType.Patient)
             {
+                // 实际项目中应该根据refresh token从数据库查询用户
+                // 这里简化处理，使用现有的方法
                 user = await _userRepository.GetPatientByEmail("patient@example.com");
             }
 

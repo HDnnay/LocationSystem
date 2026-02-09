@@ -1,4 +1,5 @@
 using FluentValidation;
+using LocationSystem.Application.Features.Auth.Register;
 using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Commands.DeleteDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Commands.UpdateDentalOffice;
@@ -26,7 +27,11 @@ namespace LocationSystem.Application
             .AddClasses(c=>c.AssignableToAny(typeof(IRequestHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(ICacheService))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IJwtService))).AsImplementedInterfaces().WithSingletonLifetime()
+            .AddClasses(c=>c.AssignableToAny(typeof(IUserRegistrationStrategy))).AsImplementedInterfaces().WithTransientLifetime()
             );
+            
+            // 注册UserRegistrationStrategyFactory
+            services.AddTransient<UserRegistrationStrategyFactory>();
             return services;
         }
     }

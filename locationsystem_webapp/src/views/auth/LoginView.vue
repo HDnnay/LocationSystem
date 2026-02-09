@@ -20,6 +20,11 @@
             登录
           </el-button>
         </el-form-item>
+        <el-form-item>
+          <div style="text-align: center; margin-top: 10px;">
+            没有账号？<el-link type="primary" @click="goToRegister">立即注册</el-link>
+          </div>
+        </el-form-item>
       </el-form>
     </div>
   </div>
@@ -51,6 +56,11 @@ export default {
       loading: false
     }
   },
+  mounted() {
+    // 强制清空表单值，确保没有默认值
+    this.loginForm.email = '';
+    this.loginForm.password = '';
+  },
   methods: {
             async handleLogin() {
                 const valid = await this.$refs.loginFormRef.validate()
@@ -60,16 +70,16 @@ export default {
                 try {
                     const response = await this.$api.auth.login(this.loginForm)
                     const data = response.data
-                    
+
                     // 保存token和用户信息
                     localStorage.setItem('access_token', data.accessToken)
                     localStorage.setItem('refresh_token', data.refreshToken)
                     localStorage.setItem('user_type', this.loginForm.type)
                     localStorage.setItem('user_info', JSON.stringify(data.userInfo))
-                    
+
                     // 更新App.vue中的登录状态
                     this.$root.$data.isLoggedIn = true
-                    
+
                     // 跳转到首页
                     this.$router.push('/')
                 } catch (error) {
@@ -77,6 +87,9 @@ export default {
                 } finally {
                     this.loading = false
                 }
+            },
+            goToRegister() {
+                this.$router.push('/register')
             }
         }
 }

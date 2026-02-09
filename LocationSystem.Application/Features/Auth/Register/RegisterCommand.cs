@@ -2,7 +2,7 @@ using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Auth.Register
 {
-    public class RegisterCommand : IRequest<RegisterResponseDto>
+    public class RegisterCommand : IRequset<RegisterResponseDto>
     {
         public RegisterRequestDto Request { get; set; }
     }

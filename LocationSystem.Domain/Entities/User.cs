@@ -1,4 +1,4 @@
-﻿using LocationSystem.Domain.Exceptions;
+using LocationSystem.Domain.Exceptions;
 using LocationSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,8 @@ namespace LocationSystem.Domain.Entities
         public Email Email { get; private set; } = null!;
         public string PasswordHash { get; set; }
         public UserType UserType { get; protected set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
         protected User() { }
         public User(string name, Email email)
         {
@@ -39,6 +41,16 @@ namespace LocationSystem.Domain.Entities
                 throw new BussinessRuleException("密码长度不能于6位");
             passwordHash = BCrypt.Net.BCrypt.HashPassword(passwordHash);
             PasswordHash = passwordHash;
+        }
+        public virtual void SetRefreshToken(string refreshToken, DateTime expiryTime)
+        {
+            RefreshToken = refreshToken;
+            RefreshTokenExpiryTime = expiryTime;
+        }
+        public virtual void ClearRefreshToken()
+        {
+            RefreshToken = null;
+            RefreshTokenExpiryTime = null;
         }
     }
 }

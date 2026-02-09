@@ -45,7 +45,7 @@ namespace LocationSystem.Application.Features.Auth.Login
             var accessToken = _jwtService.GenerateAccessToken(user);
             var refreshToken = _jwtService.GenerateRefreshToken();
 
-            // 保存refresh token（实际项目中应该保存到数据库）
+            // 保存refresh token到数据库
             await _userRepository.SaveRefreshToken(user.Id, refreshToken);
 
             // 构建响应
@@ -71,8 +71,12 @@ namespace LocationSystem.Application.Features.Auth.Login
     {
         Task<Dentist?> GetDentistByEmail(string email);
         Task<Patient?> GetPatientByEmail(string email);
+        Task<User?> GetUserByEmail(string email);
+        Task<bool> IsEmailExists(string email);
         Task SaveRefreshToken(Guid userId, string refreshToken);
         Task<string?> GetRefreshToken(Guid userId);
         Task AddAsync(User user);
+        Task AddDentistAsync(Dentist dentist);
+        Task AddPatientAsync(Patient patient);
     }
 }

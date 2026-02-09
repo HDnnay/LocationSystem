@@ -1,5 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Auth.Login;
+using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.ValueObjects;
 
@@ -8,10 +9,12 @@ namespace LocationSystem.Application.Features.Auth.Register
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponseDto>
     {
         private readonly IUserRepository _userRepository;
+        private readonly UserRegistrationStrategyFactory _strategyFactory;
 
-        public RegisterCommandHandler(IUserRepository userRepository)
+        public RegisterCommandHandler(IUserRepository userRepository, UserRegistrationStrategyFactory strategyFactory)
         {
             _userRepository = userRepository;
+            _strategyFactory = strategyFactory;
         }
 
         public async Task<RegisterResponseDto> Handle(RegisterCommand request)
@@ -19,10 +22,8 @@ namespace LocationSystem.Application.Features.Auth.Register
             var registerRequest = request.Request;
 
             // 验证邮箱是否已存在
-            var existingDentist = await _userRepository.GetDentistByEmail(registerRequest.Email);
-            var existingPatient = await _userRepository.GetPatientByEmail(registerRequest.Email);
-
-            if (existingDentist != null || existingPatient != null)
+            var isEmailExists = await _userRepository.IsEmailExists(registerRequest.Email);
+            if (isEmailExists)
             {
                 throw new Exception("邮箱已被注册");
             }
@@ -45,11 +46,9 @@ namespace LocationSystem.Application.Features.Auth.Register
             // 设置密码哈希
             user.SetPasswordHash(registerRequest.Password);
 
-            // 保存用户到数据库
-            await _userRepository.AddAsync(user);
-            // 注意：实际项目中可能还需要调用UnitOfWork的SaveChanges方法来提交事务
-            // 由于当前的实现中没有UnitOfWork的SaveChanges方法，我们假设通过其他方式提交
-            // 实际项目中需要根据具体的实现来调整
+            // 使用策略注册用户
+            var strategy = _strategyFactory.GetStrategy(registerRequest.Type);
+            await strategy.RegisterUser(user, _userRepository);
 
             return new RegisterResponseDto
             {
