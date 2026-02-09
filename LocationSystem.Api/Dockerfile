@@ -34,8 +34,15 @@ WORKDIR /app
 # 复制发布文件
 COPY --from=publish /app/publish .
 
+# 复制SQLite数据库文件
+COPY LocationSystem.Api/Sqlite ./Sqlite
+
 # 创建上传目录
 RUN mkdir -p wwwroot/uploads
+
+# 确保SQLite目录存在并设置权限
+RUN if [ ! -d "/app/Sqlite" ]; then mkdir -p /app/Sqlite; fi
+RUN chmod -R 755 /app/Sqlite
 
 # 暴露端口
 EXPOSE 80

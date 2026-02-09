@@ -1,7 +1,8 @@
-﻿using LocationSystem.Application.Features.Companys.Commands.ProcessCompanyData;
+using LocationSystem.Application.Features.Companys.Commands.ProcessCompanyData;
 using LocationSystem.Application.Utilities;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace LocationSystem.Api.BackgroudServices
 {
@@ -21,7 +22,20 @@ namespace LocationSystem.Api.BackgroudServices
             _scopeFactory = scopeFactory;
             _configuration = configuration;
             _logger = logger;
-            _connectionString = configuration.GetConnectionString("SqliteConnectionString")?? throw new ArgumentNullException("SqliteConnectionString");
+            // 获取SQLite连接字符串
+            var sqliteConnectionString = configuration.GetConnectionString("SqliteConnectionString") ?? throw new ArgumentNullException("SqliteConnectionString");
+            
+            // 检查连接字符串是否使用相对路径
+            if (sqliteConnectionString.Contains("./sqlite/test.db"))
+            {
+                // 在容器中，使用绝对路径
+                _connectionString = sqliteConnectionString.Replace("./sqlite/test.db", "./Sqlite/test.db");
+                _logger.LogInformation($"使用SQLite连接字符串: {_connectionString}");
+            }
+            else
+            {
+                _connectionString = sqliteConnectionString;
+            }
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -66,6 +80,14 @@ namespace LocationSystem.Api.BackgroudServices
 
             try
             {
+                // 确保SQLite数据库文件所在的目录存在
+                var sqlitePath = Path.Combine(Directory.GetCurrentDirectory(), "Sqlite");
+                if (!Directory.Exists(sqlitePath))
+                {
+                    Directory.CreateDirectory(sqlitePath);
+                    _logger.LogInformation($"创建了SQLite数据库目录: {sqlitePath}");
+                }
+                
                 using var connection = new SqliteConnection(_connectionString);
                 await connection.OpenAsync();
 

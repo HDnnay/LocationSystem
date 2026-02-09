@@ -177,7 +177,7 @@
 
             // 判断当前路由是否为认证相关路由
             isAuthRoute() {
-                const authRoutes = ['/login']
+                const authRoutes = ['/login', '/register']
                 return authRoutes.includes(this.$route.path)
             }
         },
