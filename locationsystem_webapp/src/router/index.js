@@ -99,6 +99,24 @@ const routes = [
       title: '租房管理',
       requiresAuth: true
     }
+  },
+  {
+    path: '/roles',
+    name: 'Roles',
+    component: () => import('../views/Roles.vue'),
+    meta: {
+      title: '角色管理',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/permissions',
+    name: 'Permissions',
+    component: () => import('../views/users/permissions.vue'),
+    meta: {
+      title: '权限管理',
+      requiresAuth: true
+    }
   }
 
 ]

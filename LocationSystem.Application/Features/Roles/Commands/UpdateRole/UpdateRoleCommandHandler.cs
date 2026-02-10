@@ -1,4 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Utilities;
@@ -15,11 +16,13 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UpdateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository)
+        public UpdateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
         {
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<RoleDto> Handle(UpdateRoleCommand request)
@@ -63,7 +66,17 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
             }
 
             // 保存更新
-            await _roleRepository.UpdateAsync(role);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _roleRepository.UpdateAsync(role);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
 
             // 返回更新后的角色
             return new RoleDto

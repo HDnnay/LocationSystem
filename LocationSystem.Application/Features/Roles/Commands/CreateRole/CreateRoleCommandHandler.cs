@@ -1,4 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Roles.Commands.CreateRole;
 using LocationSystem.Application.Utilities;
@@ -14,11 +15,13 @@ namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository)
+        public CreateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
         {
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<RoleDto> Handle(CreateRoleCommand request)
@@ -58,7 +61,17 @@ namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
             }
 
             // 保存角色
-            await _roleRepository.AddAsync(role);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _roleRepository.AddAsync(role);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
 
             // 返回DTO
             return new RoleDto

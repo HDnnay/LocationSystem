@@ -1,4 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Permissions.Commands.CreatePermission;
 using LocationSystem.Application.Utilities;
@@ -13,10 +14,12 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
     public class CreatePermissionCommandHandler : IRequsetHandler<CreatePermissionCommand, PermissionDto>
     {
         private readonly IPermissionRepository _permissionRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreatePermissionCommandHandler(IPermissionRepository permissionRepository)
+        public CreatePermissionCommandHandler(IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
         {
             _permissionRepository = permissionRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<PermissionDto> Handle(CreatePermissionCommand request)
@@ -43,7 +46,17 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
             );
 
             // 保存权限
-            await _permissionRepository.AddAsync(permission);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _permissionRepository.AddAsync(permission);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
 
             // 返回DTO
             return new PermissionDto

@@ -1,4 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Permissions.Commands.UpdatePermission;
 using LocationSystem.Application.Utilities;
@@ -13,10 +14,12 @@ namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermiss
     public class UpdatePermissionCommandHandler : IRequsetHandler<UpdatePermissionCommand, PermissionDto>
     {
         private readonly IPermissionRepository _permissionRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UpdatePermissionCommandHandler(IPermissionRepository permissionRepository)
+        public UpdatePermissionCommandHandler(IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
         {
             _permissionRepository = permissionRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<PermissionDto> Handle(UpdatePermissionCommand request)
@@ -46,7 +49,17 @@ namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermiss
             permission.Update(request.PermissionDto.Name, request.PermissionDto.Code, request.PermissionDto.Description);
 
             // 保存更新
-            await _permissionRepository.UpdateAsync(permission);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _permissionRepository.UpdateAsync(permission);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
 
             // 返回更新后的权限
             return new PermissionDto

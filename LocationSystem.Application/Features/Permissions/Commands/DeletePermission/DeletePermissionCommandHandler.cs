@@ -1,4 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Features.Permissions.Commands.DeletePermission;
 using LocationSystem.Application.Utilities;
 using System;
@@ -11,10 +12,12 @@ namespace LocationSystem.Application.Features.Permissions.Commands.DeletePermiss
     public class DeletePermissionCommandHandler : IRequsetHandler<DeletePermissionCommand, bool>
     {
         private readonly IPermissionRepository _permissionRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DeletePermissionCommandHandler(IPermissionRepository permissionRepository)
+        public DeletePermissionCommandHandler(IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
         {
             _permissionRepository = permissionRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -28,7 +31,17 @@ namespace LocationSystem.Application.Features.Permissions.Commands.DeletePermiss
             }
 
             // 删除权限
-            await _permissionRepository.DeleteAsync(permission);
+            await _unitOfWork.BeginTransactionAsync();
+            try
+            {
+                await _permissionRepository.DeleteAsync(permission);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception)
+            {
+                await _unitOfWork.RollbackAsync();
+                throw;
+            }
             return true;
         }
     }

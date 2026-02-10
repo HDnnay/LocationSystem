@@ -83,6 +83,24 @@
                             预约管理
                           </template>
                         </el-menu-item>
+                        <el-sub-menu index="/roles">
+                          <template #title>
+                            <el-icon><Lock /></el-icon>
+                            <span>角色权限管理</span>
+                          </template>
+                          <el-menu-item index="/roles">
+                            <el-icon><SetUp /></el-icon>
+                            <template #title>
+                              角色管理
+                            </template>
+                          </el-menu-item>
+                          <el-menu-item index="/permissions">
+                            <el-icon><Key /></el-icon>
+                            <template #title>
+                              权限管理
+                            </template>
+                          </el-menu-item>
+                        </el-sub-menu>
                         <el-sub-menu index="/company">
                           <template #title>
                             <el-icon><Calendar /></el-icon>
@@ -147,9 +165,19 @@
 </template>
 
 <script>
+import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp, Key } from '@element-plus/icons-vue'
     export default {
         name: 'RouterViewManager',
         components: {
+            User,
+            UserFilled,
+            OfficeBuilding,
+            Calendar,
+            List,
+            Document,
+            Lock,
+            SetUp,
+            Key
         },
         props: {
             sidebarOpen: {
