@@ -205,15 +205,18 @@
             },
             async getRoles() {
                 this.loading = true;
-                const pageRequest = {
-                    pageIndex: this.currentPage,
-                    pageSize: this.pageSize
-                };
                 try {
-                    const response = await request.get('/api/role/GetRoles', { params: pageRequest })
+                    const response = await request.get('/api/roles');
                     if (response.status === 200) {
-                        this.roles = response.data.result;
-                        this.total = response.data.total;
+                        this.roles = response.data.map(role => ({
+                            id: role.id,
+                            roleName: role.name,
+                            roleDescription: role.description,
+                            roleCode: role.code,
+                            status: true, // 默认为启用状态
+                            createDate: role.createdAt
+                        }));
+                        this.total = this.roles.length;
                     }
                 } catch (error) {
                     ElMessage.error('获取角色列表失败');
@@ -274,21 +277,23 @@
                 try {
                     if (this.editingRole) {
                         // 更新角色
-                        var newRole = {
-                            roleName: this.formData.roleName,
-                            roleDescription: this.formData.roleDescription,
-                            status: this.formData.status
+                        var updateRoleDto = {
+                            name: this.formData.roleName,
+                            code: this.formData.roleCode || this.editingRole.roleCode,
+                            description: this.formData.roleDescription,
+                            permissionIds: [] // 暂时为空，后续在权限管理中设置
                         }
-                        await request.put("/api/role/" + this.editingRole.id, newRole);
+                        await request.put("/api/roles/" + this.editingRole.id, updateRoleDto);
                         ElMessage.success('角色更新成功');
                     } else {
                         // 创建新角色
-                        const newRole = {
-                            roleName: this.formData.roleName,
-                            roleDescription: this.formData.roleDescription,
-                            roleCode: this.formData.roleCode
+                        const createRoleDto = {
+                            name: this.formData.roleName,
+                            code: this.formData.roleCode,
+                            description: this.formData.roleDescription,
+                            permissionIds: [] // 暂时为空，后续在权限管理中设置
                         }
-                        await request.post("/api/role/create", newRole);
+                        await request.post("/api/roles", createRoleDto);
                         ElMessage.success('角色创建成功');
                     }
                     this.closeRoleModal();
@@ -308,21 +313,29 @@
 
                 try {
                     // 从API接口获取实际权限数据
-                    const response = await request.get('/api/Role/Permissions');
-                    console.log('✅ API请求成功，响应数据:', response.data);
+                    const permissionsResponse = await request.get('/api/permissions');
+                    console.log('✅ 权限列表请求成功，响应数据:', permissionsResponse.data);
 
-                    // 确保数据格式正确，并添加必要的displayName属性
-                    this.permissionTree = response.data.map(permission => ({
-                        ...permission,
-                        displayName: permission.displayName || permission.name
+                    // 从API接口获取角色详情（包含已选权限）
+                    const roleDetailResponse = await request.get(`/api/roles/${role.id}`);
+                    console.log('✅ 角色详情请求成功，响应数据:', roleDetailResponse.data);
+
+                    // 构建权限树
+                    this.permissionTree = permissionsResponse.data.map(permission => ({
+                        id: permission.id,
+                        name: permission.name,
+                        code: permission.code,
+                        description: permission.description,
+                        displayName: permission.name,
+                        childPermissions: [] // 暂时为空，后续可根据需要构建层级结构
                     }));
-                    console.log(this.permissionTree);
+
+                    console.log('🔄 权限树构建完成:', this.permissionTree);
                     this.expandedPermissions = this.permissionTree.map(p => p.id);
 
-                    console.log(this.expandedPermissions)
                     // 初始化已选权限
-                    if (role.permissions) {
-                        this.selectedPermissions = this.extractSelectedPermissions(role.permissions)
+                    if (roleDetailResponse.data.permissions && roleDetailResponse.data.permissions.length > 0) {
+                        this.selectedPermissions = roleDetailResponse.data.permissions.map(p => p.id);
                         console.log('✅ 已选权限初始化完成:', this.selectedPermissions);
                     }
 
@@ -331,7 +344,6 @@
                     console.error('❌ API请求失败:', error);
                     if (error.response) {
                         // 服务器返回了错误状态码
-
                         this.permissionError = `服务器错误: ${error.response.status} - ${error.response.data.message || '未知错误'}`;
                     } else if (error.request) {
                         // 请求已发出，但没有收到响应
@@ -449,12 +461,14 @@
             async savePermissions() {
                 if (this.selectedRole) {
                     try {
-                        var role = {
-                            roleId: this.selectedRole.id,
-                            permissions: this.selectedPermissions
+                        var updateRoleDto = {
+                            name: this.selectedRole.roleName,
+                            code: this.selectedRole.roleCode,
+                            description: this.selectedRole.roleDescription,
+                            permissionIds: this.selectedPermissions
                         }
                         const self = this;
-                        await request.post("/api/role/RolePsermission", role).then(res => {
+                        await request.put(`/api/roles/${this.selectedRole.id}`, updateRoleDto).then(res => {
                             if (res.status == 200) {
                                 ElMessage.success('权限保存成功');
                                 self.getRoles(self.currentPage);
@@ -491,7 +505,7 @@
             async deleteRoleConfirmed() {
                 if (this.deleteRole) {
                     try {
-                        await request.delete("/api/role/" + this.deleteRole.id);
+                        await request.delete("/api/roles/" + this.deleteRole.id);
                         ElMessage.success('角色删除成功');
                         this.deleteRole = null;
                         this.showDeleteConfirm = false;

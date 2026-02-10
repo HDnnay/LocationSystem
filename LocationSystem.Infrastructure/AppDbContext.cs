@@ -21,6 +21,17 @@ namespace LocationSystem.Infrastructure
            .HasValue<Patient>(UserType.Patient)
            .HasValue<Dentist>(UserType.Dentist);
 
+            // 配置Role和Permission的多对多关系
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.Permissions)
+                .WithMany(p => p.Roles)
+                .UsingEntity(j => j.ToTable("RolePermissions"));
+
+            // 配置User和Role的多对多关系
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Roles)
+                .WithMany(r => r.Users)
+                .UsingEntity(j => j.ToTable("UserRoles"));
         }
         public DbSet<User> Users { get; set; }
         public DbSet<DentalOffice> DentalOffices { get; set; }
@@ -29,5 +40,7 @@ namespace LocationSystem.Infrastructure
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<RentHouse> RentHousies { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
     }
 }

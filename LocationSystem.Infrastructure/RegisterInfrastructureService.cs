@@ -26,6 +26,8 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IRentHouseRepository, RentHouseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IPermissionRepository, PermissionRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
             return services;
         }

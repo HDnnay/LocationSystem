@@ -1,9 +1,10 @@
-﻿using FluentValidation;
+using FluentValidation;
 using FluentValidation.Results;
 using LocationSystem.Application.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace LocationSystem.Application.Utilities
 {
@@ -17,7 +18,7 @@ namespace LocationSystem.Application.Utilities
         public async Task<TResponse> Send<TResponse>(IRequset<TResponse> requset)
         {
             await ValidationMethod(requset);
-            var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requset.GetType(), typeof(TResponse));
+            var handlerType = typeof(IRequsetHandler<,>).MakeGenericType(requset.GetType(), typeof(TResponse));
             var handler = _serviceProvider.GetService(handlerType);
             if (handler is null)
                 throw new MediatorExpcetion($"{nameof(handler)}为空");

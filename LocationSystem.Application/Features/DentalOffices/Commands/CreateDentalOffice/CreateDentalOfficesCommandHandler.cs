@@ -10,7 +10,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice
 {
-    public class CreateDentalOfficesCommandHandler:IRequestHandler<CreateDentalOfficesCommand, Guid>
+    public class CreateDentalOfficesCommandHandler:IRequsetHandler<CreateDentalOfficesCommand, Guid>
     {
         private readonly IDentalOfficeRepository _repositoty;
         private readonly IUnitOfWork _unitOfWork;

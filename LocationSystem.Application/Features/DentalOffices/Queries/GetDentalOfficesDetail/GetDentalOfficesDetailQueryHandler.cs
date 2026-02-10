@@ -7,7 +7,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOfficesDetail
 {
-    public class GetDentalOfficesDetailQueryHandler : IRequestHandler<GetDentalOffcesDetailQuery, DentalOfficesDetailDto>
+    public class GetDentalOfficesDetailQueryHandler : IRequsetHandler<GetDentalOffcesDetailQuery, DentalOfficesDetailDto>
     {
         private readonly IDentalOfficeRepository _repositoty;
         private readonly ICacheService _cacheService;

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Patients.Queries.GetPatienDetail
 {
-    public class GetPatienDetailQueryHandler : IRequestHandler<GetPatienDetailQuery, PatienDetailDto>
+    public class GetPatienDetailQueryHandler : IRequsetHandler<GetPatienDetailQuery, PatienDetailDto>
     {
         private readonly IPatientRepository _patientRepository;
         

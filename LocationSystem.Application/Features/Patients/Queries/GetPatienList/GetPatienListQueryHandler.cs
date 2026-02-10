@@ -8,7 +8,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Patients.Queries.GetPatienList
 {
-    public class GetPatienListQueryHandler : IRequestHandler<GetPatienListQuery, PageResult<PatienListDto>>
+    public class GetPatienListQueryHandler : IRequsetHandler<GetPatienListQuery, PageResult<PatienListDto>>
     {
         private readonly IPatientRepository _patientRepository;
         public GetPatienListQueryHandler(IPatientRepository repository)

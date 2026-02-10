@@ -24,7 +24,7 @@ namespace LocationSystem.Application
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.Scan(s => s.FromAssembliesOf(typeof(RegisterApplicationServices))
             .AddClasses(c => c.AssignableTo(typeof(IRequestHandler<>))).AsImplementedInterfaces().WithScopedLifetime()
-            .AddClasses(c=>c.AssignableToAny(typeof(IRequestHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
+            .AddClasses(c=>c.AssignableToAny(typeof(IRequsetHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(ICacheService))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IJwtService))).AsImplementedInterfaces().WithSingletonLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IUserRegistrationStrategy))).AsImplementedInterfaces().WithTransientLifetime()

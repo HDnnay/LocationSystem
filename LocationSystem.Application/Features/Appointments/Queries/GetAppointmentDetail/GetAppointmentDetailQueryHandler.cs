@@ -8,7 +8,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Appointments.Queries.GetAppointmentDetail
 {
-    public class GetAppointmentDetailQueryHandler : IRequestHandler<GetAppointmentDetailQuery, AppointmentDetailDto>
+    public class GetAppointmentDetailQueryHandler : IRequsetHandler<GetAppointmentDetailQuery, AppointmentDetailDto>
     {
         private readonly IAppointmentRepository _repository;
         public GetAppointmentDetailQueryHandler(IAppointmentRepository repository) 

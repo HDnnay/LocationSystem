@@ -4,7 +4,7 @@ using LocationSystem.Domain.Entities;
 
 namespace LocationSystem.Application.Features.Auth.Login
 {
-    public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponseDto>
+    public class LoginCommandHandler : IRequsetHandler<LoginCommand, LoginResponseDto>
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;

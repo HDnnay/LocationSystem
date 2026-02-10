@@ -5,7 +5,7 @@ using LocationSystem.Domain.Entities;
 
 namespace LocationSystem.Application.Features.Auth.RefreshToken
 {
-    public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, LoginResponseDto>
+    public class RefreshTokenCommandHandler : IRequsetHandler<RefreshTokenCommand, LoginResponseDto>
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;

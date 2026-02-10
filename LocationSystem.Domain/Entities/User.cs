@@ -1,4 +1,4 @@
-using LocationSystem.Domain.Exceptions;
+﻿using LocationSystem.Domain.Exceptions;
 using LocationSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,10 @@ namespace LocationSystem.Domain.Entities
         public UserType UserType { get; protected set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+        
+        // 导航属性
+        public ICollection<Role> Roles { get; private set; } = new List<Role>();
+        
         protected User() { }
         public User(string name, Email email)
         {
@@ -51,6 +55,24 @@ namespace LocationSystem.Domain.Entities
         {
             RefreshToken = null;
             RefreshTokenExpiryTime = null;
+        }
+        
+        public void AddRole(Role role)
+        {
+            if (!Roles.Contains(role))
+            {
+                Roles.Add(role);
+            }
+        }
+        
+        public void RemoveRole(Role role)
+        {
+            Roles.Remove(role);
+        }
+        
+        public void ClearRoles()
+        {
+            Roles.Clear();
         }
     }
 }

@@ -11,7 +11,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Dentists.Commands.CreateDentist
 {
-    public class CreateDentistCommandHandler : IRequestHandler<CreateDentistCommand, Guid>
+    public class CreateDentistCommandHandler : IRequsetHandler<CreateDentistCommand, Guid>
     {
         private readonly IDentistRepository _repository;
         private readonly IUnitOfWork _unitOfWork;

@@ -107,48 +107,26 @@ if (app.Environment.IsProduction())
         var dbContext = scope.ServiceProvider.GetRequiredService<LocationSystem.Infrastructure.AppDbContext>();
         int maxRetries = 5;
         int retryDelay = 5000; // 5秒
-        if (!dbContext.Database.EnsureCreated()) {
-            for (int i = 0; i < maxRetries; i++)
+        for (int i = 0; i < maxRetries; i++)
+        {
+            try
             {
-                try
+                Console.WriteLine($"🔄 尝试数据库迁移 (尝试 {i+1}/{maxRetries})...");
+
+                // 直接执行迁移，确保所有迁移都被应用
+                Console.WriteLine("正在执行数据库迁移...");
+                dbContext.Database.Migrate();
+
+                Console.WriteLine("✅ 数据库迁移完成");
+                break;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ 数据库迁移失败: {ex.Message}");
+                if (i < maxRetries - 1)
                 {
-                    Console.WriteLine($"🔄 尝试数据库迁移 (尝试 {i+1}/{maxRetries})...");
-
-                    // 检查数据库是否存在
-                    bool databaseExists = dbContext.Database.CanConnect();
-
-                    if (!databaseExists)
-                    {
-                        // 数据库不存在，执行迁移创建数据库
-                        Console.WriteLine("数据库不存在，正在创建并执行迁移...");
-                        dbContext.Database.Migrate();
-                    }
-                    else
-                    {
-                        // 数据库存在，检查是否有未应用的迁移
-                        var pendingMigrations = dbContext.Database.GetPendingMigrations();
-                        if (pendingMigrations.Any())
-                        {
-                            Console.WriteLine($"发现 {pendingMigrations.Count()} 个未应用的迁移，正在执行...");
-                            dbContext.Database.Migrate();
-                        }
-                        else
-                        {
-                            Console.WriteLine("数据库已存在且无未应用的迁移，跳过迁移操作...");
-                        }
-                    }
-
-                    Console.WriteLine("✅ 数据库迁移完成");
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"❌ 数据库迁移失败: {ex.Message}");
-                    if (i < maxRetries - 1)
-                    {
-                        Console.WriteLine($"⏳ 等待 {retryDelay/1000} 秒后重试...");
-                        Thread.Sleep(retryDelay);
-                    }
+                    Console.WriteLine($"⏳ 等待 {retryDelay/1000} 秒后重试...");
+                    Thread.Sleep(retryDelay);
                 }
             }
         }
