@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Roles.Commands.DeleteRole
 {
-    public class DeleteRoleCommandHandler : IRequsetHandler<DeleteRoleCommand, bool>
+    public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, bool>
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IUnitOfWork _unitOfWork;

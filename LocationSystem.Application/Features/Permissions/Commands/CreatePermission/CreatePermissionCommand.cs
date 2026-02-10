@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermission
 {
-    public class CreatePermissionCommand : IRequset<PermissionDto>
+    public class CreatePermissionCommand : IRequest<PermissionDto>
     {
         public CreatePermissionDto PermissionDto { get; set; } = null!;
     }

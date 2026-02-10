@@ -7,7 +7,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.RentHousies.Queries.QueryRentHouseList
 {
-    public class GetRentHouseListQuery:GetRentHouseListFilter,IRequset<PageResult<RentHouseListDto>>
+    public class GetRentHouseListQuery:GetRentHouseListFilter,IRequest<PageResult<RentHouseListDto>>
     {
     }
 }

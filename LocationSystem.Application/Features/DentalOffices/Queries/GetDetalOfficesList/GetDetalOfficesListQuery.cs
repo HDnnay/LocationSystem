@@ -7,7 +7,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList
 {
-    public class GetDetalOfficesListQuery: DentalOfficeListFilter,IRequset<PageResult<DentalOfficesListDto>>
+    public class GetDetalOfficesListQuery: DentalOfficeListFilter,IRequest<PageResult<DentalOfficesListDto>>
     {
     }
 }

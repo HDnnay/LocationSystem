@@ -7,7 +7,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Companys.Queries.ReadConpany
 {
-    public class ReadConpanyQuery: CompanyFilter, IRequset<PageResult<CompanyDto>>
+    public class ReadConpanyQuery: CompanyFilter, IRequest<PageResult<CompanyDto>>
     {
     }
 }

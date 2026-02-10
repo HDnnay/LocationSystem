@@ -6,7 +6,7 @@ using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
 {
-    public class GetProviceCompanyQueryHandler : IRequsetHandler<GetProviceCompanyQuery, GetProviceCompanyDto>
+    public class GetProviceCompanyQueryHandler : IRequestHandler<GetProviceCompanyQuery, GetProviceCompanyDto>
     {
         private readonly ICompanyRepository _companyRepository;
         private readonly ICacheService _cacheService;

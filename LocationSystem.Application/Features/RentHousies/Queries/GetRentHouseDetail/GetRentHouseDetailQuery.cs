@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseDetail
 {
-    public class GetRentHouseDetailQuery:IRequset<RentHouseDto>
+    public class GetRentHouseDetailQuery:IRequest<RentHouseDto>
     {
         public required Guid Id { get; set; }
     }

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseDetail
 {
-    public class GetRentHouseDetailQueryHandler : IRequsetHandler<GetRentHouseDetailQuery, RentHouseDto>
+    public class GetRentHouseDetailQueryHandler : IRequestHandler<GetRentHouseDetailQuery, RentHouseDto>
     {
         private readonly IRentHouseRepository _repository;
         public GetRentHouseDetailQueryHandler(IRentHouseRepository repository) 

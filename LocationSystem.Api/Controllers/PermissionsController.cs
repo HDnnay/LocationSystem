@@ -4,6 +4,7 @@ using LocationSystem.Application.Features.Permissions.Commands.DeletePermission;
 using LocationSystem.Application.Features.Permissions.Commands.UpdatePermission;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionDetail;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionList;
+using LocationSystem.Application.Features.Permissions.Queries.GetPermissionTree;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -92,6 +93,21 @@ namespace LocationSystem.Api.Controllers
                 var command = new DeletePermissionCommand { PermissionId = id };
                 var result = await _mediator.Send(command);
                 return Ok(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("tree")]
+        public async Task<IActionResult> GetPermissionTree()
+        {
+            try
+            {
+                var query = new GetPermissionTreeQuery();
+                var permissionTree = await _mediator.Send(query);
+                return Ok(permissionTree);
             }
             catch (Exception ex)
             {

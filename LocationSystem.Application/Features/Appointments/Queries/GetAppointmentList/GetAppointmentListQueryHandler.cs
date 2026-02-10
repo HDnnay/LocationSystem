@@ -9,7 +9,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Appointments.Queries.GetAppointmentList
 {
-    public class GetAppointmentListQueryHandler : IRequsetHandler<GetAppointmentListQuery, PageResult<AppointmentListDto>>
+    public class GetAppointmentListQueryHandler : IRequestHandler<GetAppointmentListQuery, PageResult<AppointmentListDto>>
     {
         private readonly IAppointmentRepository _repository;
 

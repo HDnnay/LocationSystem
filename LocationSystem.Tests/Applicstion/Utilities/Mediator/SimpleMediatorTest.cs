@@ -12,14 +12,14 @@ namespace LocationSystem.Tests.Applicstion.Utilities.Mediator
     [TestClass]
     public class SimpleMediatorTest
     {
-        public class FalseRequest : IRequset<string> { }
+        public class FalseRequest : IRequest<string> { }
         [TestMethod]
         public async Task Send_WithRegisterHandler_HandlerExecuted()
         {
             var request = new FalseRequest();
-            var handlerMock = Substitute.For<IRequsetHandler<FalseRequest, string>>();
+            var handlerMock = Substitute.For<IRequestHandler<FalseRequest, string>>();
             var serviceProviderMock = Substitute.For<IServiceProvider>();
-            serviceProviderMock.GetService(typeof(IRequsetHandler<FalseRequest, string>))
+            serviceProviderMock.GetService(typeof(IRequestHandler<FalseRequest, string>))
                 .Returns(handlerMock);
             var mediator = new SimpleMediator(serviceProviderMock);
             var result = await mediator.Send(request);
@@ -30,7 +30,7 @@ namespace LocationSystem.Tests.Applicstion.Utilities.Mediator
         {
             var request = new FalseRequest();
             var serviceProviderMock = Substitute.For<IServiceProvider>();
-            serviceProviderMock.GetService(typeof(IRequsetHandler<FalseRequest, string>))
+            serviceProviderMock.GetService(typeof(IRequestHandler<FalseRequest, string>))
                 .ReturnsNull();
             var mediator = new SimpleMediator(serviceProviderMock);
 

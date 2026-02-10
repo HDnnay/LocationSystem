@@ -8,7 +8,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Companys.Queries.ReadConpany
 {
-    public class ReadConpanyCommandHandler : IRequsetHandler<ReadConpanyQuery, PageResult<CompanyDto>>
+    public class ReadConpanyCommandHandler : IRequestHandler<ReadConpanyQuery, PageResult<CompanyDto>>
     {
         private readonly ICompanyRepository _repository;
 

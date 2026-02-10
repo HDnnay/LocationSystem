@@ -12,5 +12,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<Permission?> GetByCodeAsync(string code);
         Task<Permission?> GetPermissionWithRolesAsync(Guid id);
         Task<IEnumerable<Permission>> GetPermissionsWithRolesAsync();
+        Task<IEnumerable<Permission>> GetPermissionTreeAsync();
+        Task<Permission?> GetPermissionWithChildrenAsync(Guid id);
     }
 }

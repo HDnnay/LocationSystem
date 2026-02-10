@@ -1,4 +1,4 @@
-﻿using LocationSystem.Domain.Entities;
+﻿﻿using LocationSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -32,6 +32,13 @@ namespace LocationSystem.Infrastructure
                 .HasMany(u => u.Roles)
                 .WithMany(r => r.Users)
                 .UsingEntity(j => j.ToTable("UserRoles"));
+
+            // 配置Permission的自引用关系（父子权限）
+            modelBuilder.Entity<Permission>()
+                .HasMany(p => p.ChildPermissions)
+                .WithOne(p => p.Parent)
+                .HasForeignKey(p => p.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
         public DbSet<User> Users { get; set; }
         public DbSet<DentalOffice> DentalOffices { get; set; }

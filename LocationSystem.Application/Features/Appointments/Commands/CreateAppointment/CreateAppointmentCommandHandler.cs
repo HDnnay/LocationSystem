@@ -11,7 +11,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Appointments.Commands.CreateAppointment
 {
-    public class CreateAppointmentCommandHandler : IRequsetHandler<CreateAppointmentCommand, Guid>
+    public class CreateAppointmentCommandHandler : IRequestHandler<CreateAppointmentCommand, Guid>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAppointmentRepository _repository;

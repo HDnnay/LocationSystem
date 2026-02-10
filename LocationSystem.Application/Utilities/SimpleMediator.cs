@@ -15,10 +15,10 @@ namespace LocationSystem.Application.Utilities
         {
             _serviceProvider = provider;
         }
-        public async Task<TResponse> Send<TResponse>(IRequset<TResponse> requset)
+        public async Task<TResponse> Send<TResponse>(IRequest<TResponse> requset)
         {
             await ValidationMethod(requset);
-            var handlerType = typeof(IRequsetHandler<,>).MakeGenericType(requset.GetType(), typeof(TResponse));
+            var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requset.GetType(), typeof(TResponse));
             var handler = _serviceProvider.GetService(handlerType);
             if (handler is null)
                 throw new MediatorExpcetion($"{nameof(handler)}为空");

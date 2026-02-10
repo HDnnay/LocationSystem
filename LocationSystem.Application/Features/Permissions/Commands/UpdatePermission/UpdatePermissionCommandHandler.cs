@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermission
 {
-    public class UpdatePermissionCommandHandler : IRequsetHandler<UpdatePermissionCommand, PermissionDto>
+    public class UpdatePermissionCommandHandler : IRequestHandler<UpdatePermissionCommand, PermissionDto>
     {
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -46,7 +46,7 @@ namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermiss
             }
 
             // 更新权限信息
-            permission.Update(request.PermissionDto.Name, request.PermissionDto.Code, request.PermissionDto.Description);
+            permission.Update(request.PermissionDto.Name, request.PermissionDto.Code, request.PermissionDto.Description, request.PermissionDto.ParentId);
 
             // 保存更新
             await _unitOfWork.BeginTransactionAsync();
@@ -68,6 +68,7 @@ namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermiss
                 Name = permission.Name,
                 Code = permission.Code,
                 Description = permission.Description,
+                ParentId = permission.ParentId,
                 CreatedAt = permission.CreatedAt,
                 UpdatedAt = permission.UpdatedAt,
                 Roles = permission.Roles.Select(r => new RoleDto
@@ -78,6 +79,17 @@ namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermiss
                     Description = r.Description,
                     CreatedAt = r.CreatedAt,
                     UpdatedAt = r.UpdatedAt
+                }).ToList(),
+                ChildPermissions = permission.ChildPermissions.Select(cp => new PermissionDto
+                {
+                    Id = cp.Id,
+                    Name = cp.Name,
+                    Code = cp.Code,
+                    Description = cp.Description,
+                    ParentId = cp.ParentId,
+                    CreatedAt = cp.CreatedAt,
+                    UpdatedAt = cp.UpdatedAt,
+                    ChildPermissions = new List<PermissionDto>()
                 }).ToList()
             };
         }

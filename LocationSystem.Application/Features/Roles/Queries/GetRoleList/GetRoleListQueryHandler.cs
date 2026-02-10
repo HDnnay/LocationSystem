@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Roles.Queries.GetRoleList
 {
-    public class GetRoleListQueryHandler : IRequsetHandler<GetRoleListQuery, List<RoleDto>>
+    public class GetRoleListQueryHandler : IRequestHandler<GetRoleListQuery, List<RoleDto>>
     {
         private readonly IRoleRepository _roleRepository;
 

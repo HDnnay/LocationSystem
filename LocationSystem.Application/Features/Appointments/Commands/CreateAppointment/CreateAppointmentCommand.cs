@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Appointments.Commands.CreateAppointment
 {
-    public class CreateAppointmentCommand:IRequset<Guid>
+    public class CreateAppointmentCommand:IRequest<Guid>
     {
         public required Guid PatientId { get; set; }
         public required Guid DentistId { get; set; }

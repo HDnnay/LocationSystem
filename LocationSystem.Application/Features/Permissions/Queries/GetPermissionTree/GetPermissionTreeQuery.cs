@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LocationSystem.Application.Features.Roles.Queries.GetRoleList
+namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionTree
 {
-    public class GetRoleListQuery : IRequest<List<RoleDto>>
+    public class GetPermissionTreeQuery : IRequest<List<PermissionDto>>
     {
     }
 }

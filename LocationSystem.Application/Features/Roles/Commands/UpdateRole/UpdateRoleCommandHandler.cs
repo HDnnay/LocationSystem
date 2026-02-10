@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
 {
-    public class UpdateRoleCommandHandler : IRequsetHandler<UpdateRoleCommand, RoleDto>
+    public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, RoleDto>
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;

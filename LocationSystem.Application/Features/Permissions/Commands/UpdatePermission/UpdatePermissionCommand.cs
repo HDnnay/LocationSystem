@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermission
 {
-    public class UpdatePermissionCommand : IRequset<PermissionDto>
+    public class UpdatePermissionCommand : IRequest<PermissionDto>
     {
         public Guid PermissionId { get; set; }
         public UpdatePermissionDto PermissionDto { get; set; } = null!;

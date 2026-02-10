@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermission
 {
-    public class CreatePermissionCommandHandler : IRequsetHandler<CreatePermissionCommand, PermissionDto>
+    public class CreatePermissionCommandHandler : IRequestHandler<CreatePermissionCommand, PermissionDto>
     {
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -42,7 +42,8 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
             var permission = new Permission(
                 name: request.PermissionDto.Name,
                 code: request.PermissionDto.Code,
-                description: request.PermissionDto.Description
+                description: request.PermissionDto.Description,
+                parentId: request.PermissionDto.ParentId
             );
 
             // 保存权限
@@ -65,8 +66,10 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
                 Name = permission.Name,
                 Code = permission.Code,
                 Description = permission.Description,
+                ParentId = permission.ParentId,
                 CreatedAt = permission.CreatedAt,
-                UpdatedAt = permission.UpdatedAt
+                UpdatedAt = permission.UpdatedAt,
+                ChildPermissions = new List<PermissionDto>()
             };
         }
     }

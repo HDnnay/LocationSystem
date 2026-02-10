@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Appointments.Queries.GetAppointmentList
 {
-    public class GetAppointmentListQuery: AppointmentListFilter,IRequset<PageResult<AppointmentListDto>>
+    public class GetAppointmentListQuery: AppointmentListFilter,IRequest<PageResult<AppointmentListDto>>
     {
     }
 }

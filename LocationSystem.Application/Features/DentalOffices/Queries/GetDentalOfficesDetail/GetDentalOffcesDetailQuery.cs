@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOfficesDetail
 {
-    public class GetDentalOffcesDetailQuery:IRequset<DentalOfficesDetailDto>
+    public class GetDentalOffcesDetailQuery:IRequest<DentalOfficesDetailDto>
     {
         public required Guid Id { get; set; }
     }

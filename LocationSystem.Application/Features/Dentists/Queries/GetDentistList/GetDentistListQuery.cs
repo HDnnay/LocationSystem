@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Dentists.Queries.GetDentistList
 {
-    public class GetDentistListQuery: DentistListFilterDto, IRequset<PageResult<DentistListDto>>
+    public class GetDentistListQuery: DentistListFilterDto, IRequest<PageResult<DentistListDto>>
     {
     }
 }

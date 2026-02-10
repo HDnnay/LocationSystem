@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Dentists.Commands.CreateDentist
 {
-    public class CreateDentistCommand : IRequset<Guid>
+    public class CreateDentistCommand : IRequest<Guid>
     {
         public required string Name { get; set; }
         public required string Email { get; set; }

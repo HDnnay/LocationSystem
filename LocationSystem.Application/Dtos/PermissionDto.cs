@@ -12,7 +12,9 @@ namespace LocationSystem.Application.Dtos
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public Guid? ParentId { get; set; }
         public List<RoleDto>? Roles { get; set; }
+        public List<PermissionDto>? ChildPermissions { get; set; }
     }
 
     public class CreatePermissionDto
@@ -20,6 +22,7 @@ namespace LocationSystem.Application.Dtos
         public string Name { get; set; } = null!;
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
+        public Guid? ParentId { get; set; }
     }
 
     public class UpdatePermissionDto
@@ -27,5 +30,6 @@ namespace LocationSystem.Application.Dtos
         public string Name { get; set; } = null!;
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
+        public Guid? ParentId { get; set; }
     }
 }

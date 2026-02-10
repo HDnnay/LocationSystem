@@ -27,37 +27,60 @@
                 </el-col>
             </el-row>
 
-            <!-- 权限列表表格 -->
-            <el-table v-loading="loading"
-                      :data="permissions"
-                      style="width: 100%"
-                      stripe
-                      border>
-                <el-table-column type="index" :index="(index) => index + 1" label="序号" width="80" />
-                <el-table-column prop="name" label="权限名称" width="180" />
-                <el-table-column prop="code" label="权限代码" width="180" />
-                <el-table-column prop="description" label="权限描述" min-width="200" />
-                <el-table-column prop="createdAt" label="创建时间" width="180">
-                    <template #default="scope">
-                        {{ formatDate(scope.row.createdAt) }}
-                    </template>
-                </el-table-column>
-                <el-table-column prop="updatedAt" label="更新时间" width="180">
-                    <template #default="scope">
-                        {{ formatDate(scope.row.updatedAt) }}
-                    </template>
-                </el-table-column>
-                <el-table-column label="操作" min-width="150" fixed="right">
-                    <template #default="scope">
-                        <el-button size="small" type="primary" @click="editPermission(scope.row)">
-                            编辑
-                        </el-button>
-                        <el-button size="small" type="danger" @click="confirmDelete(scope.row)">
-                            删除
-                        </el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+            <!-- 选项卡 -->
+            <el-tabs v-model="activeTab" class="mb-4">
+                <el-tab-pane label="权限列表" name="list">
+                    <!-- 权限列表表格 -->
+                    <el-table v-loading="loading"
+                              :data="permissions"
+                              style="width: 100%"
+                              stripe
+                              border>
+                        <el-table-column type="index" :index="(index) => index + 1" label="序号" width="80" />
+                        <el-table-column prop="name" label="权限名称" width="180" />
+                        <el-table-column prop="code" label="权限代码" width="180" />
+                        <el-table-column prop="description" label="权限描述" min-width="200" />
+                        <el-table-column prop="createdAt" label="创建时间" width="180">
+                            <template #default="scope">
+                                {{ formatDate(scope.row.createdAt) }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="updatedAt" label="更新时间" width="180">
+                            <template #default="scope">
+                                {{ formatDate(scope.row.updatedAt) }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" min-width="150" fixed="right">
+                            <template #default="scope">
+                                <el-button size="small" type="primary" @click="editPermission(scope.row)">
+                                    编辑
+                                </el-button>
+                                <el-button size="small" type="danger" @click="confirmDelete(scope.row)">
+                                    删除
+                                </el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-tab-pane>
+                <el-tab-pane label="权限树形结构" name="tree">
+                    <!-- 权限树形结构 -->
+                    <el-card>
+                        <template #header>
+                            <div class="card-header">
+                                <span>权限层级关系</span>
+                                <el-button size="small" type="primary" @click="refreshPermissionTree">
+                                    刷新
+                                </el-button>
+                            </div>
+                        </template>
+                        <PermissionTree :permissionTree="permissionTree"
+                                      :loading="treeLoading"
+                                      :error="treeError"
+                                      @permission-change="handlePermissionChange"
+                                      @expand-change="handleExpandChange" />
+                    </el-card>
+                </el-tab-pane>
+            </el-tabs>
         </el-card>
 
         <!-- 添加/编辑权限模态框 -->
@@ -70,6 +93,16 @@
                 </el-form-item>
                 <el-form-item label="权限代码" prop="code" required>
                     <el-input v-model="formData.code" placeholder="请输入权限代码" />
+                </el-form-item>
+                <el-form-item label="父权限" prop="parentId">
+                    <el-select v-model="formData.parentId" placeholder="选择父权限（可选）" clearable>
+                        <el-option
+                            v-for="permission in allPermissions"
+                            :key="permission.id"
+                            :label="permission.name"
+                            :value="permission.id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="权限描述" prop="description">
                     <el-input v-model="formData.description" placeholder="请输入权限描述" type="textarea" />
@@ -102,23 +135,31 @@
     import request from '../../utils/request.js'
     import { ElMessage } from 'element-plus'
     import { Plus, Edit, Delete, Search } from '@element-plus/icons-vue'
+    import PermissionTree from '../../components/PermissionTree.vue'
 
     export default {
         name: 'Permissions',
         components: {
-            Plus, Edit, Delete, Search
+            Plus, Edit, Delete, Search,
+            PermissionTree
         },
         data() {
             return {
+                activeTab: 'list',
                 permissions: [],
+                allPermissions: [],
+                permissionTree: [],
                 loading: false,
+                treeLoading: false,
+                treeError: null,
                 searchQuery: '',
                 showPermissionModal: false,
                 editingPermission: null,
                 formData: {
                     name: '',
                     code: '',
-                    description: ''
+                    description: '',
+                    parentId: null
                 },
                 showDeleteConfirm: false,
                 deletePermission: null
@@ -145,6 +186,7 @@
                     const response = await request.get('/api/permissions');
                     if (response.status === 200) {
                         this.permissions = response.data;
+                        this.allPermissions = response.data;
                     }
                 } catch (error) {
                     ElMessage.error('获取权限列表失败');
@@ -152,12 +194,28 @@
                     this.loading = false;
                 }
             },
+            async getPermissionTree() {
+                this.treeLoading = true;
+                this.treeError = null;
+                try {
+                    const response = await request.get('/api/permissions/tree');
+                    if (response.status === 200) {
+                        this.permissionTree = response.data;
+                    }
+                } catch (error) {
+                    this.treeError = '获取权限树形结构失败';
+                    ElMessage.error('获取权限树形结构失败');
+                } finally {
+                    this.treeLoading = false;
+                }
+            },
             showAddPermissionModal() {
                 this.editingPermission = null;
                 this.formData = {
                     name: "",
                     code: "",
-                    description: ""
+                    description: "",
+                    parentId: null
                 }
                 this.showPermissionModal = true
             },
@@ -166,7 +224,8 @@
                 this.formData = {
                     name: permission.name,
                     code: permission.code,
-                    description: permission.description
+                    description: permission.description,
+                    parentId: permission.parentId || null
                 }
                 this.showPermissionModal = true
             },
@@ -185,7 +244,8 @@
                         var updatePermissionDto = {
                             name: this.formData.name,
                             code: this.formData.code,
-                            description: this.formData.description
+                            description: this.formData.description,
+                            parentId: this.formData.parentId
                         }
                         await request.put(`/api/permissions/${this.editingPermission.id}`, updatePermissionDto);
                         ElMessage.success('权限更新成功');
@@ -194,13 +254,17 @@
                         const createPermissionDto = {
                             name: this.formData.name,
                             code: this.formData.code,
-                            description: this.formData.description
+                            description: this.formData.description,
+                            parentId: this.formData.parentId
                         }
                         await request.post('/api/permissions', createPermissionDto);
                         ElMessage.success('权限创建成功');
                     }
                     this.closePermissionModal();
                     this.getPermissions();
+                    if (this.activeTab === 'tree') {
+                        this.getPermissionTree();
+                    }
                 } catch (error) {
                     ElMessage.error('保存失败，请重试');
                 }
@@ -217,9 +281,30 @@
                         this.deletePermission = null;
                         this.showDeleteConfirm = false;
                         this.getPermissions();
+                        if (this.activeTab === 'tree') {
+                            this.getPermissionTree();
+                        }
                     } catch (error) {
                         ElMessage.error('删除失败，请重试');
                     }
+                }
+            },
+            refreshPermissionTree() {
+                this.getPermissionTree();
+            },
+            handlePermissionChange(checkedKeys) {
+                // 处理权限选择变化
+                console.log('Selected permissions:', checkedKeys);
+            },
+            handleExpandChange(expandedKeys) {
+                // 处理节点展开/收起变化
+                console.log('Expanded keys:', expandedKeys);
+            }
+        },
+        watch: {
+            activeTab(newTab) {
+                if (newTab === 'tree') {
+                    this.getPermissionTree();
                 }
             }
         }
@@ -253,5 +338,11 @@
     .dialog-footer {
         display: flex;
         justify-content: flex-end;
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 </style>

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Utilities
 {
-    public interface IRequset<TResponse>
+    public interface IRequest<TResponse>
     {
     }
     public interface IRequset

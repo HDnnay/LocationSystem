@@ -1,30 +1,33 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
-using LocationSystem.Application.Features.Permissions.Queries.GetPermissionList;
+using LocationSystem.Application.Features.Permissions.Queries.GetPermissionTree;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionList
+namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionTree
 {
-    public class GetPermissionListQueryHandler : IRequestHandler<GetPermissionListQuery, List<PermissionDto>>
+    public class GetPermissionTreeQueryHandler : IRequestHandler<GetPermissionTreeQuery, List<PermissionDto>>
     {
         private readonly IPermissionRepository _permissionRepository;
 
-        public GetPermissionListQueryHandler(IPermissionRepository permissionRepository)
+        public GetPermissionTreeQueryHandler(IPermissionRepository permissionRepository)
         {
             _permissionRepository = permissionRepository;
         }
 
-        public async Task<List<PermissionDto>> Handle(GetPermissionListQuery request)
+        public async Task<List<PermissionDto>> Handle(GetPermissionTreeQuery request)
         {
-            // 获取所有权限及其角色
-            var permissions = await _permissionRepository.GetPermissionsWithRolesAsync();
+            var permissions = await _permissionRepository.GetPermissionTreeAsync();
+            return MapPermissionsToDto(permissions);
+        }
 
-            // 转换为DTO
+        private List<PermissionDto> MapPermissionsToDto(IEnumerable<Permission> permissions)
+        {
             return permissions.Select(permission => new PermissionDto
             {
                 Id = permission.Id,
@@ -43,17 +46,7 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionL
                     CreatedAt = role.CreatedAt,
                     UpdatedAt = role.UpdatedAt
                 }).ToList(),
-                ChildPermissions = permission.ChildPermissions.Select(cp => new PermissionDto
-                {
-                    Id = cp.Id,
-                    Name = cp.Name,
-                    Code = cp.Code,
-                    Description = cp.Description,
-                    ParentId = cp.ParentId,
-                    CreatedAt = cp.CreatedAt,
-                    UpdatedAt = cp.UpdatedAt,
-                    ChildPermissions = new List<PermissionDto>()
-                }).ToList()
+                ChildPermissions = MapPermissionsToDto(permission.ChildPermissions)
             }).ToList();
         }
     }

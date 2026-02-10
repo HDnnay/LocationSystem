@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
 {
-    public class GetProviceCompanyQuery:IRequset<GetProviceCompanyDto>
+    public class GetProviceCompanyQuery:IRequest<GetProviceCompanyDto>
     {
 
     }

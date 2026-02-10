@@ -9,7 +9,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList
 {
-    public class GetRentHouseListQueryHandler : IRequsetHandler<GetRentHouseListQuery, PageResult<RentHouseListDto>>
+    public class GetRentHouseListQueryHandler : IRequestHandler<GetRentHouseListQuery, PageResult<RentHouseListDto>>
     {
         private readonly IRentHouseRepository _repository;
         public GetRentHouseListQueryHandler(IRentHouseRepository repository)

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.DeletePermission
 {
-    public class DeletePermissionCommandHandler : IRequsetHandler<DeletePermissionCommand, bool>
+    public class DeletePermissionCommandHandler : IRequestHandler<DeletePermissionCommand, bool>
     {
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;

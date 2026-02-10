@@ -7,7 +7,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Dentists.Queries.GetDentistList
 {
-    public class GetDentistListQueryHandler : IRequsetHandler<GetDentistListQuery, PageResult<DentistListDto>>
+    public class GetDentistListQueryHandler : IRequestHandler<GetDentistListQuery, PageResult<DentistListDto>>
     {
         private readonly IDentistRepository _repository;
         public GetDentistListQueryHandler(IDentistRepository repository) 

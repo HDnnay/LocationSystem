@@ -6,7 +6,7 @@ using LocationSystem.Domain.ValueObjects;
 
 namespace LocationSystem.Application.Features.Auth.Register
 {
-    public class RegisterCommandHandler : IRequsetHandler<RegisterCommand, RegisterResponseDto>
+    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponseDto>
     {
         private readonly IUserRepository _userRepository;
         private readonly UserRegistrationStrategyFactory _strategyFactory;

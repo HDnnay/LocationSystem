@@ -5,7 +5,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.DeletePermission
 {
-    public class DeletePermissionCommand : IRequset<bool>
+    public class DeletePermissionCommand : IRequest<bool>
     {
         public Guid PermissionId { get; set; }
     }

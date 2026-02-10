@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
 {
-    public class CreateRoleCommand : IRequset<RoleDto>
+    public class CreateRoleCommand : IRequest<RoleDto>
     {
         public CreateRoleDto RoleDto { get; set; } = null!;
     }

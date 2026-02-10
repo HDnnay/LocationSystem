@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
 {
-    public class CreateRoleCommandHandler : IRequsetHandler<CreateRoleCommand, RoleDto>
+    public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, RoleDto>
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;

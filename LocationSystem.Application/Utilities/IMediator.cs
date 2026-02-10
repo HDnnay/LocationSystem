@@ -6,7 +6,7 @@ namespace LocationSystem.Application.Utilities
 {
     public interface IMediator
     {
-        Task<TResponse> Send<TResponse>(IRequset<TResponse> request);
+        Task<TResponse> Send<TResponse>(IRequest<TResponse> request);
         Task Send(IRequset requset);
     }
 }

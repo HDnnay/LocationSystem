@@ -13,7 +13,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Patients.Command.CreatePatient
 {
-    public class CreatePatientCommandHandler : IRequsetHandler<CreatePatientCommand, Patient>
+    public class CreatePatientCommandHandler : IRequestHandler<CreatePatientCommand, Patient>
     {
         private readonly IPatientRepository _patientRepository;
         private readonly IValidator<CreatePatientCommand> _validator;

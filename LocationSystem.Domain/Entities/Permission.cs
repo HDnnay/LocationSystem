@@ -19,10 +19,17 @@ namespace LocationSystem.Domain.Entities
 
         // 导航属性
         public ICollection<Role> Roles { get; private set; } = new List<Role>();
+        
+        // 父权限ID
+        public Guid? ParentId { get; private set; }
+        // 父权限导航属性
+        public Permission? Parent { get; private set; }
+        // 子权限导航属性
+        public ICollection<Permission> ChildPermissions { get; private set; } = new List<Permission>();
 
         private Permission() { }
 
-        public Permission(string name, string code, string? description = null)
+        public Permission(string name, string code, string? description = null, Guid? parentId = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -38,10 +45,11 @@ namespace LocationSystem.Domain.Entities
             Name = name;
             Code = code;
             Description = description;
+            ParentId = parentId;
             CreatedAt = DateTime.UtcNow;
         }
 
-        public void Update(string name, string code, string? description = null)
+        public void Update(string name, string code, string? description = null, Guid? parentId = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -56,6 +64,7 @@ namespace LocationSystem.Domain.Entities
             Name = name;
             Code = code;
             Description = description;
+            ParentId = parentId;
             UpdatedAt = DateTime.UtcNow;
         }
     }
