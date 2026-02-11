@@ -16,11 +16,7 @@
                      :data="treeData"
                      :props="treeProps"
                      :default-expanded-keys="allExpandedKeys.length > 0 ? allExpandedKeys : expandedPermissions"
-                     :default-checked-keys="selectedPermissions"
-                     :check-strictly="true"
-                     show-checkbox
                      node-key="id"
-                     @check="handleCheck"
                      @node-click="handleNodeClick"
                      @expand-change="handleExpandChange" />
         </div>
@@ -42,10 +38,6 @@
         },
         props: {
             permissionTree: {
-                type: Array,
-                default: () => []
-            },
-            selectedPermissions: {
                 type: Array,
                 default: () => []
             },
@@ -147,51 +139,19 @@
                 // 点击节点时的处理
             },
 
-            // 处理权限选择变化
-            handleCheck(checkedNode, checkedInfo) {
-                // 转换选中的节点数据为权限ID数组
-                const checkedKeys = checkedInfo.checkedKeys
-                this.$emit('permission-change', checkedKeys)
-            },
-
             // 处理节点展开/收起变化
             handleExpandChange(expandedKeys) {
                 this.$emit('expand-change', expandedKeys)
-            },
-
-            // 设置默认选中的权限
-            setSelectedPermissions() {
-                // 检查ref是否存在且有setCheckedKeys方法
-                if (this.$refs.permissionTreeRef && typeof this.$refs.permissionTreeRef.setCheckedKeys === 'function') {
-                    // 调用Element Plus ElTree的setCheckedKeys方法设置选中节点
-                    this.$refs.permissionTreeRef.setCheckedKeys(this.selectedPermissions)
-                } else {
-                    // 如果ref不存在或方法不可用，回退到使用default-checked-keys
-                    console.warn('PermissionTree ref or setCheckedKeys method not available')
-                }
             }
         },
         watch: {
-            // 当treeData变化时，自动展开所有节点并设置选中权限
+            // 当treeData变化时，自动展开所有节点
             treeData: {
                 handler() {
                     // 使用多个nextTick确保组件完全渲染
                     this.$nextTick(() => {
                         this.$nextTick(() => {
                             this.autoExpandAll()
-                            this.setSelectedPermissions()
-                        })
-                    })
-                },
-                deep: true
-            },
-            // 监听选中权限变化，动态更新选中状态
-            selectedPermissions: {
-                handler(newVal) {
-                    // 使用多个nextTick确保组件完全渲染
-                    this.$nextTick(() => {
-                        this.$nextTick(() => {
-                            this.setSelectedPermissions()
                         })
                     })
                 },

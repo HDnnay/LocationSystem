@@ -62,7 +62,7 @@ namespace LocationSystem.Api.Controllers
             {
                 var command = new CreatePermissionCommand { PermissionDto = permissionDto };
                 var createdPermission = await _mediator.Send(command);
-                return CreatedAtAction(nameof(GetPermission), new { id = createdPermission.Id }, createdPermission);
+                return Ok();
             }
             catch (Exception ex)
             {
