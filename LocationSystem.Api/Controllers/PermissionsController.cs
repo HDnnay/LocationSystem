@@ -82,7 +82,7 @@ namespace LocationSystem.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(ex);
             }
         }
 

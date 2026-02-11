@@ -13,5 +13,6 @@ namespace LocationSystem.Application.Features.Permissions.Models
         public int Order { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+        public List<PermissionMenuDto> Children { get; set; } = new List<PermissionMenuDto>();
     }
 }

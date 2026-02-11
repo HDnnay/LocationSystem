@@ -34,6 +34,7 @@
                     <el-table v-loading="loading"
                               :data="permissions"
                               style="width: 100%"
+                              max-height="600px"
                               stripe
                               border>
                         <el-table-column type="index" :index="(index) => index + 1" label="序号" width="80" />
@@ -88,7 +89,7 @@
         <el-dialog v-model="showPermissionModal"
                    :title="editingPermission ? '编辑权限' : '添加权限'"
                    width="500px">
-            <el-form :model="formData" ref="permissionFormRef" label-width="80px">
+            <el-form :model="formData" ref="permissionFormRef" label-width="80px" :rules="rules">
                 <el-form-item label="权限名称" prop="name" required>
                     <el-input v-model="formData.name" placeholder="请输入权限名称" />
                 </el-form-item>
@@ -172,6 +173,15 @@
                     label: 'label',
                     value: 'id',
                     checkStrictly: true
+                },
+                rules: {
+                    name: [
+                        { required: true, message: '请输入权限名称', trigger: 'blur' }
+                    ],
+                    code: [
+                        { required: true, message: '请输入权限代码', trigger: 'blur' },
+                        { pattern: /^[a-zA-Z0-9_:]+$/, message: '权限代码只能包含字母、数字、下划线和冒号', trigger: 'blur' }
+                    ]
                 }
             }
         },
@@ -337,7 +347,11 @@
                         this.getPermissionTree();
                     }
                 } catch (error) {
-                    ElMessage.error('保存失败，请重试');
+                    if (error.response && error.response.data && error.response.data.message) {
+                        ElMessage.error(error.response.data.message);
+                    } else {
+                        ElMessage.error('保存失败，请重试');
+                    }
                 }
             },
             confirmDelete(permission) {
