@@ -195,10 +195,22 @@
                 try {
                     const response = await request.get('/api/permissions');
                     if (response.status === 200) {
-                        this.permissions = response.data;
-                        this.allPermissions = response.data;
+                        const permissions = response.data;
+                        // 构建权限ID到名称的映射
+                        const permissionMap = new Map();
+                        permissions.forEach(permission => {
+                            permissionMap.set(permission.id, permission.name);
+                        });
+
+                        // 为每个权限添加父级权限名称
+                        this.permissions = permissions.map(permission => ({
+                            ...permission,
+                            parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
+                        }));
+
+                        this.allPermissions = permissions;
                         // 构建树形结构的权限选项
-                        this.permissionTreeOptions = this.buildPermissionTreeOptions(response.data);
+                        this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
                     }
                 } catch (error) {
                     ElMessage.error('获取权限列表失败');
