@@ -8,7 +8,7 @@ import * as rent from './renthouse'
 import * as auth from './auth'
 import * as permissions from './permissions'
 import * as users from './users'
-import * as menus from './menus'
+import menus from './menus'
 const api={
   dentists,
   patients,

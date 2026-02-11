@@ -1,5 +1,9 @@
-using LocationSystem.Domain.Entities;
-using LocationSystem.Infrastructure.Repositories;
+using LocationSystem.Application.Features.Menus.Commands.CreateMenu;
+using LocationSystem.Application.Features.Menus.Commands.DeleteMenu;
+using LocationSystem.Application.Features.Menus.Commands.UpdateMenu;
+using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
+using LocationSystem.Application.Features.Menus.Queries.GetMenuById;
+using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocationSystem.Api.Controllers
@@ -8,21 +12,21 @@ namespace LocationSystem.Api.Controllers
     [ApiController]
     public class MenusController : ControllerBase
     {
-        private readonly MenuRepository _menuRepository;
+        private readonly IMediator _mediator;
 
-        public MenusController(MenuRepository menuRepository)
+        public MenusController(IMediator mediator)
         {
-            _menuRepository = menuRepository;
+            _mediator = mediator;
         }
 
         // GET: api/Menus
         [HttpGet]
-        public async Task<IActionResult> GetMenus()
+        public async Task<IActionResult> GetMenus([FromQuery]GetAllMenusQuery query)
         {
             try
             {
-                var menus = await _menuRepository.GetAllMenusAsync();
-                return Ok(menus);
+                var result = await _mediator.Send(query);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -36,7 +40,8 @@ namespace LocationSystem.Api.Controllers
         {
             try
             {
-                var menu = await _menuRepository.GetMenuByIdAsync(id);
+                var query = new GetMenuByIdQuery { MenuId = id };
+                var menu = await _mediator.Send(query);
                 if (menu == null)
                 {
                     return NotFound();
@@ -51,19 +56,11 @@ namespace LocationSystem.Api.Controllers
 
         // POST: api/Menus
         [HttpPost]
-        public async Task<IActionResult> CreateMenu([FromBody] MenuCreateDto menuDto)
+        public async Task<IActionResult> CreateMenu([FromBody] CreateMenuCommand command)
         {
             try
             {
-                var menu = new Menu(
-                    menuDto.Name,
-                    menuDto.Path,
-                    menuDto.Icon,
-                    menuDto.Order,
-                    menuDto.ParentId
-                );
-                
-                var createdMenu = await _menuRepository.CreateMenuAsync(menu);
+                var createdMenu = await _mediator.Send(command);
                 return CreatedAtAction(nameof(GetMenu), new { id = createdMenu.Id }, createdMenu);
             }
             catch (Exception ex)
@@ -74,26 +71,13 @@ namespace LocationSystem.Api.Controllers
 
         // PUT: api/Menus/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMenu(Guid id, [FromBody] MenuUpdateDto menuDto)
+        public async Task<IActionResult> UpdateMenu(Guid id, [FromBody] UpdateMenuCommand command)
         {
             try
             {
-                var menu = await _menuRepository.GetMenuByIdAsync(id);
-                if (menu == null)
-                {
-                    return NotFound();
-                }
-                
-                menu.Update(
-                    menuDto.Name,
-                    menuDto.Path,
-                    menuDto.Icon,
-                    menuDto.Order,
-                    menuDto.ParentId
-                );
-                
-                await _menuRepository.UpdateMenuAsync(menu);
-                return Ok(menu);
+                command.Id = id;
+                var updatedMenu = await _mediator.Send(command);
+                return Ok(updatedMenu);
             }
             catch (Exception ex)
             {
@@ -107,7 +91,8 @@ namespace LocationSystem.Api.Controllers
         {
             try
             {
-                await _menuRepository.DeleteMenuAsync(id);
+                var command = new DeleteMenuCommand { MenuId = id };
+                await _mediator.Send(command);
                 return Ok(new { success = true });
             }
             catch (Exception ex)
@@ -115,23 +100,5 @@ namespace LocationSystem.Api.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-    }
-
-    public class MenuCreateDto
-    {
-        public string Name { get; set; }
-        public string Path { get; set; }
-        public string Icon { get; set; }
-        public int Order { get; set; }
-        public Guid? ParentId { get; set; }
-    }
-
-    public class MenuUpdateDto
-    {
-        public string Name { get; set; }
-        public string Path { get; set; }
-        public string Icon { get; set; }
-        public int Order { get; set; }
-        public Guid? ParentId { get; set; }
     }
 }

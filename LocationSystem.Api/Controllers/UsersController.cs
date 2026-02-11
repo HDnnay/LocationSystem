@@ -1,5 +1,6 @@
-using LocationSystem.Application.Features.Auth.Login;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Application.Features.Users.Queries.GetAllUsers;
+using LocationSystem.Application.Features.Users.Queries.GetUserById;
+using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocationSystem.Api.Controllers
@@ -8,21 +9,21 @@ namespace LocationSystem.Api.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IMediator _mediator;
 
-        public UsersController(IUserRepository userRepository)
+        public UsersController(IMediator mediator)
         {
-            _userRepository = userRepository;
+            _mediator = mediator;
         }
 
         // GET: api/Users
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers([FromQuery]GetAllUsersQuery query)
         {
             try
             {
-                var users = await _userRepository.GetAllUsersAsync();
-                return Ok(users);
+                var result = await _mediator.Send(query);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -36,62 +37,13 @@ namespace LocationSystem.Api.Controllers
         {
             try
             {
-                var user = await _userRepository.GetUserByIdAsync(id);
+                var query = new GetUserByIdQuery { UserId = id };
+                var user = await _mediator.Send(query);
                 if (user == null)
                 {
                     return NotFound();
                 }
                 return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        // PUT: api/Users/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] User user)
-        {
-            try
-            {
-                if (id != user.Id)
-                {
-                    return BadRequest();
-                }
-
-                await _userRepository.UpdateUserAsync(user);
-                return Ok(user);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        // DELETE: api/Users/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
-        {
-            try
-            {
-                await _userRepository.DeleteUserAsync(id);
-                return Ok(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-        }
-
-        // POST: api/Users/{id}/assign-roles
-        [HttpPost("{id}/assign-roles")]
-        public async Task<IActionResult> AssignRoles(Guid id, [FromBody] IEnumerable<Guid> roleIds)
-        {
-            try
-            {
-                await _userRepository.AssignRolesToUserAsync(id, roleIds);
-                return Ok(new { success = true });
             }
             catch (Exception ex)
             {

@@ -8,7 +8,7 @@ const userApi = {
       method: 'get'
     })
   },
-  
+
   // 获取单个用户
   getUserById: (id) => {
     return request({
@@ -16,7 +16,7 @@ const userApi = {
       method: 'get'
     })
   },
-  
+
   // 更新用户
   updateUser: (id, user) => {
     return request({
@@ -25,7 +25,7 @@ const userApi = {
       data: user
     })
   },
-  
+
   // 删除用户
   deleteUser: (id) => {
     return request({
@@ -33,7 +33,7 @@ const userApi = {
       method: 'delete'
     })
   },
-  
+
   // 分配角色给用户
   assignRoles: (id, roleIds) => {
     return request({

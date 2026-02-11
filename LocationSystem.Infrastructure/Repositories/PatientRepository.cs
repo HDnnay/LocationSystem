@@ -1,4 +1,4 @@
-﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienList;
 using LocationSystem.Domain.Entities;
 using LocationSystem.Infrastructure.Utilities;
@@ -20,9 +20,9 @@ namespace LocationSystem.Infrastructure.Repositories
         public async Task<IEnumerable<Patient>> GetPatientPage(PatiensListFilterDto fiter)
         {
             var querable = _context.Patients.AsQueryable().AsNoTracking();
-            if (string.IsNullOrWhiteSpace(fiter.keyWord))
+            if (!string.IsNullOrWhiteSpace(fiter.keyWord))
             {
-                querable.Where(t=>t.Email.Value.Contains(fiter.keyWord)||t.Name.Contains(fiter.keyWord));
+                querable = querable.Where(t=>t.Email.Value.Contains(fiter.keyWord)||t.Name.Contains(fiter.keyWord));
             }
             return await querable.OrderBy(t=>t.Name)
                 .Paginate(fiter.Page,fiter.PageSize)

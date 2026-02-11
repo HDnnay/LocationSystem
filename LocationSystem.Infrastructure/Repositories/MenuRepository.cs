@@ -1,90 +1,36 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
 using LocationSystem.Domain.Entities;
-using LocationSystem.Infrastructure;
+using LocationSystem.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
     public class MenuRepository : Repository<Menu>, IMenuRepository
     {
-        public MenuRepository(AppDbContext dbContext) : base(dbContext)
+        private readonly AppDbContext _context;
+
+        public MenuRepository(AppDbContext context) : base(context)
         {
+            _context = context;
         }
 
-        public async Task<List<Menu>> GetMenusByPermissionIdsAsync(List<Guid> permissionIds)
+
+        public async Task<IEnumerable<Menu>> GetMenuPage(GetAllMenusQuery query)
         {
-            // 先获取与权限关联的所有菜单
-            var userMenus = await _context.Menus
-                .Where(m => m.PermissionMenus.Any(pm => permissionIds.Contains(pm.PermissionId)))
-                .Include(m => m.PermissionMenus)
-                .ThenInclude(pm => pm.Permission)
-                .OrderBy(m => m.Order)
-                .ToListAsync();
-
-            // 收集所有菜单的父菜单ID
-            var parentIds = userMenus
-                .Where(m => m.ParentId.HasValue)
-                .Select(m => m.ParentId.Value)
-                .Distinct()
-                .ToList();
-
-            // 如果有父菜单ID，获取这些父菜单
-            if (parentIds.Any())
+            var querable = _context.Menus.AsQueryable().AsNoTracking();
+            if (!string.IsNullOrWhiteSpace(query.keyWord))
             {
-                var parentMenus = await _context.Menus
-                    .Where(m => parentIds.Contains(m.Id))
-                    .Include(m => m.PermissionMenus)
-                    .ThenInclude(pm => pm.Permission)
-                    .OrderBy(m => m.Order)
-                    .ToListAsync();
-
-                // 将父菜单添加到用户菜单列表中
-                userMenus.AddRange(parentMenus);
+                querable = querable.Where(t => t.Name.Contains(query.keyWord) || t.Path.Contains(query.keyWord));
             }
-
-            return userMenus.DistinctBy(m => m.Id).OrderBy(m => m.Order).ToList();
-        }
-
-        public async Task<List<Menu>> GetAllMenusAsync()
-        {
-            return await _context.Menus
-                .Include(m => m.Children)
-                .Include(m => m.PermissionMenus)
-                .ThenInclude(pm => pm.Permission)
-                .OrderBy(m => m.Order)
+            return await querable.OrderBy(t => t.Order)
+                .Paginate(query.Page, query.PageSize)
                 .ToListAsync();
         }
 
-        public async Task<Menu?> GetMenuByIdAsync(Guid id)
+        public async Task<int> GetTotalCount()
         {
-            return await _context.Menus
-                .Include(m => m.Children)
-                .Include(m => m.PermissionMenus)
-                .ThenInclude(pm => pm.Permission)
-                .FirstOrDefaultAsync(m => m.Id == id);
-        }
-
-        public async Task<Menu> CreateMenuAsync(Menu menu)
-        {
-            await _context.Menus.AddAsync(menu);
-            await _context.SaveChangesAsync();
-            return menu;
-        }
-
-        public async Task UpdateMenuAsync(Menu menu)
-        {
-            _context.Menus.Update(menu);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteMenuAsync(Guid id)
-        {
-            var menu = await _context.Menus.FindAsync(id);
-            if (menu != null)
-            {
-                _context.Menus.Remove(menu);
-                await _context.SaveChangesAsync();
-            }
+            return await _context.Menus.CountAsync();
         }
     }
 }

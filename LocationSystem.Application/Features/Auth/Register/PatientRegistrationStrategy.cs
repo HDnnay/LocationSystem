@@ -1,16 +1,16 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Features.Auth.Login;
 using LocationSystem.Domain.Entities;
 
 namespace LocationSystem.Application.Features.Auth.Register
 {
     public class PatientRegistrationStrategy : IUserRegistrationStrategy
     {
-        public async Task RegisterUser(User user, IUserRepository userRepository)
+        public async Task RegisterUser(User user, LocationSystem.Application.Contrats.Repositories.IUserRepository userRepository)
         {
             if (user is Patient patient)
             {
-                await userRepository.AddPatientAsync(patient);
+                // 具体的患者注册逻辑
+                await userRepository.AddAsync(user);
             }
             else
             {

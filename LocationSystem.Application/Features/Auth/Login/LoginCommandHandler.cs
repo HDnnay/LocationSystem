@@ -1,3 +1,4 @@
+using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Domain.Entities;
@@ -23,11 +24,11 @@ namespace LocationSystem.Application.Features.Auth.Login
             User? user = null;
             if (loginRequest.Type == UserType.Dentist)
             {
-                user = await _userRepository.GetDentistByEmail(loginRequest.Email);
+                user = await _userRepository.GetUserByEmailAsync(loginRequest.Email);
             }
             else if (loginRequest.Type == UserType.Patient)
             {
-                user = await _userRepository.GetPatientByEmail(loginRequest.Email);
+                user = await _userRepository.GetUserByEmailAsync(loginRequest.Email);
             }
             if (user == null)
             {
@@ -63,25 +64,5 @@ namespace LocationSystem.Application.Features.Auth.Login
 
             return response;
         }
-    }
-
-    // 用户仓库接口
-    public interface IUserRepository
-    {
-        Task<Dentist?> GetDentistByEmail(string email);
-        Task<Patient?> GetPatientByEmail(string email);
-        Task<User?> GetUserByEmail(string email);
-        Task<bool> IsEmailExists(string email);
-        Task SaveRefreshToken(Guid userId, string refreshToken);
-        Task<string?> GetRefreshToken(Guid userId);
-        Task AddAsync(User user);
-        Task AddDentistAsync(Dentist dentist);
-        Task AddPatientAsync(Patient patient);
-        Task<User?> GetUserWithRolesAndPermissionsAsync(Guid userId);
-        Task<IEnumerable<User>> GetAllUsersAsync();
-        Task<User?> GetUserByIdAsync(Guid userId);
-        Task UpdateUserAsync(User user);
-        Task DeleteUserAsync(Guid userId);
-        Task AssignRolesToUserAsync(Guid userId, IEnumerable<Guid> roleIds);
     }
 }

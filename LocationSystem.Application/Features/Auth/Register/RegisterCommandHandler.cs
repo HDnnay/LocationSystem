@@ -1,5 +1,4 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Features.Auth.Login;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.ValueObjects;
@@ -8,7 +7,7 @@ namespace LocationSystem.Application.Features.Auth.Register
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponseDto>
     {
-        private readonly IUserRepository _userRepository;
+        private readonly LocationSystem.Application.Contrats.Repositories.IUserRepository _userRepository;
         private readonly UserRegistrationStrategyFactory _strategyFactory;
 
         public RegisterCommandHandler(IUserRepository userRepository, UserRegistrationStrategyFactory strategyFactory)
@@ -22,8 +21,8 @@ namespace LocationSystem.Application.Features.Auth.Register
             var registerRequest = request.Request;
 
             // 验证邮箱是否已存在
-            var isEmailExists = await _userRepository.IsEmailExists(registerRequest.Email);
-            if (isEmailExists)
+            var existingUser = await _userRepository.GetUserByEmailAsync(registerRequest.Email);
+            if (existingUser != null)
             {
                 throw new Exception("邮箱已被注册");
             }
