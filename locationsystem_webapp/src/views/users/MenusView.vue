@@ -129,7 +129,7 @@ export default {
         // 调用后端新提供的获取菜单树形结构的API
         const response = await api.default.menus.getMenuTree()
         console.log('获取菜单树形结构响应:', response)
-        return response.data || []
+        return response || []
       } catch (error) {
         console.error('加载所有菜单失败:', error)
         return []
@@ -148,10 +148,10 @@ export default {
         const response = await api.default.menus.getAllMenus(currentPage.value, pageSize.value)
         console.log(response)
         // 直接使用response作为菜单列表，因为后端直接返回了菜单列表
-        menus.value = response.data.data
-        total.value = response.data.total
+        menus.value = response.data
+        total.value = response.total
         // 直接使用后端返回的分页数据
-        menuList.value = response.data.data
+        menuList.value = response.data
         // 加载所有菜单并构建树形结构的菜单选项
         const allMenus = await loadAllMenus()
         menuTreeOptions.value = buildMenuTreeOptions(allMenus)

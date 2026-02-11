@@ -88,8 +88,7 @@ export default {
 
       this.loading = true
       try {
-        const response = await this.$api.auth.register(this.registerForm)
-        const data = response.data
+        await this.$api.auth.register(this.registerForm)
 
         // 注册成功后跳转到登录页面
         this.$message.success('注册成功，请登录')

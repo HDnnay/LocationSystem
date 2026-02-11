@@ -1,59 +1,31 @@
 import request from './request'
 
-const menuApi = {
-  // 获取所有菜单
-  getAllMenus: (page = 1, pageSize = 10) => {
-    return request({
-      url: '/api/menus',
-      method: 'get',
-      params: {
-        page,
-        pageSize
-      }
-    })
-  },
-
-  // 获取菜单树形结构
-  getMenuTree: () => {
-    return request({
-      url: '/api/menus/tree',
-      method: 'get'
-    })
-  },
-
-  // 获取单个菜单
-  getMenuById: (id) => {
-    return request({
-      url: `/api/menus/${id}`,
-      method: 'get'
-    })
-  },
-
-  // 创建菜单
-  createMenu: (menu) => {
-    return request({
-      url: '/api/menus',
-      method: 'post',
-      data: menu
-    })
-  },
-
-  // 更新菜单
-  updateMenu: (id, menu) => {
-    return request({
-      url: `/api/menus/${id}`,
-      method: 'put',
-      data: menu
-    })
-  },
-
-  // 删除菜单
-  deleteMenu: (id) => {
-    return request({
-      url: `/api/menus/${id}`,
-      method: 'delete'
-    })
-  }
+// 获取所有菜单
+export const getAllMenus = (page = 1, pageSize = 10) => {
+  return request.get('/api/menus', { params: { page, pageSize } })
 }
 
-export default menuApi
+// 获取菜单树形结构
+export const getMenuTree = () => {
+  return request.get('/api/menus/tree')
+}
+
+// 获取单个菜单
+export const getMenuById = (id) => {
+  return request.get(`/api/menus/${id}`)
+}
+
+// 创建菜单
+export const createMenu = (menu) => {
+  return request.post('/api/menus', menu)
+}
+
+// 更新菜单
+export const updateMenu = (id, menu) => {
+  return request.put(`/api/menus/${id}`, menu)
+}
+
+// 删除菜单
+export const deleteMenu = (id) => {
+  return request.delete(`/api/menus/${id}`)
+}

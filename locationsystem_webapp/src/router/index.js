@@ -74,7 +74,7 @@ const routes = [
     }
   },
   {
-    path: '/company/provice',
+    path: '/company/province',
     name: 'company_provice',
     component: () => import('../views/company/CompanyProviceView.vue'),
     meta: {

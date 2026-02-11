@@ -68,8 +68,8 @@ export default {
 
                 this.loading = true
                 try {
-                    const response = await this.$api.auth.login(this.loginForm)
-                    const data = response.data
+                    const data = await this.$api.auth.login(this.loginForm)
+                    console.log('登录响应数据:', data)
 
                     // 保存token和用户信息
                     localStorage.setItem('access_token', data.accessToken)

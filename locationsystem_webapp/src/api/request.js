@@ -37,7 +37,7 @@ service.interceptors.response.use(
         // 对响应数据做一些处理
         const res = response.data;
         if (response.status === 200) {
-            return response;
+            return response.data;
         }
         else {
             return Promise.reject(new Error(res.message || 'Error'));
@@ -61,9 +61,9 @@ service.interceptors.response.use(
                         RefreshToken: refreshToken,
                         Type: parseInt(userType)
                     }).then(res => {
-                        if (res.status === 200) {
-                            let newToken = res.data.data.accessToken;
-                            let newRefreshToken = res.data.data.refreshToken;
+                        if (res.accessToken) {
+                            let newToken = res.accessToken;
+                            let newRefreshToken = res.refreshToken;
                             localStorage.setItem('access_token', newToken);
                             localStorage.setItem('refresh_token', newRefreshToken);
                             originalRequest.headers.Authorization = `Bearer ${newToken}`;

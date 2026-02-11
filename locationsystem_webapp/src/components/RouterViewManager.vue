@@ -192,45 +192,33 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
                 try {
                     // 从后端获取菜单数据
                     const response = await this.$api.permissions.getUserMenus()
-                    console.log('后端返回的菜单数据:', response.data)
+                    console.log('后端返回的菜单数据:', response)
 
-                    if (response.status === 200 && response.data && response.data.length > 0) {
-                        // 使用后端返回的菜单数据
-                        this.menuItems = this.buildMenuTree(response.data)
+                    // 直接使用后端返回的数据作为菜单数据
+                    this.menuItems = this.buildMenuTree(response)
 
-                        // 提取所有权限并保存到localStorage
-                        const permissions = []
-                        const extractPermissions = (menu) => {
-                            // 处理大小写不同的字段名
-                            const code = menu.code || menu.Code
-                            if (code) {
-                                permissions.push(code)
-                            }
-                            // 处理大小写不同的字段名
-                            const children = menu.children || menu.Children
-                            if (children) {
-                                children.forEach(child => extractPermissions(child))
-                            }
+                    // 提取所有权限并保存到localStorage
+                    const permissions = []
+                    const extractPermissions = (menu) => {
+                        // 处理大小写不同的字段名
+                        const code = menu.code || menu.Code
+                        if (code) {
+                            permissions.push(code)
                         }
-                        response.data.forEach(menu => extractPermissions(menu))
-                        localStorage.setItem('userPermissions', JSON.stringify(permissions))
-                    } else {
-                        // 后端返回的数据无效时，使用默认菜单
-                        console.log('使用默认菜单')
-                        this.menuItems = this.getDefaultMenus()
-
-                        // 使用默认权限
-                        const defaultPermissions = ['dentist:view', 'patient:view', 'dental-office:view', 'appointment:view', 'role:view', 'permission:view', 'company:view', 'company:statistics:view', 'rent:view', 'rent:create']
-                        localStorage.setItem('userPermissions', JSON.stringify(defaultPermissions))
+                        // 处理大小写不同的字段名
+                        const children = menu.children || menu.Children
+                        if (children) {
+                            children.forEach(child => extractPermissions(child))
+                        }
                     }
+                    response.forEach(menu => extractPermissions(menu))
+                    localStorage.setItem('userPermissions', JSON.stringify(permissions))
                 } catch (error) {
                     console.error('加载菜单失败:', error)
-                    // 使用默认菜单
-                    this.menuItems = this.getDefaultMenus()
-
-                    // 使用默认权限
-                    const defaultPermissions = ['dentist:view', 'patient:view', 'dental-office:view', 'appointment:view', 'role:view', 'permission:view', 'company:view', 'company:statistics:view', 'rent:view', 'rent:create']
-                    localStorage.setItem('userPermissions', JSON.stringify(defaultPermissions))
+                    // 加载失败时，设置空菜单
+                    this.menuItems = []
+                    // 加载失败时，设置空权限
+                    localStorage.setItem('userPermissions', JSON.stringify([]))
                 }
             },
 
@@ -298,105 +286,7 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
                 return iconMap[iconName] || 'List'
             },
 
-            // 获取默认菜单
-            getDefaultMenus() {
-                return [
-                    {
-                        index: '/dentists',
-                        title: '牙医管理',
-                        icon: 'UserFilled',
-                        permission: 'dentist:view',
-                        children: []
-                    },
-                    {
-                        index: '/patients',
-                        title: '患者管理',
-                        icon: 'User',
-                        permission: 'patient:view',
-                        children: []
-                    },
-                    {
-                        index: '/dental-offices',
-                        title: '牙科诊所管理',
-                        icon: 'OfficeBuilding',
-                        permission: 'dental-office:view',
-                        children: []
-                    },
-                    {
-                        index: '/appointments',
-                        title: '预约管理',
-                        icon: 'Calendar',
-                        permission: 'appointment:view',
-                        children: []
-                    },
-                    {
-                        index: '/roles-management',
-                        title: '角色权限管理',
-                        icon: 'Lock',
-                        permission: 'role:view',
-                        children: [
-                            {
-                                index: '/roles',
-                                title: '角色管理',
-                                icon: 'SetUp',
-                                permission: 'role:view',
-                                children: []
-                            },
-                            {
-                                index: '/permissions',
-                                title: '权限管理',
-                                icon: 'Key',
-                                permission: 'permission:view',
-                                children: []
-                            }
-                        ]
-                    },
-                    {
-                        index: '/company-management',
-                        title: '公司管理',
-                        icon: 'OfficeBuilding',
-                        permission: 'company:view',
-                        children: [
-                            {
-                                index: '/company',
-                                title: '公司列表',
-                                icon: 'List',
-                                permission: 'company:view',
-                                children: []
-                            },
-                            {
-                                index: '/company/provice',
-                                title: '统计管理',
-                                icon: 'List',
-                                permission: 'company:statistics:view',
-                                children: []
-                            }
-                        ]
-                    },
-                    {
-                        index: '/rent-management',
-                        title: '租房管理',
-                        icon: 'House',
-                        permission: 'rent:view',
-                        children: [
-                            {
-                                index: '/rent',
-                                title: '租房列表',
-                                icon: 'List',
-                                permission: 'rent:view',
-                                children: []
-                            },
-                            {
-                                index: '/rent/create',
-                                title: '租房创建',
-                                icon: 'Document',
-                                permission: 'rent:create',
-                                children: []
-                            }
-                        ]
-                    }
-                ]
-            },
+
 
             // 检查是否有权限
             hasPermission(permission) {

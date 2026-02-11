@@ -2,45 +2,25 @@ import request from './request'
 
 // 权限相关API
 export const getUserMenus = () => {
-    return request({
-        url: '/api/permissions/user-menus',
-        method: 'get'
-    })
+  return request.get('/api/permissions/user-menus')
 }
 
 export const getPermissions = () => {
-    return request({
-        url: '/api/permissions',
-        method: 'get'
-    })
+  return request.get('/api/permissions')
 }
 
 export const getPermissionTree = () => {
-    return request({
-        url: '/api/permissions/tree',
-        method: 'get'
-    })
+  return request.get('/api/permissions/tree')
 }
 
 export const createPermission = (data) => {
-    return request({
-        url: '/api/permissions',
-        method: 'post',
-        data
-    })
+  return request.post('/api/permissions', data)
 }
 
 export const updatePermission = (id, data) => {
-    return request({
-        url: `/api/permissions/${id}`,
-        method: 'put',
-        data
-    })
+  return request.put(`/api/permissions/${id}`, data)
 }
 
 export const deletePermission = (id) => {
-    return request({
-        url: `/api/permissions/${id}`,
-        method: 'delete'
-    })
+  return request.delete(`/api/permissions/${id}`)
 }
