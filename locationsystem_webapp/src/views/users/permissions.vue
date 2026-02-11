@@ -39,6 +39,7 @@
                         <el-table-column type="index" :index="(index) => index + 1" label="序号" width="80" />
                         <el-table-column prop="name" label="权限名称" width="180" />
                         <el-table-column prop="code" label="权限代码" width="180" />
+                        <el-table-column prop="parentName" label="父级权限" width="180" />
                         <el-table-column prop="description" label="权限描述" min-width="200" />
                         <el-table-column prop="createdAt" label="创建时间" width="180">
                             <template #default="scope">
@@ -95,14 +96,15 @@
                     <el-input v-model="formData.code" placeholder="请输入权限代码" />
                 </el-form-item>
                 <el-form-item label="父权限" prop="parentId">
-                    <el-select v-model="formData.parentId" placeholder="选择父权限（可选）" clearable>
-                        <el-option
-                            v-for="permission in allPermissions"
-                            :key="permission.id"
-                            :label="permission.name"
-                            :value="permission.id">
-                        </el-option>
-                    </el-select>
+                    <el-cascader
+                        v-model="cascaderValue"
+                        :options="permissionTreeOptions"
+                        :props="cascaderProps"
+                        placeholder="选择父权限（可选）"
+                        clearable
+                        style="width: 100%"
+                        @change="handleCascaderChange"
+                    />
                 </el-form-item>
                 <el-form-item label="权限描述" prop="description">
                     <el-input v-model="formData.description" placeholder="请输入权限描述" type="textarea" />
@@ -149,6 +151,7 @@
                 permissions: [],
                 allPermissions: [],
                 permissionTree: [],
+                permissionTreeOptions: [],
                 loading: false,
                 treeLoading: false,
                 treeError: null,
@@ -161,8 +164,15 @@
                     description: '',
                     parentId: null
                 },
+                cascaderValue: [],
                 showDeleteConfirm: false,
-                deletePermission: null
+                deletePermission: null,
+                cascaderProps: {
+                    children: 'children',
+                    label: 'label',
+                    value: 'id',
+                    checkStrictly: true
+                }
             }
         },
         mounted() {
@@ -187,12 +197,50 @@
                     if (response.status === 200) {
                         this.permissions = response.data;
                         this.allPermissions = response.data;
+                        // 构建树形结构的权限选项
+                        this.permissionTreeOptions = this.buildPermissionTreeOptions(response.data);
                     }
                 } catch (error) {
                     ElMessage.error('获取权限列表失败');
                 } finally {
                     this.loading = false;
                 }
+            },
+            // 构建树形结构的权限选项
+            buildPermissionTreeOptions(permissions) {
+                const permissionMap = new Map();
+                const rootPermissions = [];
+
+                // 首先创建所有权限节点的映射
+                permissions.forEach(permission => {
+                    permissionMap.set(permission.id, {
+                        id: permission.id,
+                        label: permission.name,
+                        code: permission.code,
+                        disabled: false,
+                        children: []
+                    });
+                });
+
+                // 然后构建树形结构
+                permissions.forEach(permission => {
+                    const permissionNode = permissionMap.get(permission.id);
+                    if (permission.parentId) {
+                        // 如果有父权限，添加到父权限的子节点中
+                        const parentNode = permissionMap.get(permission.parentId);
+                        if (parentNode) {
+                            parentNode.children.push(permissionNode);
+                        } else {
+                            // 如果父权限不存在，作为根节点处理
+                            rootPermissions.push(permissionNode);
+                        }
+                    } else {
+                        // 没有父权限的作为根节点
+                        rootPermissions.push(permissionNode);
+                    }
+                });
+
+                return rootPermissions;
             },
             async getPermissionTree() {
                 this.treeLoading = true;
@@ -217,6 +265,7 @@
                     description: "",
                     parentId: null
                 }
+                this.cascaderValue = [];
                 this.showPermissionModal = true
             },
             editPermission(permission) {
@@ -227,7 +276,17 @@
                     description: permission.description,
                     parentId: permission.parentId || null
                 }
+                // 初始化级联选择器的值
+                this.cascaderValue = permission.parentId ? [permission.parentId] : [];
                 this.showPermissionModal = true
+            },
+            // 处理级联选择器变化
+            handleCascaderChange(value) {
+                if (value && value.length > 0) {
+                    this.formData.parentId = value[value.length - 1];
+                } else {
+                    this.formData.parentId = null;
+                }
             },
             closePermissionModal() {
                 this.showPermissionModal = false
