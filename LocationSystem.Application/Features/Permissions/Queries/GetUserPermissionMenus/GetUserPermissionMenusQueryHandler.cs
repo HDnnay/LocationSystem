@@ -1,3 +1,4 @@
+using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Auth.Login;
 using LocationSystem.Application.Features.Permissions.Models;
 using LocationSystem.Application.Utilities;
@@ -8,10 +9,12 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
     public class GetUserPermissionMenusQueryHandler : IRequestHandler<GetUserPermissionMenusQuery, List<PermissionMenuDto>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMenuRepository _menuRepository;
 
-        public GetUserPermissionMenusQueryHandler(IUserRepository userRepository)
+        public GetUserPermissionMenusQueryHandler(IUserRepository userRepository, IMenuRepository menuRepository)
         {
             _userRepository = userRepository;
+            _menuRepository = menuRepository;
         }
 
         public async Task<List<PermissionMenuDto>> Handle(GetUserPermissionMenusQuery request)
@@ -23,34 +26,37 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
                 return new List<PermissionMenuDto>();
             }
 
-            // 获取用户角色的所有权限
-            var userPermissions = new List<Permission>();
+            // 获取用户角色的所有权限ID
+            var userPermissionIds = new List<Guid>();
             foreach (var role in user.Roles)
             {
                 foreach (var permission in role.Permissions)
                 {
-                    if (!userPermissions.Any(p => p.Id == permission.Id))
+                    if (!userPermissionIds.Contains(permission.Id))
                     {
-                        userPermissions.Add(permission);
+                        userPermissionIds.Add(permission.Id);
                     }
                 }
             }
 
+            // 获取与这些权限关联的所有菜单
+            var userMenus = await _menuRepository.GetMenusByPermissionIdsAsync(userPermissionIds);
+
             // 转换为DTO
-            var menuDtos = userPermissions
-                .Select(p => new PermissionMenuDto
+            var menuDtos = userMenus
+                .Select(m => new PermissionMenuDto
                 {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Code = p.Code,
-                    Description = p.Description,
-                    ParentId = p.ParentId,
-                    IsMenu = false,
-                    MenuPath = string.Empty,
-                    MenuIcon = string.Empty,
-                    Order = 0,
-                    CreatedAt = p.CreatedAt,
-                    UpdatedAt = p.UpdatedAt ?? p.CreatedAt
+                    Id = m.Id,
+                    Name = m.Name,
+                    Code = null,
+                    Description = null,
+                    ParentId = m.ParentId,
+                    IsMenu = true,
+                    MenuPath = m.Path,
+                    MenuIcon = m.Icon,
+                    Order = m.Order,
+                    CreatedAt = m.CreatedAt,
+                    UpdatedAt = m.UpdatedAt ?? m.CreatedAt
                 })
                 .ToList();
 

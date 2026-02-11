@@ -1,4 +1,4 @@
-﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace LocationSystem.Infrastructure.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly AppDbContext _context;
+        protected readonly AppDbContext _context;
         public Repository(AppDbContext context)
         {
             _context = context;

@@ -8,7 +8,7 @@ namespace LocationSystem.Domain.Entities
         public Guid MenuId { get; private set; }
         public Menu Menu { get; private set; }
         public DateTime CreatedAt { get; private set; }
-
+        private PermissionMenu() { }
         public PermissionMenu(Permission permission, Menu menu)
         {
             Id = Guid.NewGuid();

@@ -6,18 +6,18 @@ using System.IO;
 
 namespace LocationSystem.Api.BackgroudServices
 {
-    public class DatabaseInitializerServices : BackgroundService
+    public class SqliteDatabaseInitializerServices : BackgroundService
     {
         private readonly string _connectionString;
         private readonly IConfiguration _configuration;
-        private readonly ILogger<DatabaseInitializerServices> _logger;
+        private readonly ILogger<SqliteDatabaseInitializerServices> _logger;
         private long lastId = 0;
         bool hasMoreData = true;
         private readonly IServiceScopeFactory _scopeFactory;
 
-        public DatabaseInitializerServices(IConfiguration configuration,
+        public SqliteDatabaseInitializerServices(IConfiguration configuration,
              IServiceScopeFactory scopeFactory,
-            ILogger<DatabaseInitializerServices> logger)
+            ILogger<SqliteDatabaseInitializerServices> logger)
         {
             _scopeFactory = scopeFactory;
             _configuration = configuration;
