@@ -118,7 +118,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
-import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp, Key, Menu, Home, Company, House } from '@element-plus/icons-vue'
+import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp, Key, Menu, House } from '@element-plus/icons-vue'
     export default {
         name: 'RouterViewManager',
         components: {
@@ -132,8 +132,6 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
             SetUp,
             Key,
             Menu,
-            Home,
-            Company,
             House
         },
         props: {
@@ -176,6 +174,16 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
                 this.loadMenus()
             }
         },
+        watch: {
+            isLoggedIn: {
+                handler(newVal) {
+                    if (newVal) {
+                        this.loadMenus()
+                    }
+                },
+                immediate: true
+            }
+        },
         methods: {
             // 加载菜单
             async loadMenus() {
@@ -183,11 +191,19 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
                     const response = await this.$api.permissions.getUserMenus()
                     if (response.status === 200) {
                         this.menuItems = this.buildMenuTree(response.data)
+
+                        // 提取所有权限并保存到localStorage
+                        const permissions = response.data.map(item => item.code)
+                        localStorage.setItem('userPermissions', JSON.stringify(permissions))
                     }
                 } catch (error) {
                     console.error('加载菜单失败:', error)
                     // 使用默认菜单
                     this.menuItems = this.getDefaultMenus()
+
+                    // 使用默认权限
+                    const defaultPermissions = ['dentist:view', 'patient:view', 'dental-office:view', 'appointment:view', 'role:view', 'permission:view', 'company:view', 'company:statistics:view', 'rent:view', 'rent:create']
+                    localStorage.setItem('userPermissions', JSON.stringify(defaultPermissions))
                 }
             },
 
@@ -232,12 +248,9 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
                     'Lock': 'Lock',
                     'SetUp': 'SetUp',
                     'Key': 'Key',
-                    'Menu': 'Menu',
-                    'Home': 'Home',
-                    'Company': 'Company',
                     'House': 'House'
                 }
-                return iconMap[iconName] || 'Menu'
+                return iconMap[iconName] || 'List'
             },
 
             // 获取默认菜单
@@ -296,7 +309,7 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
                     {
                         index: '/company',
                         title: '公司管理',
-                        icon: 'Company',
+                        icon: 'OfficeBuilding',
                         permission: 'company:view',
                         children: [
                             {

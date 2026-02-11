@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿using LocationSystem.Domain.Entities;
+﻿﻿﻿﻿﻿﻿﻿﻿using LocationSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -39,6 +39,24 @@ namespace LocationSystem.Infrastructure
                 .WithOne(p => p.Parent)
                 .HasForeignKey(p => p.ParentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // 配置Menu的自引用关系（父子菜单）
+            modelBuilder.Entity<Menu>()
+                .HasMany(m => m.Children)
+                .WithOne(m => m.Parent)
+                .HasForeignKey(m => m.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // 配置Permission和Menu的多对多关系
+            modelBuilder.Entity<PermissionMenu>()
+                .HasOne(pm => pm.Permission)
+                .WithMany(p => p.PermissionMenus)
+                .HasForeignKey(pm => pm.PermissionId);
+
+            modelBuilder.Entity<PermissionMenu>()
+                .HasOne(pm => pm.Menu)
+                .WithMany(m => m.PermissionMenus)
+                .HasForeignKey(pm => pm.MenuId);
         }
         public DbSet<User> Users { get; set; }
         public DbSet<DentalOffice> DentalOffices { get; set; }
@@ -49,5 +67,7 @@ namespace LocationSystem.Infrastructure
         public DbSet<RentHouse> RentHousies { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<PermissionMenu> PermissionMenus { get; set; }
     }
 }

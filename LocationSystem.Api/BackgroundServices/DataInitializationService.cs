@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace LocationSystem.Api.BackgroundServices
+namespace LocationSystem.Api.BackgroudServices
 {
     public class DataInitializationService : BackgroundService
     {

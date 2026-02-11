@@ -7,7 +7,7 @@
  */
 export const parseToken = (token) => {
   if (!token) return null
-  
+
   try {
     const payloadBase64 = token.split('.')[1]
     const payloadJson = atob(payloadBase64)
@@ -27,11 +27,11 @@ export const parseToken = (token) => {
 export const isTokenExpired = (token, bufferMinutes = 5) => {
   const payload = parseToken(token)
   if (!payload || !payload.exp) return true
-  
+
   const now = Date.now() / 1000
   const exp = payload.exp
   const buffer = bufferMinutes * 60
-  
+
   return now > exp - buffer
 }
 
@@ -43,7 +43,7 @@ export const isTokenExpired = (token, bufferMinutes = 5) => {
 export const needRefreshToken = (bufferMinutes = 5) => {
   const token = localStorage.getItem('access_token')
   if (!token) return false
-  
+
   return isTokenExpired(token, bufferMinutes)
 }
 
@@ -55,7 +55,7 @@ export const needRefreshToken = (bufferMinutes = 5) => {
 export const getTokenExpiration = (token) => {
   const payload = parseToken(token)
   if (!payload || !payload.exp) return null
-  
+
   return new Date(payload.exp * 1000)
 }
 

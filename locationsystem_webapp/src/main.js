@@ -29,7 +29,7 @@ const checkTokenRefresh = () => {
   if (needRefreshToken()) {
     const refreshToken = localStorage.getItem('refresh_token')
     const userType = localStorage.getItem('user_type')
-    
+
     if (refreshToken && userType) {
       // 主动刷新token
       api.auth.refreshToken({

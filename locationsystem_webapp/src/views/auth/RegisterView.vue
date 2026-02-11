@@ -90,7 +90,7 @@ export default {
       try {
         const response = await this.$api.auth.register(this.registerForm)
         const data = response.data
-        
+
         // 注册成功后跳转到登录页面
         this.$message.success('注册成功，请登录')
         this.$router.push('/login')

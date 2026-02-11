@@ -29,16 +29,15 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
             {
                 foreach (var permission in role.Permissions)
                 {
-                    if (!userPermissions.Any(p => p.Id == permission.Id) && permission.IsMenu)
+                    if (!userPermissions.Any(p => p.Id == permission.Id))
                     {
                         userPermissions.Add(permission);
                     }
                 }
             }
 
-            // 转换为DTO并按Order排序
+            // 转换为DTO
             var menuDtos = userPermissions
-                .OrderBy(p => p.Order)
                 .Select(p => new PermissionMenuDto
                 {
                     Id = p.Id,
@@ -46,10 +45,10 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
                     Code = p.Code,
                     Description = p.Description,
                     ParentId = p.ParentId,
-                    IsMenu = p.IsMenu,
-                    MenuPath = p.MenuPath,
-                    MenuIcon = p.MenuIcon,
-                    Order = p.Order,
+                    IsMenu = false,
+                    MenuPath = string.Empty,
+                    MenuIcon = string.Empty,
+                    Order = 0,
                     CreatedAt = p.CreatedAt,
                     UpdatedAt = p.UpdatedAt ?? p.CreatedAt
                 })

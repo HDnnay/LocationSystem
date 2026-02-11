@@ -12,12 +12,7 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
             var permission = new Permission(
                 name: request.Name,
                 code: request.Code,
-                description: request.Description,
-                parentId: request.ParentId,
-                isMenu: request.IsMenu,
-                menuPath: request.MenuPath,
-                menuIcon: request.MenuIcon,
-                order: request.Order
+                description: request.Description
             );
 
             // 由于没有实际的存储库，这里直接返回DTO
@@ -30,11 +25,11 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
                 Name = permission.Name,
                 Code = permission.Code,
                 Description = permission.Description,
-                ParentId = permission.ParentId,
-                IsMenu = permission.IsMenu,
-                MenuPath = permission.MenuPath,
-                MenuIcon = permission.MenuIcon,
-                Order = permission.Order,
+                ParentId = null,
+                IsMenu = false,
+                MenuPath = string.Empty,
+                MenuIcon = string.Empty,
+                Order = 0,
                 CreatedAt = permission.CreatedAt,
                 UpdatedAt = permission.UpdatedAt ?? permission.CreatedAt
             };

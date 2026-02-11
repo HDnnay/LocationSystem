@@ -99,7 +99,7 @@ builder.Services.AddHostedService<RabbitMQTestService>();
 builder.Services.AddHostedService<HostLoadCachBackgroupService>();
 
 // 注册后台数据初始化服务
-builder.Services.AddHostedService<LocationSystem.Api.BackgroundServices.DataInitializationService>();
+builder.Services.AddHostedService<DataInitializationService>();
 
 
 var app = builder.Build();
