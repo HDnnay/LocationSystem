@@ -108,7 +108,7 @@ export default {
     const dialogTitle = ref('新增菜单')
     const form = ref({})
     const filterText = ref('')
-    const currentPage = ref(1)
+    const currentPage = 1
     const pageSize = ref(10)
     const total = ref(0)
     const isLoading = ref(false)
@@ -126,6 +126,7 @@ export default {
         const api = await import('@/api')
         // 调用后端新提供的获取菜单树形结构的API
         const response = await api.default.menus.getMenuTree()
+        console.log('获取菜单树形结构响应:', response)
         return response.data || []
       } catch (error) {
         console.error('加载所有菜单失败:', error)
@@ -177,6 +178,18 @@ export default {
 
     // 构建树形结构的菜单选项
     const buildMenuTreeOptions = (menuList) => {
+      console.log('构建菜单树选项，输入数据:', menuList)
+      // 检查menuList是否已经是树形结构（从后端API获取的）
+      if (menuList && menuList.length > 0 && (menuList[0].hasOwnProperty('ChildMenus') || menuList[0].hasOwnProperty('childMenus'))) {
+        // 如果是树形结构，直接转换为el-cascader需要的格式
+        console.log('输入数据是树形结构，转换为cascader选项')
+        const result = convertTreeToCascaderOptions(menuList)
+        console.log('转换后的cascader选项:', result)
+        return result
+      }
+
+      // 否则，按照原来的逻辑构建树形结构
+      console.log('输入数据是扁平结构，构建树形结构')
       const menuMap = new Map()
       const rootMenus = []
 
@@ -242,6 +255,28 @@ export default {
       sortChildren(rootMenus)
 
       return rootMenus
+    }
+
+    // 将后端返回的树形结构转换为el-cascader需要的格式
+    const convertTreeToCascaderOptions = (menuTree) => {
+      return menuTree.map(menu => {
+        const option = {
+          id: menu.id,
+          label: menu.name,
+          path: menu.path,
+          icon: menu.icon,
+          disabled: false,
+          children: []
+        }
+
+        // 检查menu是否有ChildMenus或childMenus属性
+        const childMenus = menu.ChildMenus || menu.childMenus
+        if (childMenus && childMenus.length > 0) {
+          option.children = convertTreeToCascaderOptions(childMenus)
+        }
+
+        return option
+      })
     }
 
     // 处理级联选择器变化
