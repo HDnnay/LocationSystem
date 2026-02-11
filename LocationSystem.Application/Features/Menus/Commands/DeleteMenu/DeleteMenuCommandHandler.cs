@@ -17,7 +17,7 @@ namespace LocationSystem.Application.Features.Menus.Commands.DeleteMenu
         {
             var model = await _menuRepository.GetByIdAsync(command.MenuId);
             if (model==null)
-                throw new NotFoundException("¸Ã²Ëµ¥²»´æÔÚ");
+                throw new NotFoundException("ï¿½Ã²Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             await _menuRepository.DeleteAsync(model);
             return true;
         }

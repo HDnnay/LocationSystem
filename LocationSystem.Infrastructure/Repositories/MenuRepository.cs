@@ -32,5 +32,16 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             return await _context.Menus.CountAsync();
         }
+
+        public async Task<IEnumerable<Menu>> GetMenuTreeAsync()
+        {
+            // 获取所有根菜单（没有父菜单的菜单），并包含其所有子菜单
+            return await _context.Menus
+                .Where(m => m.ParentId == null)
+                .Include(m => m.Children)
+                    .ThenInclude(cm => cm.Children)
+                .OrderBy(m => m.Order)
+                .ToListAsync();
+        }
     }
 }

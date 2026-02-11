@@ -68,15 +68,15 @@
           <el-input-number v-model="form.order" :min="1" :max="100" />
         </el-form-item>
         <el-form-item label="父菜单">
-          <el-select v-model="form.parentId" placeholder="选择父菜单">
-            <el-option label="无" value="" />
-            <el-option
-              v-for="menu in parentMenuOptions"
-              :key="menu.id"
-              :label="menu.name"
-              :value="menu.id"
-            />
-          </el-select>
+          <el-cascader
+            v-model="cascaderValue"
+            :options="menuTreeOptions"
+            :props="cascaderProps"
+            placeholder="选择父菜单（可选）"
+            clearable
+            style="width: 100%"
+            @change="handleCascaderChange"
+          />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -111,87 +111,49 @@ export default {
     const currentPage = ref(1)
     const pageSize = ref(10)
     const total = ref(0)
-
-    // 加载菜单列表
-    const loadMenus = async () => {
+    const isLoading = ref(false)
+    const menuTreeOptions = ref([])
+    const cascaderValue = ref([])
+    const cascaderProps = {
+      children: 'children',
+      label: 'label',
+      value: 'id',
+      checkStrictly: true
+    }
+    // 加载所有菜单（用于构建完整的菜单树）
+    const loadAllMenus = async () => {
       try {
+        const api = await import('@/api')
+        // 调用后端新提供的获取菜单树形结构的API
+        const response = await api.default.menus.getMenuTree()
+        return response.data || []
+      } catch (error) {
+        console.error('加载所有菜单失败:', error)
+        return []
+      }
+    }
+
+    // 加载菜单列表（带分页）
+    const loadMenus = async () => {
+      if (isLoading.value) return
+
+      try {
+        isLoading.value = true
+        console.log("进来一次");
         // 从后端获取菜单列表（带分页）
         const api = await import('@/api')
         const response = await api.default.menus.getAllMenus(currentPage.value, pageSize.value)
+        console.log(response)
         // 直接使用response作为菜单列表，因为后端直接返回了菜单列表
-        menus.value = response.items
-        total.value = response.total
+        menus.value = response.data.data
+        total.value = response.data.total
         // 直接使用后端返回的分页数据
-        menuList.value = response.items
+        menuList.value = response.data.data
+        // 加载所有菜单并构建树形结构的菜单选项
+        const allMenus = await loadAllMenus()
+        menuTreeOptions.value = buildMenuTreeOptions(allMenus)
       } catch (error) {
         console.error('加载菜单列表失败:', error)
-        // 使用模拟数据作为备选
-        const mockMenus = [
-          {
-            id: '1',
-            name: '角色权限管理',
-            path: '/roles',
-            icon: 'SetUp',
-            order: 1,
-            parentId: null
-          },
-          {
-            id: '2',
-            name: '角色管理',
-            path: '/roles',
-            icon: 'SetUp',
-            order: 1,
-            parentId: '1'
-          },
-          {
-            id: '3',
-            name: '权限管理',
-            path: '/permissions',
-            icon: 'Key',
-            order: 2,
-            parentId: '1'
-          },
-          {
-            id: '4',
-            name: '用户管理',
-            path: '/users',
-            icon: 'User',
-            order: 3,
-            parentId: '1'
-          },
-          {
-            id: '5',
-            name: '菜单管理',
-            path: '/menus',
-            icon: 'List',
-            order: 4,
-            parentId: '1'
-          },
-          {
-            id: '6',
-            name: '公司管理',
-            path: '/company/list',
-            icon: 'OfficeBuilding',
-            order: 2,
-            parentId: null
-          },
-          {
-            id: '7',
-            name: '租房管理',
-            path: '/rent/list',
-            icon: 'House',
-            order: 3,
-            parentId: null
-          }
-        ]
-
-        // 直接使用模拟数据作为菜单列表
-        menus.value = mockMenus
-        total.value = menus.value.length
-        // 计算当前页的菜单列表
-        const startIndex = (currentPage.value - 1) * pageSize.value
-        const endIndex = startIndex + pageSize.value
-        menuList.value = menus.value.slice(startIndex, endIndex)
 
         if (error.response) {
           // 服务器返回了错误响应
@@ -203,16 +165,98 @@ export default {
           // 请求配置出错
           ElMessage.error(`加载菜单列表失败: ${error.message}`)
         }
+      } finally {
+        isLoading.value = false
       }
     }
 
-    // 父菜单选项
+    // 父菜单选项（用于旧的select组件，暂时保留）
     const parentMenuOptions = computed(() => {
       return menus.value.filter(menu => !menu.parentId)
     })
 
+    // 构建树形结构的菜单选项
+    const buildMenuTreeOptions = (menuList) => {
+      const menuMap = new Map()
+      const rootMenus = []
+
+      // 首先创建所有菜单节点的映射
+      menuList.forEach(menu => {
+        menuMap.set(menu.id, {
+          id: menu.id,
+          label: menu.name,
+          path: menu.path,
+          icon: menu.icon,
+          disabled: false,
+          children: []
+        })
+      })
+
+      // 然后构建树形结构
+      menuList.forEach(menu => {
+        const menuNode = menuMap.get(menu.id)
+        if (menu.parentId) {
+          // 如果有父菜单，添加到父菜单的子节点中
+          const parentNode = menuMap.get(menu.parentId)
+          if (parentNode) {
+            parentNode.children.push(menuNode)
+          } else {
+            // 如果父菜单不存在，作为根节点处理
+            rootMenus.push(menuNode)
+          }
+        } else {
+          // 没有父菜单的作为根节点
+          rootMenus.push(menuNode)
+        }
+      })
+
+      // 对根菜单按order排序
+      rootMenus.sort((a, b) => {
+        // 尝试从menuList中找到对应的原始菜单，获取order值
+        const menuA = menuList.find(m => m.id === a.id)
+        const menuB = menuList.find(m => m.id === b.id)
+        const orderA = menuA ? menuA.order : 0
+        const orderB = menuB ? menuB.order : 0
+        return orderA - orderB
+      })
+
+      // 递归对所有子菜单按order排序
+      const sortChildren = (nodes) => {
+        nodes.forEach(node => {
+          if (node.children && node.children.length > 0) {
+            // 对子菜单按order排序
+            node.children.sort((a, b) => {
+              const menuA = menuList.find(m => m.id === a.id)
+              const menuB = menuList.find(m => m.id === b.id)
+              const orderA = menuA ? menuA.order : 0
+              const orderB = menuB ? menuB.order : 0
+              return orderA - orderB
+            })
+            // 递归排序子菜单的子菜单
+            sortChildren(node.children)
+          }
+        })
+      }
+
+      // 对所有子菜单排序
+      sortChildren(rootMenus)
+
+      return rootMenus
+    }
+
+    // 处理级联选择器变化
+    const handleCascaderChange = (value) => {
+      if (value && value.length > 0) {
+        form.value.parentId = value[value.length - 1]
+      } else {
+        form.value.parentId = null
+      }
+    }
+
     // 处理分页大小变化
     const handleSizeChange = (size) => {
+      if (pageSize.value == size)
+        return;
       pageSize.value = size
       loadMenus()
     }
@@ -231,8 +275,9 @@ export default {
         path: '',
         icon: 'List',
         order: 1,
-        parentId: ''
+        parentId: null
       }
+      cascaderValue.value = []
       dialogVisible.value = true
     }
 
@@ -246,6 +291,7 @@ export default {
         order: 1,
         parentId: parentMenu.id
       }
+      cascaderValue.value = [parentMenu.id]
       dialogVisible.value = true
     }
 
@@ -253,6 +299,7 @@ export default {
     const handleEditMenu = (menu) => {
       dialogTitle.value = '编辑菜单'
       form.value = { ...menu }
+      cascaderValue.value = menu.parentId ? [menu.parentId] : []
       dialogVisible.value = true
     }
 
@@ -315,6 +362,9 @@ export default {
       menus,
       menuList,
       parentMenuOptions,
+      menuTreeOptions,
+      cascaderValue,
+      cascaderProps,
       dialogVisible,
       dialogTitle,
       form,
@@ -324,6 +374,7 @@ export default {
       total,
       handleSizeChange,
       handleCurrentChange,
+      handleCascaderChange,
       handleCreateMenu,
       handleCreateSubMenu,
       handleEditMenu,

@@ -8,5 +8,6 @@ namespace LocationSystem.Application.Contrats.Repositories
 
         Task<IEnumerable<Menu>> GetMenuPage(GetAllMenusQuery query);
         Task<int> GetTotalCount();
+        Task<IEnumerable<Menu>> GetMenuTreeAsync();
     }
 }

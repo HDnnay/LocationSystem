@@ -13,6 +13,14 @@ const menuApi = {
     })
   },
 
+  // 获取菜单树形结构
+  getMenuTree: () => {
+    return request({
+      url: '/api/menus/tree',
+      method: 'get'
+    })
+  },
+
   // 获取单个菜单
   getMenuById: (id) => {
     return request({

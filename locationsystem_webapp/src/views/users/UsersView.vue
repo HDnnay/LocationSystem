@@ -1,7 +1,7 @@
 <template>
   <div class="users-view">
     <h1>用户管理</h1>
-
+    
     <!-- 操作按钮 -->
     <div class="action-buttons">
       <el-button type="primary" @click="handleCreateUser">
@@ -9,7 +9,7 @@
         新增用户
       </el-button>
     </div>
-
+    
     <!-- 用户列表 -->
     <el-table :data="users" style="width: 100%">
       <el-table-column prop="id" label="用户ID" width="180" />
@@ -41,7 +41,7 @@
         </template>
       </el-table-column>
     </el-table>
-
+    
     <!-- 分页 -->
     <div class="pagination">
       <el-pagination
@@ -54,7 +54,7 @@
         @current-change="handleCurrentChange"
       />
     </div>
-
+    
     <!-- 编辑用户对话框 -->
     <el-dialog
       v-model="dialogVisible"
@@ -82,7 +82,7 @@
         </span>
       </template>
     </el-dialog>
-
+    
     <!-- 分配角色对话框 -->
     <el-dialog
       v-model="roleDialogVisible"
@@ -136,7 +136,7 @@ export default {
     const form = ref({})
     const selectedRoles = ref([])
     const currentUser = ref(null)
-
+    
     // 加载用户列表
     const loadUsers = async () => {
       try {
@@ -148,7 +148,7 @@ export default {
         ElMessage.error('加载用户列表失败')
       }
     }
-
+    
     // 加载角色列表
     const loadRoles = async () => {
       try {
@@ -159,7 +159,7 @@ export default {
         ElMessage.error('加载角色列表失败')
       }
     }
-
+    
     // 处理新增用户
     const handleCreateUser = () => {
       dialogTitle.value = '新增用户'
@@ -170,14 +170,14 @@ export default {
       }
       dialogVisible.value = true
     }
-
+    
     // 处理编辑用户
     const handleEditUser = (user) => {
       dialogTitle.value = '编辑用户'
       form.value = { ...user }
       dialogVisible.value = true
     }
-
+    
     // 处理保存用户
     const handleSaveUser = async () => {
       try {
@@ -197,7 +197,7 @@ export default {
         ElMessage.error('保存用户失败')
       }
     }
-
+    
     // 处理删除用户
     const handleDeleteUser = async (id) => {
       try {
@@ -206,7 +206,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         })
-
+        
         await import('@/api').then(m => m.default.users.deleteUser(id))
         ElMessage.success('删除用户成功')
         loadUsers()
@@ -217,7 +217,7 @@ export default {
         }
       }
     }
-
+    
     // 处理分配角色
     const handleAssignRoles = (user) => {
       currentUser.value = user
@@ -226,7 +226,7 @@ export default {
       loadRoles()
       roleDialogVisible.value = true
     }
-
+    
     // 处理保存角色
     const handleSaveRoles = async () => {
       try {
@@ -239,25 +239,25 @@ export default {
         ElMessage.error('分配角色失败')
       }
     }
-
+    
     // 处理分页大小变化
     const handleSizeChange = (size) => {
       pageSize.value = size
       loadUsers()
     }
-
+    
     // 处理当前页变化
     const handleCurrentChange = (current) => {
       currentPage.value = current
       loadUsers()
     }
-
+    
     // 页面加载时初始化数据
     onMounted(() => {
       loadUsers()
       loadRoles()
     })
-
+    
     return {
       users,
       roles,

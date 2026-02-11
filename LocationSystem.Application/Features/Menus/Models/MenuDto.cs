@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace LocationSystem.Application.Features.Menus.Models
 {
     public class MenuDto
@@ -8,5 +11,8 @@ namespace LocationSystem.Application.Features.Menus.Models
         public string Icon { get; set; }
         public int Order { get; set; }
         public Guid? ParentId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public List<MenuDto> ChildMenus { get; set; }
     }
 }

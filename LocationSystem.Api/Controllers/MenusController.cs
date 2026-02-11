@@ -3,6 +3,7 @@ using LocationSystem.Application.Features.Menus.Commands.DeleteMenu;
 using LocationSystem.Application.Features.Menus.Commands.UpdateMenu;
 using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
 using LocationSystem.Application.Features.Menus.Queries.GetMenuById;
+using LocationSystem.Application.Features.Menus.Queries.GetMenuTree;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -94,6 +95,22 @@ namespace LocationSystem.Api.Controllers
                 var command = new DeleteMenuCommand { MenuId = id };
                 await _mediator.Send(command);
                 return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // GET: api/Menus/tree
+        [HttpGet("tree")]
+        public async Task<IActionResult> GetMenuTree()
+        {
+            try
+            {
+                var query = new GetMenuTreeQuery();
+                var menuTree = await _mediator.Send(query);
+                return Ok(menuTree);
             }
             catch (Exception ex)
             {
