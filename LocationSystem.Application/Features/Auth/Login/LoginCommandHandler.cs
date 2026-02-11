@@ -77,5 +77,6 @@ namespace LocationSystem.Application.Features.Auth.Login
         Task AddAsync(User user);
         Task AddDentistAsync(Dentist dentist);
         Task AddPatientAsync(Patient patient);
+        Task<User?> GetUserWithRolesAndPermissionsAsync(Guid userId);
     }
 }

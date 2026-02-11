@@ -1,4 +1,5 @@
 using AspNetCoreRateLimit;
+using BCrypt.Net;
 using LocationSystem.Api.BackgroudServices;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
@@ -97,42 +98,12 @@ builder.Services.AddHostedService<RabbitMQTestService>();
 //builder.Services.AddHostedService<CompanyUpdateBackgroundService>();
 builder.Services.AddHostedService<HostLoadCachBackgroupService>();
 
+// 注册后台数据初始化服务
+builder.Services.AddHostedService<LocationSystem.Api.BackgroundServices.DataInitializationService>();
+
 
 var app = builder.Build();
-if (app.Environment.IsProduction())
-{
-    // 执行数据库迁移（带重试机制）
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<LocationSystem.Infrastructure.AppDbContext>();
-        int maxRetries = 5;
-        int retryDelay = 5000; // 5秒
-        for (int i = 0; i < maxRetries; i++)
-        {
-            try
-            {
-                Console.WriteLine($"🔄 尝试数据库迁移 (尝试 {i+1}/{maxRetries})...");
 
-                // 直接执行迁移，确保所有迁移都被应用
-                Console.WriteLine("正在执行数据库迁移...");
-                dbContext.Database.Migrate();
-
-                Console.WriteLine("✅ 数据库迁移完成");
-                break;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ 数据库迁移失败: {ex.Message}");
-                if (i < maxRetries - 1)
-                {
-                    Console.WriteLine($"⏳ 等待 {retryDelay/1000} 秒后重试...");
-                    Thread.Sleep(retryDelay);
-                }
-            }
-        }
-        
-    }
-}
 app.UseIpRateLimiting();
 // 4️⃣ 应用启动时，确保服务已启动
 app.Lifetime.ApplicationStarted.Register(() =>

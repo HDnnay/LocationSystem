@@ -27,9 +27,15 @@ namespace LocationSystem.Domain.Entities
         // 子权限导航属性
         public ICollection<Permission> ChildPermissions { get; private set; } = new List<Permission>();
 
+        // 菜单相关属性
+        public bool IsMenu { get; private set; }
+        public string? MenuPath { get; private set; }
+        public string? MenuIcon { get; private set; }
+        public int Order { get; private set; }
+
         private Permission() { }
 
-        public Permission(string name, string code, string? description = null, Guid? parentId = null)
+        public Permission(string name, string code, string? description = null, Guid? parentId = null, bool isMenu = false, string? menuPath = null, string? menuIcon = null, int order = 0)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -46,10 +52,14 @@ namespace LocationSystem.Domain.Entities
             Code = code;
             Description = description;
             ParentId = parentId;
+            IsMenu = isMenu;
+            MenuPath = menuPath;
+            MenuIcon = menuIcon;
+            Order = order;
             CreatedAt = DateTime.UtcNow;
         }
 
-        public void Update(string name, string code, string? description = null, Guid? parentId = null)
+        public void Update(string name, string code, string? description = null, Guid? parentId = null, bool? isMenu = null, string? menuPath = null, string? menuIcon = null, int? order = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -65,6 +75,10 @@ namespace LocationSystem.Domain.Entities
             Code = code;
             Description = description;
             ParentId = parentId;
+            IsMenu = isMenu ?? IsMenu;
+            MenuPath = menuPath ?? MenuPath;
+            MenuIcon = menuIcon ?? MenuIcon;
+            Order = order ?? Order;
             UpdatedAt = DateTime.UtcNow;
         }
     }

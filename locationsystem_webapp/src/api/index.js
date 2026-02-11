@@ -6,6 +6,7 @@ import * as dentalOffices from './dentalOffices'
 import * as company from './company'
 import * as rent from './renthouse'
 import * as auth from './auth'
+import * as permissions from './permissions'
 const api={
   dentists,
   patients,
@@ -13,7 +14,8 @@ const api={
   dentalOffices,
   company,
   rent,
-  auth
+  auth,
+  permissions
 };
 
 export default api;

@@ -9,6 +9,7 @@ using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -108,6 +109,32 @@ namespace LocationSystem.Api.Controllers
                 var query = new GetPermissionTreeQuery();
                 var permissionTree = await _mediator.Send(query);
                 return Ok(permissionTree);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("user-menus")]
+        public async Task<IActionResult> GetUserMenus()
+        {
+            try
+            {
+                // 从Token中获取用户ID
+                var userId = User.GetUserId();
+                if (userId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var query = new LocationSystem.Application.Features.Permissions.Queries.GetUserPermissionMenus.GetUserPermissionMenusQuery
+                {
+                    UserId = userId.Value
+                };
+
+                var menus = await _mediator.Send(query);
+                return Ok(menus);
             }
             catch (Exception ex)
             {

@@ -77,5 +77,13 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             return await _context.Users.AnyAsync(u => u.Email.Value == email);
         }
+
+        public async Task<User?> GetUserWithRolesAndPermissionsAsync(Guid userId)
+        {
+            return await _context.Users
+                .Include(u => u.Roles)
+                .ThenInclude(r => r.Permissions)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }
