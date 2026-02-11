@@ -62,7 +62,7 @@
           <el-input v-model="form.path" />
         </el-form-item>
         <el-form-item label="菜单图标">
-          <el-input v-model="form.icon" />
+          <IconSelector v-model="form.icon" placeholder="选择菜单图标" />
         </el-form-item>
         <el-form-item label="排序">
           <el-input-number v-model="form.order" :min="1" :max="100" />
@@ -93,13 +93,15 @@
 import { ref, computed, onMounted } from 'vue'
 import { Plus, Edit, Delete } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import IconSelector from '@/components/IconSelector.vue'
 
 export default {
   name: 'MenusView',
   components: {
     Plus,
     Edit,
-    Delete
+    Delete,
+    IconSelector
   },
   setup() {
     const menus = ref([])
