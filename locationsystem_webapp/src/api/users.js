@@ -10,6 +10,11 @@ export const getUserById = (id) => {
   return request.get(`/api/users/${id}`)
 }
 
+// 创建用户
+export const createUser = (user) => {
+  return request.post('/api/users', user)
+}
+
 // 更新用户
 export const updateUser = (id, user) => {
   return request.put(`/api/users/${id}`, user)

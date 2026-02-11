@@ -16,7 +16,7 @@ namespace LocationSystem.Infrastructure.Repositories
         }
         public Task<T> AddAsync(T entity)
         {
-            _context.Add(entity);
+            _context.AddAsync(entity);
             return Task.FromResult(entity);
         }
 

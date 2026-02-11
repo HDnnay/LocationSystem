@@ -56,7 +56,10 @@ namespace LocationSystem.Domain.Entities
             RefreshToken = null;
             RefreshTokenExpiryTime = null;
         }
-        
+        public virtual void UpdataUserType(UserType userType)
+        {
+            UserType = userType;
+        }
         public void AddRole(Role role)
         {
             if (!Roles.Contains(role))

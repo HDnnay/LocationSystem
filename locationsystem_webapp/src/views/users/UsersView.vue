@@ -12,9 +12,13 @@
 
     <!-- 用户列表 -->
     <el-table :data="users" style="width: 100%">
-      <el-table-column prop="id" label="用户ID" width="180" />
+      <el-table-column label="序号" width="180">
+        <template #default="scope">
+          {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
+        </template>
+      </el-table-column>
       <el-table-column prop="name" label="用户名" />
-      <el-table-column prop="email.value" label="邮箱" />
+      <el-table-column prop="email" label="邮箱" />
       <el-table-column prop="userType" label="用户类型" />
       <el-table-column label="角色" width="200">
         <template #default="scope">
@@ -66,7 +70,7 @@
           <el-input v-model="form.name" />
         </el-form-item>
         <el-form-item label="邮箱">
-          <el-input v-model="form.email.value" />
+          <el-input v-model="form.email" />
         </el-form-item>
         <el-form-item label="用户类型">
           <el-select v-model="form.userType">
@@ -115,6 +119,8 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { Plus, Edit, Delete, SetUp } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import api from '@/api'
 
 export default {
   name: 'UsersView',
@@ -140,9 +146,9 @@ export default {
     // 加载用户列表
     const loadUsers = async () => {
       try {
-        const response = await import('@/api').then(m => m.default.users.getAllUsers())
-        users.value = response.data
-        total.value = response.data.length
+        const response = await api.users.getAllUsers()
+        users.value = response || []
+        total.value = Array.isArray(response) ? response.length : 0
       } catch (error) {
         console.error('加载用户列表失败:', error)
         ElMessage.error('加载用户列表失败')
@@ -152,8 +158,8 @@ export default {
     // 加载角色列表
     const loadRoles = async () => {
       try {
-        const response = await import('@/api').then(m => m.default.permissions.getRoles())
-        roles.value = response.data
+        const response = await api.permissions.getRoles()
+        roles.value = response || []
       } catch (error) {
         console.error('加载角色列表失败:', error)
         ElMessage.error('加载角色列表失败')
@@ -165,7 +171,7 @@ export default {
       dialogTitle.value = '新增用户'
       form.value = {
         name: '',
-        email: { value: '' },
+        email: '',
         userType: 'Dentist'
       }
       dialogVisible.value = true
@@ -174,7 +180,10 @@ export default {
     // 处理编辑用户
     const handleEditUser = (user) => {
       dialogTitle.value = '编辑用户'
-      form.value = { ...user }
+      form.value = {
+        ...user,
+        email: user.email.value || user.email
+      }
       dialogVisible.value = true
     }
 
@@ -183,12 +192,25 @@ export default {
       try {
         if (form.value.id) {
           // 更新用户
-          await import('@/api').then(m => m.default.users.updateUser(form.value.id, form.value))
+          // 后端期望的格式：{ "Name": "lisi", "Email": "lisi@qq.com", "UserType": "Dentist" }
+          const userData = {
+            Name: form.value.name,
+            Email: form.value.email,
+            UserType: form.value.userType // 保持为字符串，如'Dentist'或'Patient'
+          }
+          await api.users.updateUser(form.value.id, userData)
           ElMessage.success('更新用户成功')
         } else {
           // 新增用户
-          // 注意：这里需要根据实际情况调用后端的新增用户接口
-          ElMessage.success('新增用户成功')
+          // 后端期望的格式：{ "Name": "lisi", "Email": "lisi@qq.com", "UserType": "Dentist" }
+          const userData = {
+            Name: form.value.name,
+            Email: form.value.email,
+            UserType: form.value.userType // 保持为字符串，如'Dentist'或'Patient'
+          }
+          await api.users.createUser(userData).then(res => {
+            ElMessage.success('新增用户成功')
+          })
         }
         dialogVisible.value = false
         loadUsers()
@@ -207,7 +229,7 @@ export default {
           type: 'warning'
         })
 
-        await import('@/api').then(m => m.default.users.deleteUser(id))
+        await api.users.deleteUser(id)
         ElMessage.success('删除用户成功')
         loadUsers()
       } catch (error) {
@@ -230,7 +252,7 @@ export default {
     // 处理保存角色
     const handleSaveRoles = async () => {
       try {
-        await import('@/api').then(m => m.default.users.assignRoles(currentUser.value.id, selectedRoles.value))
+        await api.users.assignRoles(currentUser.value.id, selectedRoles.value)
         ElMessage.success('分配角色成功')
         roleDialogVisible.value = false
         loadUsers()

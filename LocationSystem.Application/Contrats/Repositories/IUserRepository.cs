@@ -1,4 +1,4 @@
-using LocationSystem.Application.Features.Users.Queries.GetAllUsers;
+using LocationSystem.Application.Features.Users.Queries;
 using LocationSystem.Domain.Entities;
 
 namespace LocationSystem.Application.Contrats.Repositories

@@ -1,6 +1,6 @@
 using LocationSystem.Application.Utilities;
 
-namespace LocationSystem.Application.Features.Users.Commands
+namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
 {
     public class DeleteUserCommand : IRequest<bool>
     {

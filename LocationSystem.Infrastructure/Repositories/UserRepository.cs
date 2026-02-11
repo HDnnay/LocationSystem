@@ -1,5 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Features.Users.Queries.GetAllUsers;
+using LocationSystem.Application.Features.Users.Queries;
 using LocationSystem.Domain.Entities;
 using LocationSystem.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -23,10 +23,7 @@ namespace LocationSystem.Infrastructure.Repositories
         public async Task<IEnumerable<User>> GetUserPage(GetAllUsersQuery query)
         {
             var querable = _context.Users.AsQueryable().AsNoTracking();
-            if (!string.IsNullOrWhiteSpace(query.keyWord))
-            {
-                querable = querable.Where(t => t.Name.Contains(query.keyWord) || t.Email.Value.Contains(query.keyWord));
-            }
+           
             return await querable.Include(u => u.Roles)
                 .OrderBy(t => t.Name)
                 .Paginate(query.Page, query.PageSize)
@@ -37,7 +34,7 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             var user = await _context.Users.FirstOrDefaultAsync(t => t.Id==id);
             if (user==null)
-                throw new ArgumentException("���û�������");
+                throw new ArgumentException("用户不存在");
             user.SetRefreshToken(refreshToken,DateTime.Now.AddDays(7));
             _context.Users.Update(user);
         }

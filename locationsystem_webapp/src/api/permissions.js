@@ -13,6 +13,10 @@ export const getPermissionTree = () => {
   return request.get('/api/permissions/tree')
 }
 
+export const getRoles = () => {
+  return request.get('/api/roles')
+}
+
 export const createPermission = (data) => {
   return request.post('/api/permissions', data)
 }
