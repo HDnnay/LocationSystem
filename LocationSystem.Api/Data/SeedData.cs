@@ -19,6 +19,8 @@ namespace LocationSystem.Api.Data
             var rentViewPermission = new Permission("租房管理", "rent:view", "查看租房信息");
             var roleViewPermission = new Permission("角色管理", "role:view", "查看角色信息");
             var permissionViewPermission = new Permission("权限管理", "permission:view", "查看权限信息");
+            var userViewPermission = new Permission("用户管理", "user:view", "查看用户信息");
+            var menuViewPermission = new Permission("菜单管理", "menu:view", "查看菜单信息");
             var dentistViewPermission = new Permission("牙医管理", "dentist:view", "查看牙医信息");
             var patientViewPermission = new Permission("患者管理", "patient:view", "查看患者信息");
             var dentalOfficeViewPermission = new Permission("牙科诊所管理", "dental-office:view", "查看牙科诊所信息");
@@ -29,6 +31,8 @@ namespace LocationSystem.Api.Data
             await dbContext.Permissions.AddAsync(rentViewPermission);
             await dbContext.Permissions.AddAsync(roleViewPermission);
             await dbContext.Permissions.AddAsync(permissionViewPermission);
+            await dbContext.Permissions.AddAsync(userViewPermission);
+            await dbContext.Permissions.AddAsync(menuViewPermission);
             await dbContext.Permissions.AddAsync(dentistViewPermission);
             await dbContext.Permissions.AddAsync(patientViewPermission);
             await dbContext.Permissions.AddAsync(dentalOfficeViewPermission);
@@ -96,6 +100,8 @@ namespace LocationSystem.Api.Data
             // 创建子菜单
             var roleMenu = new Menu("角色管理", "/roles", "SetUp", 1, rolePermissionMenu.Id);
             var permissionManagementMenu = new Menu("权限管理", "/permissions", "Key", 2, rolePermissionMenu.Id);
+            var userManagementMenu = new Menu("用户管理", "/users", "User", 3, rolePermissionMenu.Id);
+            var menuManagementMenu = new Menu("菜单管理", "/menus", "List", 4, rolePermissionMenu.Id);
             var companyListMenu = new Menu("公司列表", "/company/list", "List", 1, companyMenu.Id);
             var companyStatisticsMenu = new Menu("统计管理", "/company/statistics", "List", 2, companyMenu.Id);
             var rentListMenu = new Menu("租房列表", "/rent/list", "List", 1, rentMenu.Id);
@@ -104,6 +110,8 @@ namespace LocationSystem.Api.Data
             // 添加子菜单到数据库
             await dbContext.Menus.AddAsync(roleMenu);
             await dbContext.Menus.AddAsync(permissionManagementMenu);
+            await dbContext.Menus.AddAsync(userManagementMenu);
+            await dbContext.Menus.AddAsync(menuManagementMenu);
             await dbContext.Menus.AddAsync(companyListMenu);
             await dbContext.Menus.AddAsync(companyStatisticsMenu);
             await dbContext.Menus.AddAsync(rentListMenu);
@@ -119,6 +127,8 @@ namespace LocationSystem.Api.Data
                 ("appointment:view", "/appointments"),
                 ("role:view", "/roles"),
                 ("permission:view", "/permissions"),
+                ("user:view", "/users"),
+                ("menu:view", "/menus"),
                 ("company:view", "/company/list"),
                 ("company:list", "/company/list"),
                 ("company:statistics:view", "/company/statistics"),

@@ -117,6 +117,24 @@ const routes = [
       title: '权限管理',
       requiresAuth: true
     }
+  },
+  {
+    path: '/users',
+    name: 'Users',
+    component: () => import('../views/users/UsersView.vue'),
+    meta: {
+      title: '用户管理',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/menus',
+    name: 'Menus',
+    component: () => import('../views/users/MenusView.vue'),
+    meta: {
+      title: '菜单管理',
+      requiresAuth: true
+    }
   }
 
 ]

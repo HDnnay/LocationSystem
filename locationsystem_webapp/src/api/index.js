@@ -7,6 +7,8 @@ import * as company from './company'
 import * as rent from './renthouse'
 import * as auth from './auth'
 import * as permissions from './permissions'
+import * as users from './users'
+import * as menus from './menus'
 const api={
   dentists,
   patients,
@@ -15,7 +17,9 @@ const api={
   company,
   rent,
   auth,
-  permissions
+  permissions,
+  users,
+  menus
 };
 
 export default api;

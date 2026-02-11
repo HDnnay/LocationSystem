@@ -85,5 +85,60 @@ namespace LocationSystem.Infrastructure.Repositories
                 .ThenInclude(r => r.Permissions)
                 .FirstOrDefaultAsync(u => u.Id == userId);
         }
+
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _context.Users
+                .Include(u => u.Roles)
+                .ToListAsync();
+        }
+
+        public async Task<User?> GetUserByIdAsync(Guid userId)
+        {
+            return await _context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteUserAsync(Guid userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task AssignRolesToUserAsync(Guid userId, IEnumerable<Guid> roleIds)
+        {
+            var user = await _context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            
+            if (user != null)
+            {
+                // 清除现有角色
+                user.ClearRoles();
+                
+                // 添加新角色
+                var roles = await _context.Roles
+                    .Where(r => roleIds.Contains(r.Id))
+                    .ToListAsync();
+                
+                foreach (var role in roles)
+                {
+                    user.AddRole(role);
+                }
+                
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
