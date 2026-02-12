@@ -11,8 +11,8 @@
         </el-form-item>
         <el-form-item label="用户类型" prop="type">
           <el-radio-group v-model="loginForm.type">
-            <el-radio :label="0">牙医</el-radio>
-            <el-radio :label="1">患者</el-radio>
+            <el-radio :value="0">牙医</el-radio>
+            <el-radio :value="1">患者</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item>

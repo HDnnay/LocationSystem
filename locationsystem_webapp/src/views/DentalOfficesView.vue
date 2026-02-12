@@ -185,8 +185,25 @@ const loadDentalOffices = async () => {
             PageSize: pageSize.value,
             keyWord: searchQuery.value
         })
-        dentalOffices.value = response.data.data || []
-        total.value = response.data.total || 0
+        // 适配不同的响应格式
+        if (response.data && Array.isArray(response.data)) {
+            // 格式1: 直接返回数据数组
+            dentalOffices.value = response.data || []
+            total.value = response.data.length || 0
+        } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
+            // 格式2: 标准分页格式 { data: { data: [...], total: 100 } }
+            dentalOffices.value = response.data.data || []
+            total.value = response.data.total || 0
+        } else if (Array.isArray(response)) {
+            // 格式3: 直接返回数据数组
+            dentalOffices.value = response || []
+            total.value = response.length || 0
+        } else {
+            // 其他格式
+            dentalOffices.value = []
+            total.value = 0
+            console.error('响应格式错误:', response)
+        }
     } catch (error) {
         console.error('加载诊所失败:', error)
         ElMessage.error('加载诊所列表失败，请刷新页面重试')

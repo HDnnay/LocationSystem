@@ -192,7 +192,6 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
                 try {
                     // 从后端获取菜单数据
                     const response = await this.$api.permissions.getUserMenus()
-                    console.log('后端返回的菜单数据:', response)
 
                     // 直接使用后端返回的数据作为菜单数据
                     this.menuItems = this.buildMenuTree(response)
@@ -224,8 +223,6 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
 
             // 构建菜单树
             buildMenuTree(menuList) {
-                console.log('原始菜单数据:', menuList)
-
                 // 确保menuList是一个数组
                 if (!Array.isArray(menuList)) {
                     console.error('菜单数据不是一个数组:', menuList)
@@ -265,7 +262,6 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
                     return parentMenu
                 })
 
-                console.log('处理后的菜单数据:', processedMenus)
                 return processedMenus
             },
 

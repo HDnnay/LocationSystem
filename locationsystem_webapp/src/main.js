@@ -32,9 +32,11 @@ const checkTokenRefresh = () => {
 
     if (refreshToken && userType) {
       // 主动刷新token
+      // 将数字类型的userType转换为对应的UserType枚举字符串
+      const userTypeString = parseInt(userType) === 0 ? 'Dentist' : 'Patient'
       api.auth.refreshToken({
         RefreshToken: refreshToken,
-        Type: parseInt(userType)
+        Type: userTypeString
       }).then(res => {
         if (res.status === 200) {
           const authData = res.data
