@@ -147,8 +147,8 @@ export default {
     const loadUsers = async () => {
       try {
         const response = await api.users.getAllUsers()
-        users.value = response || []
-        total.value = Array.isArray(response) ? response.length : 0
+        users.value = response.data || []
+        total.value = response.total
       } catch (error) {
         console.error('加载用户列表失败:', error)
         ElMessage.error('加载用户列表失败')

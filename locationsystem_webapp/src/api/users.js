@@ -27,5 +27,10 @@ export const deleteUser = (id) => {
 
 // 分配角色给用户
 export const assignRoles = (id, roleIds) => {
-  return request.post(`/api/users/${id}/assign-roles`, roleIds)
+  return request.post(`/api/users/${id}/roles`, { roleIds })
+}
+
+// 移除用户的所有角色
+export const removeRoles = (id) => {
+  return request.delete(`/api/users/${id}/roles`)
 }

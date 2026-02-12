@@ -20,14 +20,14 @@ namespace LocationSystem.Infrastructure.Repositories
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email.Value == email);
         }
 
-        public async Task<IEnumerable<User>> GetUserPage(GetAllUsersQuery query)
+        public async Task<(int,IEnumerable<User>)> GetUserPage(GetAllUsersQuery query)
         {
             var querable = _context.Users.AsQueryable().AsNoTracking();
            
-            return await querable.Include(u => u.Roles)
+            return (await querable.CountAsync(),await querable.Include(u => u.Roles)
                 .OrderBy(t => t.Name)
                 .Paginate(query.Page, query.PageSize)
-                .ToListAsync();
+                .ToListAsync());
         }
 
         public async Task SaveRefreshToken(Guid id, string refreshToken)

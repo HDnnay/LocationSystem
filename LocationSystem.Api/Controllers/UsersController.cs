@@ -1,10 +1,9 @@
-using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Features.Users.Commands.AssignRoles;
 using LocationSystem.Application.Features.Users.Commands.CreateUser;
+using LocationSystem.Application.Features.Users.Commands.DeleteUser;
 using LocationSystem.Application.Features.Users.Commands.UpdateUser;
 using LocationSystem.Application.Features.Users.Queries;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
-using LocationSystem.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LocationSystem.Api.Controllers
@@ -84,6 +83,69 @@ namespace LocationSystem.Api.Controllers
 
                 // 返回更新后的用户
                 return Ok(updatedUser);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // DELETE: api/Users/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            try
+            {
+                // 创建删除用户命令
+                var command = new DeleteUserCommand { UserId = id };
+
+                // 执行命令
+                await _mediator.Send(command);
+
+                // 返回成功
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: api/Users/{id}/roles
+        [HttpPost("{id}/roles")]
+        public async Task<IActionResult> AssignRoles(Guid id, [FromBody] AssignRolesCommand command)
+        {
+            try
+            {
+                // 设置用户ID
+                command.UserId = id;
+
+                // 执行命令
+                await _mediator.Send(command);
+
+                // 返回成功
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // DELETE: api/Users/{id}/roles
+        [HttpDelete("{id}/roles")]
+        public async Task<IActionResult> RemoveRoles(Guid id)
+        {
+            try
+            {
+                // 创建分配角色命令，传入空角色列表
+                var command = new AssignRolesCommand { UserId = id, RoleIds = new List<Guid>() };
+
+                // 执行命令
+                await _mediator.Send(command);
+
+                // 返回成功
+                return Ok();
             }
             catch (Exception ex)
             {

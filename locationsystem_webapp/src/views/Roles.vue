@@ -148,12 +148,12 @@
 </template>
 
 <script>
-    import request from '../utils/request.js'
     import { ElMessage } from 'element-plus'
     import {
         Plus, Edit, Delete, Lock, Unlock, Setting, Search, Check, Close, Refresh, User
     } from '@element-plus/icons-vue'
     import PermissionTree from '../components/PermissionTree.vue'
+    import * as api from '../api/roles.js'
     export default {
         name: 'Roles',
         components: {
@@ -206,18 +206,16 @@
             async getRoles() {
                 this.loading = true;
                 try {
-                    const response = await request.get('/api/roles');
-                    if (response.status === 200) {
-                        this.roles = response.data.map(role => ({
-                            id: role.id,
-                            roleName: role.name,
-                            roleDescription: role.description,
-                            roleCode: role.code,
-                            status: true, // 默认为启用状态
-                            createDate: role.createdAt
-                        }));
-                        this.total = this.roles.length;
-                    }
+                    const response = await api.getAllRoles();
+                    this.roles = response.map(role => ({
+                        id: role.id,
+                        roleName: role.name,
+                        roleDescription: role.description,
+                        roleCode: role.code,
+                        status: true, // 默认为启用状态
+                        createDate: role.createdAt
+                    }));
+                    this.total = this.roles.length;
                 } catch (error) {
                     ElMessage.error('获取角色列表失败');
                 } finally {
@@ -283,7 +281,7 @@
                             description: this.formData.roleDescription,
                             permissionIds: [] // 暂时为空，后续在权限管理中设置
                         }
-                        await request.put("/api/roles/" + this.editingRole.id, updateRoleDto);
+                        await api.updateRole(this.editingRole.id, updateRoleDto);
                         ElMessage.success('角色更新成功');
                     } else {
                         // 创建新角色
@@ -293,7 +291,7 @@
                             description: this.formData.roleDescription,
                             permissionIds: [] // 暂时为空，后续在权限管理中设置
                         }
-                        await request.post("/api/roles", createRoleDto);
+                        await api.createRole(createRoleDto);
                         ElMessage.success('角色创建成功');
                     }
                     this.closeRoleModal();
@@ -317,8 +315,8 @@
                     console.log('✅ 权限列表请求成功，响应数据:', permissionsResponse.data);
 
                     // 从API接口获取角色详情（包含已选权限）
-                    const roleDetailResponse = await request.get(`/api/roles/${role.id}`);
-                    console.log('✅ 角色详情请求成功，响应数据:', roleDetailResponse.data);
+                    const roleDetailResponse = await api.getRoleById(role.id);
+                    console.log('✅ 角色详情请求成功，响应数据:', roleDetailResponse);
 
                     // 构建权限树
                     this.permissionTree = permissionsResponse.data.map(permission => ({
@@ -467,13 +465,9 @@
                             description: this.selectedRole.roleDescription,
                             permissionIds: this.selectedPermissions
                         }
-                        const self = this;
-                        await request.put(`/api/roles/${this.selectedRole.id}`, updateRoleDto).then(res => {
-                            if (res.status == 200) {
-                                ElMessage.success('权限保存成功');
-                                self.getRoles(self.currentPage);
-                            }
-                        })
+                        await api.updateRole(this.selectedRole.id, updateRoleDto);
+                        ElMessage.success('权限保存成功');
+                        this.getRoles();
                     } catch (error) {
                         ElMessage.error('权限保存失败');
                     }
@@ -505,7 +499,7 @@
             async deleteRoleConfirmed() {
                 if (this.deleteRole) {
                     try {
-                        await request.delete("/api/roles/" + this.deleteRole.id);
+                        await api.deleteRole(this.deleteRole.id);
                         ElMessage.success('角色删除成功');
                         this.deleteRole = null;
                         this.showDeleteConfirm = false;

@@ -12,5 +12,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<Role?> GetByCodeAsync(string code);
         Task<Role?> GetRoleWithPermissionsAsync(Guid id);
         Task<IEnumerable<Role>> GetRolesWithPermissionsAsync();
+        Task<IEnumerable<Role>> GetRolesByUserIdAsync(Guid userId);
     }
 }

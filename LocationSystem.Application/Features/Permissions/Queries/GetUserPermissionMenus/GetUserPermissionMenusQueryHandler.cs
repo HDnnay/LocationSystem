@@ -1,5 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Permissions.Models;
+using LocationSystem.Application.Services;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
 
@@ -7,47 +8,33 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
 {
     public class GetUserPermissionMenusQueryHandler : IRequestHandler<GetUserPermissionMenusQuery, List<PermissionMenuDto>>
     {
-        private readonly LocationSystem.Application.Contrats.Repositories.IUserRepository _userRepository;
-        private readonly LocationSystem.Application.Contrats.Repositories.IMenuRepository _menuRepository;
+        private readonly PermissionManagement _permissionManagement;
 
-        public GetUserPermissionMenusQueryHandler(LocationSystem.Application.Contrats.Repositories.IUserRepository userRepository, LocationSystem.Application.Contrats.Repositories.IMenuRepository menuRepository)
+        public GetUserPermissionMenusQueryHandler(PermissionManagement permissionManagement)
         {
-            _userRepository = userRepository;
-            _menuRepository = menuRepository;
+            _permissionManagement = permissionManagement;
         }
 
         public async Task<List<PermissionMenuDto>> Handle(GetUserPermissionMenusQuery request)
         {
-            // 获取用户及其角色和权限
-            var user = await _userRepository.GetByIdAsync(request.UserId);
-            if (user == null)
+            // 使用PermissionManagement获取用户有权限的菜单
+            var userMenus = await _permissionManagement.GetUserPermissionMenusAsync(request.UserId);
+            if (!userMenus.Any())
             {
                 return new List<PermissionMenuDto>();
             }
-
-            // 获取用户角色的所有权限ID
-            var userPermissionIds = new List<Guid>();
-            foreach (var role in user.Roles)
-            {
-                foreach (var permission in role.Permissions)
-                {
-                    if (!userPermissionIds.Contains(permission.Id))
-                    {
-                        userPermissionIds.Add(permission.Id);
-                    }
-                }
-            }
-
-            // 获取与这些权限关联的所有菜单，包含权限信息
-            var allMenus = await _menuRepository.GetAll();
-            // 这里简化处理，实际应该根据权限ID过滤菜单
-            var userMenus = allMenus;
 
             // 转换为DTO
             var menuDtos = userMenus
                 .Select(m => {
                     // 获取菜单关联的第一个权限代码作为菜单的权限标识
                     string? permissionCode = null;
+                    var firstPermissionMenu = m.PermissionMenus.FirstOrDefault();
+                    if (firstPermissionMenu != null)
+                    {
+                        // 这里简化处理，实际应该通过权限ID获取权限信息
+                        permissionCode = "";
+                    }
                     
                     return new PermissionMenuDto
                     {

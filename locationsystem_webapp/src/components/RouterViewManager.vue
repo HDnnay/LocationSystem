@@ -32,7 +32,7 @@
                         <el-dropdown>
                             <span class="el-dropdown-link" style="color: white; cursor: pointer; display: flex; align-items: center;">
                                 <el-icon><User /></el-icon>
-                                <span style="margin-left: 5px;">管理员</span>
+                                <span style="margin-left: 5px;">{{ getUserInfo().name || '管理员' }}</span>
                                 <el-icon class="el-icon--right"><ArrowDown /></el-icon>
                             </span>
                             <template #dropdown>
@@ -316,6 +316,17 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
             // 退出登录
             logout() {
                 this.$emit('logout')
+            },
+
+            // 获取用户信息
+            getUserInfo() {
+                try {
+                    const userInfo = localStorage.getItem('user_info')
+                    return userInfo ? JSON.parse(userInfo) : {}
+                } catch (error) {
+                    console.error('获取用户信息失败:', error)
+                    return {}
+                }
             }
         }
     }

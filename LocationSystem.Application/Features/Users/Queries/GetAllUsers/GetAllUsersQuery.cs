@@ -4,7 +4,7 @@ using LocationSystem.Application.Utilities.Common;
 
 namespace LocationSystem.Application.Features.Users.Queries
 {
-    public class GetAllUsersQuery :PageRequest, IRequest<IEnumerable<UserDto>>
+    public class GetAllUsersQuery :PageRequest, IRequest<PageResult<UserDto>>
     {
     }
 }

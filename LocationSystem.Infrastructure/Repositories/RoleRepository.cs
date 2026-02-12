@@ -39,5 +39,15 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(r => r.Permissions)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Role>> GetRolesByUserIdAsync(Guid userId)
+        {
+            // 获取用户的所有角色，包含权限信息
+            return await _context.Users
+                .Where(u => u.Id == userId)
+                .SelectMany(u => u.Roles)
+                .Include(r => r.Permissions)
+                .ToListAsync();
+        }
     }
 }

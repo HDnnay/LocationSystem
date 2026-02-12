@@ -7,11 +7,13 @@ namespace LocationSystem.Application.Features.Users.Commands.AssignRoles
     public class AssignRolesCommandHandler : IRequestHandler<AssignRolesCommand, bool>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IRoleRepository _roleRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public AssignRolesCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public AssignRolesCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
+            _roleRepository = roleRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -31,6 +33,19 @@ namespace LocationSystem.Application.Features.Users.Commands.AssignRoles
 
                 // 清除用户现有角色
                 user.Roles.Clear();
+
+                // 添加新角色
+                if (command.RoleIds != null && command.RoleIds.Count > 0)
+                {
+                    foreach (var roleId in command.RoleIds)
+                    {
+                        var role = await _roleRepository.GetByIdAsync(roleId);
+                        if (role != null)
+                        {
+                            user.Roles.Add(role);
+                        }
+                    }
+                }
 
                 // 保存更改
                 await _userRepository.UpdateAsync(user);

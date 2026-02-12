@@ -32,6 +32,13 @@ namespace LocationSystem.Application
             
             // 注册UserRegistrationStrategyFactory
             services.AddTransient<UserRegistrationStrategyFactory>();
+            
+            // 注册RoleManagement
+            services.AddTransient<LocationSystem.Application.Services.RoleManagement>();
+            
+            // 注册PermissionManagement
+            services.AddTransient<LocationSystem.Application.Services.PermissionManagement>();
+            
             return services;
         }
     }

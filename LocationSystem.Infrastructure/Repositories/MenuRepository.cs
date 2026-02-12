@@ -43,5 +43,14 @@ namespace LocationSystem.Infrastructure.Repositories
                 .OrderBy(m => m.Order)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Menu>> GetAllWithPermissionsAsync()
+        {
+            // 获取所有菜单，并包含其权限信息
+            return await _context.Menus
+                .Include(m => m.PermissionMenus)
+                .OrderBy(m => m.Order)
+                .ToListAsync();
+        }
     }
 }

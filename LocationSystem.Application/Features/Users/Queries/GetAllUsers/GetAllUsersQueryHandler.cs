@@ -1,23 +1,28 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Users.Models;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities;
 
 namespace LocationSystem.Application.Features.Users.Queries
 {
-    public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, IEnumerable<UserDto>>
+    public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, PageResult<UserDto>>
     {
         private readonly IUserRepository _userRepository;
 
-        public GetAllUsersQueryHandler(LocationSystem.Application.Contrats.Repositories.IUserRepository userRepository)
+        public GetAllUsersQueryHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<UserDto>> Handle(GetAllUsersQuery query)
+        public async Task<PageResult<UserDto>> Handle(GetAllUsersQuery query)
         {
-            var users = await _userRepository.GetAll();
-            return users.Select(user => new UserDto
+            var users = await _userRepository.GetUserPage(query);
+            var pageResult = new PageResult<UserDto>();
+            pageResult.CurrentPage = query.Page;
+            pageResult.Total = users.Item1;
+
+            pageResult.Data= users.Item2.Select(user => new UserDto
             {
                 Id = user.Id,
                 Name = user.Name,
@@ -29,7 +34,8 @@ namespace LocationSystem.Application.Features.Users.Queries
                     Name = role.Name,
                     Code = role.Code
                 }).ToList()
-            });
+            }).ToList();
+            return pageResult;
         }
     }
 }
