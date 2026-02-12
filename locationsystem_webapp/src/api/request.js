@@ -57,19 +57,22 @@ service.interceptors.response.use(
                 const refreshToken = localStorage.getItem('refresh_token');
                 const userType = localStorage.getItem('user_type');
                 if (refreshToken && userType) {
-                    await service.post('/api/auth/refresh-token', {
+                    const res = await service.post('/api/auth/refresh-token', {
                         RefreshToken: refreshToken,
                         Type: parseInt(userType)
-                    }).then(res => {
-                        if (res.accessToken) {
-                            let newToken = res.accessToken;
-                            let newRefreshToken = res.refreshToken;
-                            localStorage.setItem('access_token', newToken);
-                            localStorage.setItem('refresh_token', newRefreshToken);
-                            originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                            return service(originalRequest);
-                        }
                     });
+                    if (res.accessToken) {
+                        let newToken = res.accessToken;
+                        let newRefreshToken = res.refreshToken;
+                        localStorage.setItem('access_token', newToken);
+                        localStorage.setItem('refresh_token', newRefreshToken);
+                        // 更新用户信息
+                        if (res.userInfo) {
+                            localStorage.setItem('user_info', JSON.stringify(res.userInfo));
+                        }
+                        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                        return service(originalRequest);
+                    }
                 }
             } catch (err) {
                 localStorage.removeItem('access_token');

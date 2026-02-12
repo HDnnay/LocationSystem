@@ -10,6 +10,7 @@ namespace LocationSystem.Application.Dtos
         public string Name { get; set; } = null!;
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
+        public bool IsDisabled { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public List<PermissionDto>? Permissions { get; set; }

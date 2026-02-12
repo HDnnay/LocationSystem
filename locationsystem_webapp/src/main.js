@@ -40,6 +40,10 @@ const checkTokenRefresh = () => {
         if (res.accessToken) {
           localStorage.setItem('access_token', res.accessToken)
           localStorage.setItem('refresh_token', res.refreshToken)
+          // 更新用户信息
+          if (res.userInfo) {
+            localStorage.setItem('user_info', JSON.stringify(res.userInfo))
+          }
         }
       }).catch(error => {
         console.error('刷新token失败:', error)

@@ -16,6 +16,7 @@ namespace LocationSystem.Domain.Entities
         public string? Description { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
+        public bool IsDisabled { get; private set; } = false;
 
         // 导航属性
         public ICollection<Permission> Permissions { get; private set; } = new List<Permission>();
@@ -76,6 +77,18 @@ namespace LocationSystem.Domain.Entities
         public void ClearPermissions()
         {
             Permissions.Clear();
+        }
+
+        public void Disable()
+        {
+            IsDisabled = true;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void Enable()
+        {
+            IsDisabled = false;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

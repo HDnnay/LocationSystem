@@ -15,6 +15,7 @@ namespace LocationSystem.Domain.Entities
         public UserType UserType { get; protected set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
+        public bool IsDisabled { get; private set; } = false;
         
         // 导航属性
         public ICollection<Role> Roles { get; private set; } = new List<Role>();
@@ -76,6 +77,16 @@ namespace LocationSystem.Domain.Entities
         public void ClearRoles()
         {
             Roles.Clear();
+        }
+
+        public void Disable()
+        {
+            IsDisabled = true;
+        }
+
+        public void Enable()
+        {
+            IsDisabled = false;
         }
     }
 }

@@ -56,8 +56,8 @@
                         <el-button size="small" type="primary" @click="editRole(scope.row)">
                             编辑
                         </el-button>
-                        <el-button size="small" :type="scope.row.status ? 'warning' : 'success'" @click="toggleStatus(scope.row)">
-                            {{ scope.row.status ? '禁用' : '启用' }}
+                        <el-button size="small" :type="!scope.row.isDisabled ? 'warning' : 'success'" @click="toggleStatus(scope.row)">
+                            {{ !scope.row.isDisabled ? '禁用' : '启用' }}
                         </el-button>
                         <el-button size="small" type="danger" @click="confirmDelete(scope.row)">
                             删除
@@ -213,12 +213,14 @@ import * as permissionApi from '../api/permissions.js'
                         roleName: role.name,
                         roleDescription: role.description,
                         roleCode: role.code,
-                        status: true, // 默认为启用状态
+                        status: !role.isDisabled, // 使用后端返回的isDisabled字段
+                        isDisabled: role.isDisabled, // 保存原始的isDisabled字段
                         createDate: role.createdAt
                     }));
                     this.total = this.roles.length;
                 } catch (error) {
                     ElMessage.error('获取角色列表失败');
+                    console.error('获取角色列表失败:', error);
                 } finally {
                     this.loading = false;
                 }
@@ -506,16 +508,21 @@ import * as permissionApi from '../api/permissions.js'
             async toggleStatus(role) {
                 if (role == null)
                     return;
-                var roleStatus = {
-                    id: role.id,
-                    status: !role.status
-                };
                 const self = this;
-                await api.updateRoleStatus(roleStatus).then(res => {
-                    if (res.status === 200)
-                        self.getRoles(self.currentPage)
-                });
-
+                try {
+                    if (!role.isDisabled) {
+                        // 当前是启用状态，需要禁用
+                        await api.disableRole(role.id);
+                    } else {
+                        // 当前是禁用状态，需要启用
+                        await api.enableRole(role.id);
+                    }
+                    ElMessage.success('角色状态更新成功');
+                    self.getRoles(self.currentPage);
+                } catch (error) {
+                    ElMessage.error('角色状态更新失败');
+                    console.error('更新角色状态失败:', error);
+                }
             },
             confirmDelete(role) {
                 this.deleteRole = role

@@ -1,6 +1,8 @@
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Roles.Commands.CreateRole;
 using LocationSystem.Application.Features.Roles.Commands.DeleteRole;
+using LocationSystem.Application.Features.Roles.Commands.DisableRole;
+using LocationSystem.Application.Features.Roles.Commands.EnableRole;
 using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Features.Roles.Queries.GetRoleDetail;
 using LocationSystem.Application.Features.Roles.Queries.GetRoleList;
@@ -96,6 +98,38 @@ namespace LocationSystem.Api.Controllers
             try
             {
                 var command = new DeleteRoleCommand { RoleId = id };
+                var result = await _mediator.Send(command);
+                return Ok(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/disable")]
+        [PermissionAuthorize("role:edit")]
+        public async Task<IActionResult> DisableRole(Guid id)
+        {
+            try
+            {
+                var command = new DisableRoleCommand { RoleId = id };
+                var result = await _mediator.Send(command);
+                return Ok(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/enable")]
+        [PermissionAuthorize("role:edit")]
+        public async Task<IActionResult> EnableRole(Guid id)
+        {
+            try
+            {
+                var command = new EnableRoleCommand { RoleId = id };
                 var result = await _mediator.Send(command);
                 return Ok(new { success = result });
             }

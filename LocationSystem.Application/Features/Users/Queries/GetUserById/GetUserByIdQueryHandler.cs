@@ -28,11 +28,13 @@ namespace LocationSystem.Application.Features.Users.Queries
                 Name = user.Name,
                 Email = user.Email.Value,
                 UserType = user.UserType.ToString(),
+                IsDisabled = user.IsDisabled,
                 Roles = user.Roles.Select(role => new RoleDto
                 {
                     Id = role.Id,
                     Name = role.Name,
-                    Code = role.Code
+                    Code = role.Code,
+                    IsDisabled = role.IsDisabled
                 }).ToList()
             };
         }

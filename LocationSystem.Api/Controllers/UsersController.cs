@@ -1,6 +1,8 @@
 using LocationSystem.Application.Features.Users.Commands.AssignRoles;
 using LocationSystem.Application.Features.Users.Commands.CreateUser;
 using LocationSystem.Application.Features.Users.Commands.DeleteUser;
+using LocationSystem.Application.Features.Users.Commands.DisableUser;
+using LocationSystem.Application.Features.Users.Commands.EnableUser;
 using LocationSystem.Application.Features.Users.Commands.UpdateUser;
 using LocationSystem.Application.Features.Users.Queries;
 using LocationSystem.Application.Utilities;
@@ -145,6 +147,38 @@ namespace LocationSystem.Api.Controllers
                 await _mediator.Send(command);
 
                 // 返回成功
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: api/Users/{id}/disable
+        [HttpPost("{id}/disable")]
+        public async Task<IActionResult> DisableUser(Guid id)
+        {
+            try
+            {
+                var command = new DisableUserCommand { UserId = id };
+                await _mediator.Send(command);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: api/Users/{id}/enable
+        [HttpPost("{id}/enable")]
+        public async Task<IActionResult> EnableUser(Guid id)
+        {
+            try
+            {
+                var command = new EnableUserCommand { UserId = id };
+                await _mediator.Send(command);
                 return Ok();
             }
             catch (Exception ex)

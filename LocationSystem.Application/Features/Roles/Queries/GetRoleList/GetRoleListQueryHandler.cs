@@ -31,6 +31,7 @@ namespace LocationSystem.Application.Features.Roles.Queries.GetRoleList
                 Name = role.Name,
                 Code = role.Code,
                 Description = role.Description,
+                IsDisabled = role.IsDisabled,
                 CreatedAt = role.CreatedAt,
                 UpdatedAt = role.UpdatedAt,
                 Permissions = role.Permissions.Select(permission => new PermissionDto

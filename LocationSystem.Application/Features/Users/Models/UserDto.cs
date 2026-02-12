@@ -6,6 +6,7 @@ namespace LocationSystem.Application.Features.Users.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string UserType { get; set; }
+        public bool IsDisabled { get; set; }
         public List<RoleDto> Roles { get; set; }
     }
 
@@ -14,5 +15,6 @@ namespace LocationSystem.Application.Features.Users.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+        public bool IsDisabled { get; set; }
     }
 }

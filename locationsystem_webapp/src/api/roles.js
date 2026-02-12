@@ -25,7 +25,12 @@ export const deleteRole = (id) => {
   return request.delete(`/api/roles/${id}`)
 }
 
-// 更新角色状态
-export const updateRoleStatus = (roleStatus) => {
-  return request.put('/api/role/Status', roleStatus)
+// 禁用角色
+export const disableRole = (id) => {
+  return request.post(`/api/roles/${id}/disable`)
+}
+
+// 启用角色
+export const enableRole = (id) => {
+  return request.post(`/api/roles/${id}/enable`)
 }
