@@ -55,7 +55,7 @@ namespace LocationSystem.Application.Features.Users.Commands.AssignRoles
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // 回滚事务
                 await _unitOfWork.RollbackAsync();

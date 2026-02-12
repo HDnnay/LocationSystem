@@ -14,7 +14,10 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             _context = context;
         }
-
+        public new Task<User?> GetByIdAsync(Guid userId)
+        {
+            return _context.Users.Include(t => t.Roles).FirstOrDefaultAsync(t => t.Id ==userId);
+        }
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email.Value == email);
