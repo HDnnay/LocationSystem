@@ -108,7 +108,7 @@ const routes = [
   {
     path: '/roles',
     name: 'Roles',
-    component: () => import('../views/Roles.vue'),
+    component: () => import('../views/RolesView.vue'),
     meta: {
       title: '角色管理',
       requiresAuth: true,
@@ -118,7 +118,7 @@ const routes = [
   {
     path: '/permissions',
     name: 'Permissions',
-    component: () => import('../views/users/permissions.vue'),
+    component: () => import('../views/users/PermissionsView.vue'),
     meta: {
       title: '权限管理',
       requiresAuth: true,
@@ -146,7 +146,7 @@ const routes = [
   {
     path: '/403',
     name: '403',
-    component: () => import('../views/403.vue'),
+    component: () => import('../views/403View.vue'),
     meta: {
       title: '无权限',
       requiresAuth: false

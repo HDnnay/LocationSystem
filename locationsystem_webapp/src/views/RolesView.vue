@@ -262,6 +262,7 @@ import * as permissionApi from '../api/permissions.js'
                 this.formData = {
                     roleName: role.roleName,
                     roleDescription: role.roleDescription,
+                    roleCode: role.roleCode,
                     status: role.status
                 }
                 this.showRoleModal = true
