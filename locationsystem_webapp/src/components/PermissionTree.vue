@@ -16,8 +16,10 @@
                      :data="treeData"
                      :props="treeProps"
                      :default-expanded-keys="allExpandedKeys.length > 0 ? allExpandedKeys : expandedPermissions"
+                     :default-checked-keys="selectedPermissions"
                      node-key="id"
-                     @node-click="handleNodeClick"
+                     show-checkbox
+                     @check-change="handleCheckChange"
                      @expand-change="handleExpandChange" />
         </div>
 
@@ -38,6 +40,10 @@
         },
         props: {
             permissionTree: {
+                type: Array,
+                default: () => []
+            },
+            selectedPermissions: {
                 type: Array,
                 default: () => []
             },
@@ -96,10 +102,18 @@
                     node.label = item.displayName || item.name || '未知权限'
 
                     // 转换childPermissions为children并递归处理
-                    if (item.childPermissions && Array.isArray(item.childPermissions) && item.childPermissions.length > 0) {
-                        node.children = this.transformToTreeData(item.childPermissions)
+                    if ((item.childPermissions || item.ChildPermissions) &&
+                        ((Array.isArray(item.childPermissions) && item.childPermissions.length > 0) ||
+                         (Array.isArray(item.ChildPermissions) && item.ChildPermissions.length > 0))) {
+                        const childPermissions = item.childPermissions || item.ChildPermissions;
+                        node.children = this.transformToTreeData(childPermissions)
                         // 删除原始childPermissions字段
-                        delete node.childPermissions
+                        if (item.childPermissions) {
+                            delete node.childPermissions
+                        }
+                        if (item.ChildPermissions) {
+                            delete node.ChildPermissions
+                        }
                     } else {
                         node.children = []
                     }
@@ -137,6 +151,16 @@
             // 处理权限节点点击
             handleNodeClick(node) {
                 // 点击节点时的处理
+            },
+
+            // 处理权限选择变化
+            handleCheckChange(node, checked, indeterminate) {
+                // 获取当前所有选中的节点
+                const checkedNodes = this.$refs.permissionTreeRef.getCheckedNodes(false, true);
+                // 提取选中节点的ID
+                const checkedIds = checkedNodes.map(node => node.id);
+                // 触发权限选择变化事件，通知父组件
+                this.$emit('permission-change', checkedIds);
             },
 
             // 处理节点展开/收起变化

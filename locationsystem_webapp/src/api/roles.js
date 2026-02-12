@@ -24,3 +24,8 @@ export const updateRole = (id, role) => {
 export const deleteRole = (id) => {
   return request.delete(`/api/roles/${id}`)
 }
+
+// 更新角色状态
+export const updateRoleStatus = (roleStatus) => {
+  return request.put('/api/role/Status', roleStatus)
+}

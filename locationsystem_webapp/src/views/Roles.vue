@@ -154,6 +154,7 @@
     } from '@element-plus/icons-vue'
     import PermissionTree from '../components/PermissionTree.vue'
     import * as api from '../api/roles.js'
+import * as permissionApi from '../api/permissions.js'
     export default {
         name: 'Roles',
         components: {
@@ -310,31 +311,55 @@
                 this.permissionError = null
 
                 try {
-                    // 从API接口获取实际权限数据
-                    const permissionsResponse = await request.get('/api/permissions');
-                    console.log('✅ 权限列表请求成功，响应数据:', permissionsResponse.data);
+                    // 从API接口获取实际权限数据（树形结构）
+                    const permissionsResponse = await permissionApi.getPermissionTree();
+                    console.log('✅ 权限树请求成功，响应数据:', permissionsResponse);
 
                     // 从API接口获取角色详情（包含已选权限）
                     const roleDetailResponse = await api.getRoleById(role.id);
                     console.log('✅ 角色详情请求成功，响应数据:', roleDetailResponse);
 
                     // 构建权限树
-                    this.permissionTree = permissionsResponse.data.map(permission => ({
-                        id: permission.id,
-                        name: permission.name,
-                        code: permission.code,
-                        description: permission.description,
-                        displayName: permission.name,
-                        childPermissions: [] // 暂时为空，后续可根据需要构建层级结构
-                    }));
+                    if (permissionsResponse && Array.isArray(permissionsResponse)) {
+                        this.permissionTree = permissionsResponse.map(permission => ({
+                            id: permission.id,
+                            name: permission.name,
+                            code: permission.code,
+                            description: permission.description,
+                            displayName: permission.name,
+                            childPermissions: permission.childPermissions || permission.ChildPermissions || [] // 保留原始的下级权限数据
+                        }));
+                    } else if (permissionsResponse && Array.isArray(permissionsResponse.data)) {
+                        this.permissionTree = permissionsResponse.data.map(permission => ({
+                            id: permission.id,
+                            name: permission.name,
+                            code: permission.code,
+                            description: permission.description,
+                            displayName: permission.name,
+                            childPermissions: permission.childPermissions || permission.ChildPermissions || [] // 保留原始的下级权限数据
+                        }));
+                    } else {
+                        this.permissionTree = [];
+                        this.permissionError = '权限数据格式错误';
+                    }
 
                     console.log('🔄 权限树构建完成:', this.permissionTree);
-                    this.expandedPermissions = this.permissionTree.map(p => p.id);
+                    if (Array.isArray(this.permissionTree)) {
+                        this.expandedPermissions = this.permissionTree.map(p => p.id);
+                    } else {
+                        this.expandedPermissions = [];
+                    }
 
                     // 初始化已选权限
-                    if (roleDetailResponse.data.permissions && roleDetailResponse.data.permissions.length > 0) {
+                    if (roleDetailResponse && roleDetailResponse.data && roleDetailResponse.data.permissions && Array.isArray(roleDetailResponse.data.permissions) && roleDetailResponse.data.permissions.length > 0) {
                         this.selectedPermissions = roleDetailResponse.data.permissions.map(p => p.id);
                         console.log('✅ 已选权限初始化完成:', this.selectedPermissions);
+                    } else if (roleDetailResponse && Array.isArray(roleDetailResponse.permissions) && roleDetailResponse.permissions.length > 0) {
+                        this.selectedPermissions = roleDetailResponse.permissions.map(p => p.id);
+                        console.log('✅ 已选权限初始化完成:', this.selectedPermissions);
+                    } else {
+                        this.selectedPermissions = [];
+                        console.log('⚠️ 未找到已选权限数据');
                     }
 
                 } catch (error) {
@@ -486,7 +511,7 @@
                     status: !role.status
                 };
                 const self = this;
-                await request.put("/api/role/Status", roleStatus).then(res => {
+                await api.updateRoleStatus(roleStatus).then(res => {
                     if (res.status === 200)
                         self.getRoles(self.currentPage)
                 });
