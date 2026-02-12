@@ -1,6 +1,7 @@
 using AspNetCoreRateLimit;
 using BCrypt.Net;
 using LocationSystem.Api.BackgroudServices;
+using LocationSystem.Api.Hubs;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Application.Utilities.Jwt;
@@ -8,6 +9,7 @@ using LocationSystem.Application.Utilities.RabbitMQs;
 using LocationSystem.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
@@ -26,7 +28,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173/", "http://localhost:5174/").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // 允许前端应用的来源
+        policy.WithOrigins("http://localhost:5173", "http://localhost:5174", "http://localhost:8080").AllowAnyHeader().AllowAnyMethod().AllowCredentials(); // 
     });
 });
 
@@ -86,6 +88,9 @@ builder.Services.AddStackExchangeRedisCache(options =>
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
     options.InstanceName = "Sys_";
 });
+
+// 添加 SignalR 服务
+builder.Services.AddSignalR();
 
 // 1️⃣ 注册 RabbitMQ 服务（单例）
 builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
@@ -170,6 +175,9 @@ app.UseStaticFiles(new StaticFileOptions
 })
 ;
 app.UseAuthorization();
+
+// 配置 SignalR Hub 路由
+app.MapHub<MenuHub>("/hub/menu");
 
 app.MapControllers();
 

@@ -119,8 +119,9 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp, Key, Menu, House } from '@element-plus/icons-vue'
+import menuManager from '@/utils/menuManager'
     export default {
         name: 'RouterViewManager',
         components: {
@@ -174,24 +175,49 @@ import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp
         mounted() {
             if (this.isLoggedIn) {
                 this.loadMenus()
+                // 初始化 SignalR 连接
+                menuManager.initSignalR()
+                // 监听菜单更新事件
+                window.addEventListener('menu:updated', this.handleMenuUpdated)
             }
+        },
+        beforeUnmount() {
+            // 移除事件监听器
+            window.removeEventListener('menu:updated', this.handleMenuUpdated)
+            // 断开 SignalR 连接
+            menuManager.disconnectSignalR()
         },
         watch: {
             isLoggedIn: {
                 handler(newVal) {
                     if (newVal) {
                         this.loadMenus()
+                        // 初始化 SignalR 连接
+                        menuManager.initSignalR()
+                        // 监听菜单更新事件
+                        window.addEventListener('menu:updated', this.handleMenuUpdated)
+                    } else {
+                        // 移除事件监听器
+                        window.removeEventListener('menu:updated', this.handleMenuUpdated)
+                        // 断开 SignalR 连接
+                        menuManager.disconnectSignalR()
                     }
                 },
                 immediate: true
             }
         },
         methods: {
+            // 处理菜单更新事件
+            handleMenuUpdated() {
+                console.log('收到菜单更新通知，重新加载菜单');
+                this.loadMenus();
+            },
+
             // 加载菜单
             async loadMenus() {
                 try {
-                    // 从后端获取菜单数据
-                    const response = await this.$api.permissions.getUserMenus()
+                    // 使用菜单管理器获取菜单数据（会自动使用本地缓存）
+                    const response = await menuManager.getMenus()
 
                     // 直接使用后端返回的数据作为菜单数据
                     this.menuItems = this.buildMenuTree(response)
