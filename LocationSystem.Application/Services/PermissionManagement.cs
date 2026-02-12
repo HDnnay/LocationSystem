@@ -143,5 +143,37 @@ namespace LocationSystem.Application.Services
 
             return false;
         }
+
+        /// <summary>
+        /// 获取用户的所有权限代码
+        /// </summary>
+        /// <param name="userId">用户ID</param>
+        /// <returns>权限代码列表</returns>
+        public async Task<List<string>> GetUserPermissionCodesAsync(Guid userId)
+        {
+            // 获取用户的所有角色
+            var userRoles = await _roleRepository.GetRolesByUserIdAsync(userId);
+            if (!userRoles.Any())
+            {
+                return new List<string>();
+            }
+
+            // 获取所有角色的权限代码，去重
+            var permissionCodes = new HashSet<string>();
+            foreach (var role in userRoles)
+            {
+                if (role != null && role.Permissions != null)
+                {
+                    foreach (var permission in role.Permissions)
+                    {
+                        if (permission != null && !string.IsNullOrEmpty(permission.Code))
+                        {
+                            permissionCodes.Add(permission.Code);
+                        }
+                    }
+                }
+            }
+            return permissionCodes.ToList();
+        }
     }
 }

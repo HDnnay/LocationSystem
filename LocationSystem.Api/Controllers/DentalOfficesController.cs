@@ -1,9 +1,10 @@
-﻿using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
+using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Commands.DeleteDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Commands.UpdateDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOfficesDetail;
 using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Api.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize("dental-office:create")]
         public async Task<IActionResult> Post([FromBody]CreateDentalOffceDetailDto dto)
         {
             var command = new CreateDentalOfficesCommand { Name = dto.Name};
@@ -28,6 +30,7 @@ namespace LocationSystem.Api.Controllers
             return Ok();
         }
         [HttpGet("{id}")]
+        [PermissionAuthorize("dental-office:view")]
         public async Task<IActionResult> Get(Guid id)
         {
             var command = new GetDentalOffcesDetailQuery() { Id = id };
@@ -35,6 +38,7 @@ namespace LocationSystem.Api.Controllers
             return Ok(model);
         }
         [HttpGet]
+        [PermissionAuthorize("dental-office:view")]
         public async Task<IActionResult> GetDentalOffices([FromQuery]DentalOfficeListFilter filter)
         {
             var command = new GetDetalOfficesListQuery()
@@ -47,13 +51,15 @@ namespace LocationSystem.Api.Controllers
             return Ok(model);
         }
         [HttpPut("{id}")]
+        [PermissionAuthorize("dental-office:edit")]
         public async Task<IActionResult> Put(Guid id,[FromBody]UpdateDetalOfficeDto updateDetalOfficeDto)
         {
-            var command = new UpdateDetalOfficeCommand { Id = id,Name = updateDetalOfficeDto.Name };    
+            var command = new UpdateDetalOfficeCommand { Id = id,Name = updateDetalOfficeDto.Name };
             await _mediator.Send(command);
             return NoContent();
         }
         [HttpDelete("{id}")]
+        [PermissionAuthorize("dental-office:delete")]
         public async Task<IActionResult> Delete(Guid id) 
         {
             var command = new DeleteDentalOfficeCommand { Id = id };
