@@ -1,4 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Domain.Entities;
@@ -32,13 +33,19 @@ namespace LocationSystem.Application.Features.Auth.Login
             }
             if (user == null)
             {
-                throw new Exception("用户不存在");
+                throw new NotFoundException("用户不存在");
+            }
+
+            // 检查用户是否被禁用
+            if (user.IsDisabled)
+            {
+                throw new ApplicationCustomException("账号已被禁用", 403);
             }
 
             // 验证密码
             if (!BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.PasswordHash))
             {
-                throw new Exception("密码错误");
+                throw new ApplicationCustomException("密码错误", 401);
             }
 
             // 生成token
