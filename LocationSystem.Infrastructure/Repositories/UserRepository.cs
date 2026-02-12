@@ -40,6 +40,14 @@ namespace LocationSystem.Infrastructure.Repositories
                 throw new ArgumentException("用户不存在");
             user.SetRefreshToken(refreshToken,DateTime.Now.AddDays(7));
             _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<User?> GetUserByRefreshTokenAsync(string refreshToken)
+        {
+            return await _context.Users
+                .Include(u => u.Roles) // 加载角色信息，用于生成 token
+                .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
         }
     }
 }

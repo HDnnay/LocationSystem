@@ -32,16 +32,14 @@ const checkTokenRefresh = () => {
 
     if (refreshToken && userType) {
       // 主动刷新token
-      // 将数字类型的userType转换为对应的UserType枚举字符串
-      const userTypeString = parseInt(userType) === 0 ? 'Dentist' : 'Patient'
+      // 发送数字类型的Type参数，与UserType枚举的整数值对应
       api.auth.refreshToken({
         RefreshToken: refreshToken,
-        Type: userTypeString
+        Type: parseInt(userType)
       }).then(res => {
-        if (res.status === 200) {
-          const authData = res.data
-          localStorage.setItem('access_token', authData.accessToken)
-          localStorage.setItem('refresh_token', authData.refreshToken)
+        if (res.accessToken) {
+          localStorage.setItem('access_token', res.accessToken)
+          localStorage.setItem('refresh_token', res.refreshToken)
         }
       }).catch(error => {
         console.error('刷新token失败:', error)

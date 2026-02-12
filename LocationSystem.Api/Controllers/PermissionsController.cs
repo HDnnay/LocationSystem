@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using LocationSystem.Application.Features.Permissions.Queries.GetUserPermissionMenus;
+using LocationSystem.Application.Features.Permissions.Queries.GetUserPermissions;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -135,13 +137,39 @@ namespace LocationSystem.Api.Controllers
                     return Unauthorized();
                 }
 
-                var query = new LocationSystem.Application.Features.Permissions.Queries.GetUserPermissionMenus.GetUserPermissionMenusQuery
+                var query = new GetUserPermissionMenusQuery
                 {
                     UserId = userId.Value
                 };
 
                 var menus = await _mediator.Send(query);
                 return Ok(menus);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("user-permissions")]
+        public async Task<IActionResult> GetUserPermissions()
+        {
+            try
+            {
+                // 从Token中获取用户ID
+                var userId = User.GetUserId();
+                if (userId == null)
+                {
+                    return Unauthorized();
+                }
+
+                var query = new GetUserPermissionsQuery
+                {
+                    UserId = userId.Value
+                };
+
+                var permissions = await _mediator.Send(query);
+                return Ok(permissions);
             }
             catch (Exception ex)
             {

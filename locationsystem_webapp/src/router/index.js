@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getUserMenus, getUserPermissions as apiGetUserPermissions } from '../api/permissions'
 
 // 懒加载页面组件
 const routes = [
@@ -34,7 +35,8 @@ const routes = [
         component: () => import('../views/DentalOfficesView.vue'),
         meta: {
             title: '牙科诊所管理',
-            requiresAuth: true
+            requiresAuth: true,
+            permission: 'dental-office:view'
         }
     },
     {
@@ -43,7 +45,8 @@ const routes = [
         component: () => import('../views/PatientsView.vue'),
         meta: {
             title: '患者管理',
-            requiresAuth: true
+            requiresAuth: true,
+            permission: 'patient:view'
         }
     },
     {
@@ -52,7 +55,8 @@ const routes = [
         component: () => import('../views/DentistsView.vue'),
         meta: {
             title: '牙医管理',
-            requiresAuth: true
+            requiresAuth: true,
+            permission: 'dentist:view'
         }
     },
     {
@@ -61,9 +65,10 @@ const routes = [
         component: () => import('../views/AppointmentsView.vue'),
         meta: {
             title: '预约管理',
-            requiresAuth: true
+            requiresAuth: true,
+            permission: 'appointment:view'
         }
-  },
+    },
   {
     path: '/company',
     name: 'company',
@@ -106,7 +111,8 @@ const routes = [
     component: () => import('../views/Roles.vue'),
     meta: {
       title: '角色管理',
-      requiresAuth: true
+      requiresAuth: true,
+      permission: 'role:view'
     }
   },
   {
@@ -115,7 +121,8 @@ const routes = [
     component: () => import('../views/users/permissions.vue'),
     meta: {
       title: '权限管理',
-      requiresAuth: true
+      requiresAuth: true,
+      permission: 'permission:view'
     }
   },
   {
@@ -135,6 +142,15 @@ const routes = [
       title: '菜单管理',
       requiresAuth: true
     }
+  },
+  {
+    path: '/403',
+    name: '403',
+    component: () => import('../views/403.vue'),
+    meta: {
+      title: '无权限',
+      requiresAuth: false
+    }
   }
 
 ]
@@ -145,7 +161,7 @@ const router = createRouter({
 })
 
 // 路由前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     document.title = to.meta.title ? `${to.meta.title} - 内容管理系统` : '内容管理系统'
 
     // 检查是否需要认证
@@ -157,10 +173,65 @@ router.beforeEach((to, from, next) => {
             next({ path: '/login' })
             return
         }
-    }
 
-    // 已经登录，或者不需要认证的页面
-    next()
+        // 检查是否需要权限
+        if (to.meta.permission) {
+            try {
+                // 获取用户权限
+                const userPermissions = await getUserPermissions()
+
+                // 检查权限
+                if (userPermissions.includes(to.meta.permission)) {
+                    next()
+                } else {
+                    next({ name: '403' })
+                }
+            } catch (error) {
+                console.error('获取权限失败:', error)
+                next({ name: '403' })
+            }
+        } else {
+            next()
+        }
+    } else {
+        // 不需要认证的页面
+        next()
+    }
 })
+
+// 获取用户权限
+async function getUserPermissions() {
+    try {
+        // 尝试从localStorage获取权限
+        const cachedPermissions = localStorage.getItem('userPermissions')
+
+        // 检查cachedPermissions是否存在且不是空数组的字符串表示
+        if (cachedPermissions && cachedPermissions !== "[]") {
+            try {
+                const parsedPermissions = JSON.parse(cachedPermissions)
+                // 检查解析后的权限是否非空
+                if (parsedPermissions && parsedPermissions.length > 0) {
+                    return parsedPermissions
+                }
+            } catch (parseError) {
+                console.error('解析权限数据失败:', parseError)
+                // 解析失败，继续从后端获取
+            }
+        }
+
+        // 从后端获取权限
+        const permissions = await apiGetUserPermissions()
+
+        // 存储到localStorage
+        localStorage.setItem('userPermissions', JSON.stringify(permissions))
+
+        return permissions
+    } catch (error) {
+        console.error('获取用户权限失败:', error)
+        // 错误时返回空数组，不使用默认权限
+        localStorage.setItem('userPermissions', JSON.stringify([]))
+        return []
+    }
+}
 
 export default router

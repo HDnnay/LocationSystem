@@ -1,4 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Features.Auth.Login;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
@@ -22,21 +23,26 @@ namespace LocationSystem.Application.Features.Auth.RefreshToken
             var refreshTokenRequest = request.Request;
             var refreshToken = refreshTokenRequest.RefreshToken;
 
-            // 查找用户（实际项目中应该根据refresh token从数据库查询用户）
-            // 这里简化处理，根据用户类型和已知信息查找用户
-            User? user = null;
-            // 实际项目中应该根据refresh token从数据库查询用户
-            // 这里简化处理，使用现有的方法
-            user = await _userRepository.GetUserByEmailAsync("dentist@example.com");
+            // 根据 refreshToken 查询用户
+            User? user = await _userRepository.GetUserByRefreshTokenAsync(refreshToken);
 
             if (user == null)
             {
-                throw new Exception("用户不存在");
+                throw new InvalidRefreshTokenException();
             }
 
-            // 生成新的token
+            // 验证 refreshToken 是否过期
+            if (user.RefreshTokenExpiryTime < DateTime.Now)
+            {
+                throw new RefreshTokenExpiredException();
+            }
+
+            // 生成新的 token
             var newAccessToken = _jwtService.GenerateAccessToken(user);
             var newRefreshToken = _jwtService.GenerateRefreshToken();
+
+            // 保存新的 refreshToken 到数据库
+            await _userRepository.SaveRefreshToken(user.Id, newRefreshToken);
 
             // 构建响应
             var response = new LoginResponseDto

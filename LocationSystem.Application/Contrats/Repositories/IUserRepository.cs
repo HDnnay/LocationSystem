@@ -8,5 +8,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<User?> GetUserByEmailAsync(string email);
         Task<(int, IEnumerable<User>)> GetUserPage(GetAllUsersQuery query);
         Task SaveRefreshToken(Guid id, string refreshToken);
+        Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
     }
 }

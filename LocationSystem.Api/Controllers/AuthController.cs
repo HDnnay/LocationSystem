@@ -1,3 +1,4 @@
+using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Features.Auth.Login;
 using LocationSystem.Application.Features.Auth.RefreshToken;
 using LocationSystem.Application.Features.Auth.Register;
@@ -55,6 +56,10 @@ namespace LocationSystem.Api.Controllers
                 var command = new RefreshTokenCommand { Request = request };
                 var response = await _mediator.Send(command);
                 return Ok(response);
+            }
+            catch (ApplicationCustomException ex)
+            {
+                return StatusCode(ex.StatusCode, new { message = ex.Message });
             }
             catch (Exception ex)
             {

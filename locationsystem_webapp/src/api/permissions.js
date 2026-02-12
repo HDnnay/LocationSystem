@@ -5,6 +5,10 @@ export const getUserMenus = () => {
   return request.get('/api/permissions/user-menus')
 }
 
+export const getUserPermissions = () => {
+  return request.get('/api/permissions/user-permissions')
+}
+
 export const getPermissions = () => {
   return request.get('/api/permissions')
 }
