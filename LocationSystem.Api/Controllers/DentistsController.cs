@@ -1,9 +1,10 @@
-﻿using LocationSystem.Application.Features.Dentists.Commands.CreateDentist;
+using LocationSystem.Application.Features.Dentists.Commands.CreateDentist;
 using LocationSystem.Application.Features.Dentists.Commands.DeleteDentist;
 using LocationSystem.Application.Features.Dentists.Commands.UpdateDentist;
 using LocationSystem.Application.Features.Dentists.Queries.GetDentistList;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.RabbitMQs;
+using LocationSystem.Api.Filters;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace LocationSystem.Api.Controllers
 
         // GET api/<DentistsController>/5
         [HttpGet]
+        [PermissionAuthorize("dentist:view")]
         public async Task<IActionResult> Get([FromQuery]DentistListFilterDto model)
         {
             var command = new GetDentistListQuery()
@@ -43,6 +45,7 @@ namespace LocationSystem.Api.Controllers
 
         // POST api/<DentistsController>
         [HttpPost]
+        [PermissionAuthorize("dentist:create")]
         public async Task<IActionResult> Post([FromBody] CreateDentistDto model)
         {
             
@@ -53,6 +56,7 @@ namespace LocationSystem.Api.Controllers
 
         // PUT api/<DentistsController>/5
         [HttpPut("{id}")]
+        [PermissionAuthorize("dentist:edit")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateDentistDto model)
         {
             var command = new UpdateDentistCommand() { Id = id, Name = model.Name, Email = model.Email };
@@ -61,6 +65,7 @@ namespace LocationSystem.Api.Controllers
         }
             // DELETE api/<DentistsController>/5
         [HttpDelete("{id}")]
+        [PermissionAuthorize("dentist:delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var command = new DeleteDentistCommand() { Id = id };

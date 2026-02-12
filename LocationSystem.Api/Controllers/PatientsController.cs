@@ -1,4 +1,4 @@
-﻿using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
+using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Features.Patients.Command.CreatePatient;
 using LocationSystem.Application.Features.Patients.Command.DeletePatient;
 using LocationSystem.Application.Features.Patients.Command.UpdatePatient;
@@ -6,6 +6,7 @@ using LocationSystem.Application.Features.Patients.Queries.GetPatienDetail;
 using LocationSystem.Application.Features.Patients.Queries.GetPatienList;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.RabbitMQs;
+using LocationSystem.Api.Filters;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Update.Internal;
@@ -25,6 +26,7 @@ namespace LocationSystem.Api.Controllers
             _rabbitMQService = rabbitMQService;
         }
         [HttpPost]
+        [PermissionAuthorize("patient:create")]
         public async Task<IActionResult> Post(CreatePatientDto model)
         {
             var command = new CreatePatientCommand() { Name = model.Name ,Email = model.Email};
@@ -34,6 +36,7 @@ namespace LocationSystem.Api.Controllers
             return Ok(result);
         }
         [HttpGet("{id}")]
+        [PermissionAuthorize("patient:view")]
         public async Task<IActionResult> Get(Guid id)
         {
             var command = new GetPatienDetailQuery() { PatientId = id };
@@ -41,6 +44,7 @@ namespace LocationSystem.Api.Controllers
             return Ok(result);
         }
         [HttpGet]
+        [PermissionAuthorize("patient:view")]
         public async Task<IActionResult> Get([FromQuery]PatiensListFilterDto dto)
         {
             var command = new GetPatienListQuery() { Page = dto.Page, PageSize = dto.PageSize,keyWord=dto.keyWord };
@@ -48,6 +52,7 @@ namespace LocationSystem.Api.Controllers
             return Ok(result);
         }
         [HttpPut("{id}")]
+        [PermissionAuthorize("patient:edit")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdatePatientDto dto)
         {
             var command = new UpdatePatientCommand()
@@ -60,6 +65,7 @@ namespace LocationSystem.Api.Controllers
             return Ok();
         }
         [HttpDelete("{id}")]
+        [PermissionAuthorize("patient:delete")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var command = new DeletePatientCommand { Id =id};

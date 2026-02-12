@@ -6,6 +6,7 @@ using LocationSystem.Application.Features.Permissions.Queries.GetPermissionDetai
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionList;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionTree;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Api.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpGet]
+        [PermissionAuthorize("permission:view")]
         public async Task<IActionResult> GetPermissions()
         {
             try
@@ -42,6 +44,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [PermissionAuthorize("permission:view")]
         public async Task<IActionResult> GetPermission(Guid id)
         {
             try
@@ -57,6 +60,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize("permission:create")]
         public async Task<IActionResult> CreatePermission([FromBody] CreatePermissionDto permissionDto)
         {
             try
@@ -72,6 +76,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [PermissionAuthorize("permission:edit")]
         public async Task<IActionResult> UpdatePermission(Guid id, [FromBody] UpdatePermissionDto permissionDto)
         {
             try
@@ -87,6 +92,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [PermissionAuthorize("permission:delete")]
         public async Task<IActionResult> DeletePermission(Guid id)
         {
             try
@@ -102,6 +108,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpGet("tree")]
+        [PermissionAuthorize("permission:view")]
         public async Task<IActionResult> GetPermissionTree()
         {
             try

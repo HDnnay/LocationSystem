@@ -5,6 +5,7 @@ using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Features.Roles.Queries.GetRoleDetail;
 using LocationSystem.Application.Features.Roles.Queries.GetRoleList;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Api.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpGet]
+        [PermissionAuthorize("role:view")]
         public async Task<IActionResult> GetRoles()
         {
             try
@@ -40,6 +42,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpGet("{id}")]
+        [PermissionAuthorize("role:view")]
         public async Task<IActionResult> GetRole(Guid id)
         {
             try
@@ -55,6 +58,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpPost]
+        [PermissionAuthorize("role:create")]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleDto roleDto)
         {
             try
@@ -70,6 +74,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [PermissionAuthorize("role:edit")]
         public async Task<IActionResult> UpdateRole(Guid id, [FromBody] UpdateRoleDto roleDto)
         {
             try
@@ -85,6 +90,7 @@ namespace LocationSystem.Api.Controllers
         }
 
         [HttpDelete("{id}")]
+        [PermissionAuthorize("role:delete")]
         public async Task<IActionResult> DeleteRole(Guid id)
         {
             try

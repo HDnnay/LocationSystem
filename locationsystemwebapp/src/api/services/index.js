@@ -3,10 +3,12 @@ import appointmentService from './appointmentService'
 import dentistService from './dentistService'
 import patientService from './patientService'
 import dentalOfficeService from './dentalOfficeService'
+import permissionService from './permissionService'
 
 export {
   appointmentService,
   dentistService,
   patientService,
-  dentalOfficeService
+  dentalOfficeService,
+  permissionService
 }
