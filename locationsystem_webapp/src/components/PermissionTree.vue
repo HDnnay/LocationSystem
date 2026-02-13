@@ -18,7 +18,8 @@
                      :default-expanded-keys="allExpandedKeys.length > 0 ? allExpandedKeys : expandedPermissions"
                      :default-checked-keys="selectedPermissions"
                      node-key="id"
-                     show-checkbox
+                     :show-checkbox="showCheckbox"
+                     :check-strictly="true"
                      @check-change="handleCheckChange"
                      @expand-change="handleExpandChange" />
         </div>
@@ -58,6 +59,10 @@
             error: {
                 type: String,
                 default: null
+            },
+            showCheckbox: {
+                type: Boolean,
+                default: true
             }
         },
         computed: {
@@ -155,6 +160,23 @@
 
             // 处理权限选择变化
             handleCheckChange(node, checked, indeterminate) {
+                // 只有当操作的是父节点（有子节点）时，才处理级联逻辑
+                if (node.children && node.children.length > 0) {
+                    // 递归处理所有子节点
+                    const handleChildren = (children, checkState) => {
+                        children.forEach(child => {
+                            // 设置子节点状态
+                            this.$refs.permissionTreeRef.setChecked(child.id, checkState, false);
+                            // 递归处理子节点的子节点
+                            if (child.children && child.children.length > 0) {
+                                handleChildren(child.children, checkState);
+                            }
+                        });
+                    };
+                    // 处理当前节点的子节点
+                    handleChildren(node.children, checked);
+                }
+
                 // 获取当前所有选中的节点
                 const checkedNodes = this.$refs.permissionTreeRef.getCheckedNodes(false, true);
                 // 提取选中节点的ID

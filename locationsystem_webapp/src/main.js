@@ -24,13 +24,22 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // 全局注册API
 app.config.globalProperties.$api = api
 
+// 全局刷新状态，避免并发刷新
+let isRefreshing = false
+
 // 检查token是否需要刷新
 const checkTokenRefresh = () => {
+  // 如果正在刷新或者没有token，直接返回
+  if (isRefreshing || !localStorage.getItem('access_token')) {
+    return
+  }
+
   if (needRefreshToken()) {
     const refreshToken = localStorage.getItem('refresh_token')
     const userType = localStorage.getItem('user_type')
 
     if (refreshToken && userType) {
+      isRefreshing = true
       // 主动刷新token
       // 发送数字类型的Type参数，与UserType枚举的整数值对应
       api.auth.refreshToken({
@@ -53,6 +62,8 @@ const checkTokenRefresh = () => {
         localStorage.removeItem('user_type')
         localStorage.removeItem('user_info')
         router.push('/login')
+      }).finally(() => {
+        isRefreshing = false
       })
     }
   }

@@ -5,7 +5,9 @@ using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
 using LocationSystem.Application.Features.Menus.Queries.GetMenuById;
 using LocationSystem.Application.Features.Menus.Queries.GetMenuTree;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Api.Hubs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -14,10 +16,12 @@ namespace LocationSystem.Api.Controllers
     public class MenusController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IHubContext<MenuHub> _hubContext;
 
-        public MenusController(IMediator mediator)
+        public MenusController(IMediator mediator, IHubContext<MenuHub> hubContext)
         {
             _mediator = mediator;
+            _hubContext = hubContext;
         }
 
         // GET: api/Menus
@@ -62,6 +66,10 @@ namespace LocationSystem.Api.Controllers
             try
             {
                 var createdMenu = await _mediator.Send(command);
+                
+                // 通知前端菜单已更新
+                await _hubContext.Clients.All.SendAsync("MenuUpdated");
+                
                 return CreatedAtAction(nameof(GetMenu), new { id = createdMenu.Id }, createdMenu);
             }
             catch (Exception ex)
@@ -78,6 +86,10 @@ namespace LocationSystem.Api.Controllers
             {
                 command.Id = id;
                 var updatedMenu = await _mediator.Send(command);
+                
+                // 通知前端菜单已更新
+                await _hubContext.Clients.All.SendAsync("MenuUpdated");
+                
                 return Ok(updatedMenu);
             }
             catch (Exception ex)
@@ -94,6 +106,10 @@ namespace LocationSystem.Api.Controllers
             {
                 var command = new DeleteMenuCommand { MenuId = id };
                 await _mediator.Send(command);
+                
+                // 通知前端菜单已更新
+                await _hubContext.Clients.All.SendAsync("MenuUpdated");
+                
                 return Ok(new { success = true });
             }
             catch (Exception ex)

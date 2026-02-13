@@ -78,6 +78,7 @@
                         <PermissionTree :permissionTree="permissionTree"
                                       :loading="treeLoading"
                                       :error="treeError"
+                                      :show-checkbox="false"
                                       @permission-change="handlePermissionChange"
                                       @expand-change="handleExpandChange" />
                     </el-card>

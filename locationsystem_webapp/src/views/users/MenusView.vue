@@ -292,8 +292,6 @@ export default {
 
     // 处理分页大小变化
     const handleSizeChange = (size) => {
-      if (pageSize.value == size)
-        return;
       pageSize.value = size
       loadMenus()
     }

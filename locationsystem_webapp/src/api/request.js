@@ -11,6 +11,7 @@ const service = axios.create({
 });
 
 let isRefreshing = false;
+let refreshSubscribers = [];
 
 // 请求拦截器
 service.interceptors.request.use(
@@ -31,6 +32,13 @@ service.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
+// 通知所有订阅者
+function notifySubscribers(newToken) {
+    refreshSubscribers.forEach(callback => callback(newToken));
+    refreshSubscribers = [];
+}
+
 // 响应拦截器
 service.interceptors.response.use(
     response => {
@@ -49,7 +57,13 @@ service.interceptors.response.use(
         if (error.response?.status === 401 && !originalRequest._retry)
         {
             if (isRefreshing) {
-                return service(originalRequest);
+                // 正在刷新token，将请求加入队列
+                return new Promise(resolve => {
+                    refreshSubscribers.push(newToken => {
+                        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                        resolve(service(originalRequest));
+                    });
+                });
             }
             isRefreshing = true;
             originalRequest._retry = true;
@@ -71,6 +85,8 @@ service.interceptors.response.use(
                             localStorage.setItem('user_info', JSON.stringify(res.userInfo));
                         }
                         originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                        // 通知所有订阅者
+                        notifySubscribers(newToken);
                         return service(originalRequest);
                     }
                 }
