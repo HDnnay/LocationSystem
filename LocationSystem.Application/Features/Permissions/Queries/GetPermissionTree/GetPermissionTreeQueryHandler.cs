@@ -14,16 +14,26 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionT
     public class GetPermissionTreeQueryHandler : IRequestHandler<GetPermissionTreeQuery, List<PermissionDto>>
     {
         private readonly IPermissionRepository _permissionRepository;
+        private readonly ICacheService _cacheService;
 
-        public GetPermissionTreeQueryHandler(IPermissionRepository permissionRepository)
+        public GetPermissionTreeQueryHandler(IPermissionRepository permissionRepository, ICacheService cacheService)
         {
             _permissionRepository = permissionRepository;
+            _cacheService = cacheService;
         }
 
         public async Task<List<PermissionDto>> Handle(GetPermissionTreeQuery request)
         {
-            var permissions = await _permissionRepository.GetPermissionTreeAsync();
-            return MapPermissionsToDto(permissions);
+            // 生成缓存键
+            var cacheKey = "permissions:tree";
+
+            // 从缓存中获取权限树或创建缓存
+            var permissionDtos = await _cacheService.GetOrCreateAsync<List<PermissionDto>>(cacheKey, async (options) => {
+                var permissions = await _permissionRepository.GetPermissionTreeAsync();
+                return MapPermissionsToDto(permissions);
+            }, 1800); // 缓存30分钟（1800秒）
+
+            return permissionDtos;
         }
 
         private List<PermissionDto> MapPermissionsToDto(IEnumerable<Permission> permissions)

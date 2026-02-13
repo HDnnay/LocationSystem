@@ -9,52 +9,62 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
     public class GetUserPermissionMenusQueryHandler : IRequestHandler<GetUserPermissionMenusQuery, List<PermissionMenuDto>>
     {
         private readonly PermissionManagement _permissionManagement;
+        private readonly ICacheService _cacheService;
 
-        public GetUserPermissionMenusQueryHandler(PermissionManagement permissionManagement)
+        public GetUserPermissionMenusQueryHandler(PermissionManagement permissionManagement, ICacheService cacheService)
         {
             _permissionManagement = permissionManagement;
+            _cacheService = cacheService;
         }
 
         public async Task<List<PermissionMenuDto>> Handle(GetUserPermissionMenusQuery request)
         {
-            // 使用PermissionManagement获取用户有权限的菜单
-            var userMenus = await _permissionManagement.GetUserPermissionMenusAsync(request.UserId);
-            if (!userMenus.Any())
-            {
-                return new List<PermissionMenuDto>();
-            }
+            // 生成缓存键
+            var cacheKey = $"user:permission_menus:{request.UserId}";
 
-            // 转换为DTO
-            var menuDtos = userMenus
-                .Select(m => {
-                    // 获取菜单关联的第一个权限代码作为菜单的权限标识
-                    string? permissionCode = null;
-                    var firstPermissionMenu = m.PermissionMenus.FirstOrDefault();
-                    if (firstPermissionMenu != null)
-                    {
-                        // 这里简化处理，实际应该通过权限ID获取权限信息
-                        permissionCode = "";
-                    }
-                    
-                    return new PermissionMenuDto
-                    {
-                        Id = m.Id,
-                        Name = m.Name,
-                        Code = permissionCode,
-                        Description = null,
-                        ParentId = m.ParentId,
-                        IsMenu = true,
-                        MenuPath = m.Path,
-                        MenuIcon = m.Icon,
-                        Order = m.Order,
-                        CreatedAt = m.CreatedAt,
-                        UpdatedAt = m.UpdatedAt ?? m.CreatedAt
-                    };
-                })
-                .ToList();
+            // 从缓存中获取用户权限菜单或创建缓存
+            var menuDtos = await _cacheService.GetOrCreateAsync<List<PermissionMenuDto>>(cacheKey, async (options) => {
+                // 使用PermissionManagement获取用户有权限的菜单
+                var userMenus = await _permissionManagement.GetUserPermissionMenusAsync(request.UserId);
+                if (!userMenus.Any())
+                {
+                    return new List<PermissionMenuDto>();
+                }
 
-            // 构造树形菜单
-            return BuildMenuTree(menuDtos);
+                // 转换为DTO
+                var dtos = userMenus
+                    .Select(m => {
+                        // 获取菜单关联的第一个权限代码作为菜单的权限标识
+                        string? permissionCode = null;
+                        var firstPermissionMenu = m.PermissionMenus.FirstOrDefault();
+                        if (firstPermissionMenu != null)
+                        {
+                            // 这里简化处理，实际应该通过权限ID获取权限信息
+                            permissionCode = "";
+                        }
+                        
+                        return new PermissionMenuDto
+                        {
+                            Id = m.Id,
+                            Name = m.Name,
+                            Code = permissionCode,
+                            Description = null,
+                            ParentId = m.ParentId,
+                            IsMenu = true,
+                            MenuPath = m.Path,
+                            MenuIcon = m.Icon,
+                            Order = m.Order,
+                            CreatedAt = m.CreatedAt,
+                            UpdatedAt = m.UpdatedAt ?? m.CreatedAt
+                        };
+                    })
+                    .ToList();
+
+                // 构造树形菜单
+                return BuildMenuTree(dtos);
+            }, 1800); // 缓存30分钟（1800秒）
+
+            return menuDtos;
         }
 
         // 递归构造菜单树

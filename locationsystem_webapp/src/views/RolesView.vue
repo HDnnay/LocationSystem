@@ -305,7 +305,6 @@ import * as permissionApi from '../api/permissions.js'
                 }
             },
             async showPermissionModal(role) {
-                console.log('🚀 打开权限模态框');
                 this.selectedRole = role
                 this.showPermission = true
                 this.permissionLoading = true
@@ -316,11 +315,9 @@ import * as permissionApi from '../api/permissions.js'
                 try {
                     // 从API接口获取实际权限数据（树形结构）
                     const permissionsResponse = await permissionApi.getPermissionTree();
-                    console.log('✅ 权限树请求成功，响应数据:', permissionsResponse);
 
                     // 从API接口获取角色详情（包含已选权限）
                     const roleDetailResponse = await api.getRoleById(role.id);
-                    console.log('✅ 角色详情请求成功，响应数据:', roleDetailResponse);
 
                     // 构建权限树
                     if (permissionsResponse && Array.isArray(permissionsResponse)) {
@@ -346,7 +343,6 @@ import * as permissionApi from '../api/permissions.js'
                         this.permissionError = '权限数据格式错误';
                     }
 
-                    console.log('🔄 权限树构建完成:', this.permissionTree);
                     if (Array.isArray(this.permissionTree)) {
                         this.expandedPermissions = this.permissionTree.map(p => p.id);
                     } else {
@@ -356,35 +352,28 @@ import * as permissionApi from '../api/permissions.js'
                     // 初始化已选权限
                     if (roleDetailResponse && roleDetailResponse.data && roleDetailResponse.data.permissions && Array.isArray(roleDetailResponse.data.permissions) && roleDetailResponse.data.permissions.length > 0) {
                         this.selectedPermissions = roleDetailResponse.data.permissions.map(p => p.id);
-                        console.log('✅ 已选权限初始化完成:', this.selectedPermissions);
                     } else if (roleDetailResponse && Array.isArray(roleDetailResponse.permissions) && roleDetailResponse.permissions.length > 0) {
                         this.selectedPermissions = roleDetailResponse.permissions.map(p => p.id);
-                        console.log('✅ 已选权限初始化完成:', this.selectedPermissions);
                     } else {
                         this.selectedPermissions = [];
-                        console.log('⚠️ 未找到已选权限数据');
                     }
 
                 } catch (error) {
                     // 详细的错误处理
-                    console.error('❌ API请求失败:', error);
                     if (error.response) {
                         // 服务器返回了错误状态码
                         this.permissionError = `服务器错误: ${error.response.status} - ${error.response.data.message || '未知错误'}`;
                     } else if (error.request) {
                         // 请求已发出，但没有收到响应
-                        console.error('❌ 网络错误，无响应:', error.request);
                         this.permissionError = '网络错误，请检查网络连接';
                     } else {
                         // 其他错误
-                        console.error('❌ 请求配置错误:', error.message);
                         this.permissionError = `请求错误: ${error.message}`;
                     }
 
                     this.expandedPermissions = this.permissionTree.map(p => p.id);
                 } finally {
                     this.permissionLoading = false;
-                    console.log('🔄 权限加载完成，加载状态:', this.permissionLoading);
                 }
             },
             closePermissionModal() {
