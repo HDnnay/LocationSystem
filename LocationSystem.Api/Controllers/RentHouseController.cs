@@ -1,5 +1,4 @@
-﻿using LocationSystem.Api.Filters;
-using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentDetail;
+using LocationSystem.Api.Filters;
 using LocationSystem.Application.Features.RentHousies.Command.CreateRentHose;
 using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseDetail;
 using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList;

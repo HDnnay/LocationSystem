@@ -5,7 +5,7 @@ import { getUserMenus, getUserPermissions as apiGetUserPermissions } from '../ap
 const routes = [
     {
         path: '/',
-        redirect: '/dentists',
+        redirect: '/dashboard',
         meta: {
             requiresAuth: true
         }
@@ -28,45 +28,13 @@ const routes = [
             requiresAuth: false
         }
     },
-
     {
-        path: '/dental-offices',
-        name: 'DentalOffices',
-        component: () => import('../views/DentalOfficesView.vue'),
+        path: '/dashboard',
+        name: 'Dashboard',
+        component: () => import('../views/DashboardView.vue'),
         meta: {
-            title: '牙科诊所管理',
-            requiresAuth: true,
-            permission: 'dental-office:view'
-        }
-    },
-    {
-        path: '/patients',
-        name: 'Patients',
-        component: () => import('../views/PatientsView.vue'),
-        meta: {
-            title: '患者管理',
-            requiresAuth: true,
-            permission: 'patient:view'
-        }
-    },
-    {
-        path: '/dentists',
-        name: 'Dentists',
-        component: () => import('../views/DentistsView.vue'),
-        meta: {
-            title: '牙医管理',
-            requiresAuth: true,
-            permission: 'dentist:view'
-        }
-    },
-    {
-        path: '/appointments',
-        name: 'Appointments',
-        component: () => import('../views/AppointmentsView.vue'),
-        meta: {
-            title: '预约管理',
-            requiresAuth: true,
-            permission: 'appointment:view'
+            title: '仪表盘',
+            requiresAuth: true
         }
     },
   {

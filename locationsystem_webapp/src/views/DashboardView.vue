@@ -53,9 +53,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { getDentists } from '../api/dentists'
-import { getPatients } from '../api/patients'
-import { getDentalOffices } from '../api/dentalOffices'
 import { ElMessage } from 'element-plus'
 import { use } from 'echarts/core'
 import { CanvasRenderer } from 'echarts/renderers'
@@ -72,16 +69,16 @@ use([
 
 // 统计数据
 const stats = ref([
-  { id: 1, title: '牙医总数', value: 0, description: '当前系统中的牙医数量', icon: '👨‍⚕️', iconClass: 'icon-dentist' },
-  { id: 2, title: '患者总数', value: 0, description: '当前系统中的患者数量', icon: '👤', iconClass: 'icon-patient' },
-  { id: 3, title: '牙科诊所', value: 0, description: '当前系统中的诊所数量', icon: '🏥', iconClass: 'icon-office' }
+  { id: 1, title: '公司总数', value: 0, description: '当前系统中的公司数量', icon: '🏢', iconClass: 'icon-company' },
+  { id: 2, title: '租房总数', value: 0, description: '当前系统中的租房数量', icon: '🏠', iconClass: 'icon-rent' },
+  { id: 3, title: '用户总数', value: 0, description: '当前系统中的用户数量', icon: '👥', iconClass: 'icon-user' }
 ])
 
 // 最近数据
 const recentData = ref([
-  { type: '牙医', name: '张三', status: '活跃', date: '2024-01-15 10:30:00' },
-  { type: '患者', name: '李四', status: '已就诊', date: '2024-01-15 09:15:00' },
-  { type: '诊所', name: '阳光牙科', status: '营业中', date: '2024-01-14 16:45:00' }
+  { type: '公司', name: '示例公司', status: '活跃', date: '2024-01-15 10:30:00' },
+  { type: '租房', name: '示例租房', status: '可用', date: '2024-01-15 09:15:00' },
+  { type: '用户', name: '示例用户', status: '在线', date: '2024-01-14 16:45:00' }
 ])
 
 // 图表配置
@@ -97,7 +94,7 @@ const pieOption = ref({
   legend: {
     orient: 'vertical',
     left: 'left',
-    data: ['牙医', '患者', '牙科诊所']
+    data: ['公司', '租房', '用户']
   },
   series: [
     {
@@ -105,9 +102,9 @@ const pieOption = ref({
       type: 'pie',
       radius: '50%',
       data: [
-        { value: 0, name: '牙医' },
-        { value: 0, name: '患者' },
-        { value: 0, name: '牙科诊所' }
+        { value: 0, name: '公司' },
+        { value: 0, name: '租房' },
+        { value: 0, name: '用户' }
       ],
       emphasis: {
         itemStyle: {
@@ -120,8 +117,6 @@ const pieOption = ref({
   ]
 })
 
-
-
 // 加载状态
 const loading = ref(false)
 
@@ -129,46 +124,26 @@ const loading = ref(false)
 const fetchStats = async () => {
   loading.value = true
   try {
-    // 并行获取所有统计数据
-    const [dentistsRes, patientsRes, officesRes] = await Promise.all([
-      getDentists({ Page: 1, PageSize: 1 }),
-      getPatients({ Page: 1, PageSize: 1 }),
-      getDentalOffices({ Page: 1, PageSize: 1 })
-    ])
+    // 模拟数据加载
+    setTimeout(() => {
+      // 更新统计数据
+      stats.value[0].value = 10
+      stats.value[1].value = 20
+      stats.value[2].value = 30
 
-    // 更新统计数据
-    stats.value[0].value = dentistsRes.totalCount || 0
-    stats.value[1].value = patientsRes.totalCount || 0
-    stats.value[2].value = officesRes.totalCount || 0
+      // 更新饼图数据
+      pieOption.value.series[0].data = [
+        { value: stats.value[0].value, name: '公司' },
+        { value: stats.value[1].value, name: '租房' },
+        { value: stats.value[2].value, name: '用户' }
+      ]
 
-    // 更新饼图数据
-    pieOption.value.series[0].data = [
-      { value: stats.value[0].value, name: '牙医' },
-      { value: stats.value[1].value, name: '患者' },
-      { value: stats.value[2].value, name: '牙科诊所' }
-    ]
-
-    // 更新柱状图数据（生成最近7天的模拟数据）
-    const today = new Date()
-    const dates = []
-    const appointmentCounts = []
-
-    for (let i = 6; i >= 0; i--) {
-      const date = new Date(today)
-      date.setDate(date.getDate() - i)
-      dates.push(`${date.getMonth() + 1}/${date.getDate()}`)
-      // 生成随机预约数量
-      appointmentCounts.push(Math.floor(Math.random() * 20) + 1)
-    }
-
-    barOption.value.xAxis.data = dates
-    barOption.value.series[0].data = appointmentCounts
-
-    ElMessage.success('数据加载成功')
+      ElMessage.success('数据加载成功')
+      loading.value = false
+    }, 1000)
   } catch (error) {
     console.error('获取统计数据失败:', error)
     ElMessage.error('数据加载失败，请稍后重试')
-  } finally {
     loading.value = false
   }
 }

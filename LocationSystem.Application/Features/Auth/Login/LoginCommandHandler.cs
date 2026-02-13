@@ -21,16 +21,8 @@ namespace LocationSystem.Application.Features.Auth.Login
         {
             var loginRequest = request.Request;
             
-            // 根据用户类型查询用户
-            User? user = null;
-            if (loginRequest.Type == UserType.Dentist)
-            {
-                user = await _userRepository.GetUserByEmailAsync(loginRequest.Email);
-            }
-            else if (loginRequest.Type == UserType.Patient)
-            {
-                user = await _userRepository.GetUserByEmailAsync(loginRequest.Email);
-            }
+            // 查询用户
+            User? user = await _userRepository.GetUserByEmailAsync(loginRequest.Email);
             if (user == null)
             {
                 throw new NotFoundException("用户不存在");

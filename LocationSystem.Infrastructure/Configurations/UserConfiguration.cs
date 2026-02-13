@@ -1,4 +1,4 @@
-﻿using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -16,6 +16,12 @@ namespace LocationSystem.Infrastructure.Configurations
             {
                 action.Property(e => e.Value).HasColumnName("Email").HasMaxLength(50);
             });
+
+            // 配置用户类型鉴别器
+            builder.HasDiscriminator<UserType>("UserType")
+                .HasValue<DefaultUser>(UserType.Default)
+                .HasValue<AdminUser>(UserType.Admin)
+                .HasValue<RegularUser>(UserType.User);
         }
     }
 }

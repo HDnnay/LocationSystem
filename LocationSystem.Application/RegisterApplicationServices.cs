@@ -1,11 +1,6 @@
 using FluentValidation;
 using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.Auth.Register;
-using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
-using LocationSystem.Application.Features.DentalOffices.Commands.DeleteDentalOffice;
-using LocationSystem.Application.Features.DentalOffices.Commands.UpdateDentalOffice;
-using LocationSystem.Application.Features.DentalOffices.Queries.GetDentalOfficesDetail;
-using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
 using LocationSystem.Application.Services;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;

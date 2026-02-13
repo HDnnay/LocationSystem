@@ -1,4 +1,3 @@
-﻿using LocationSystem.Application.Features.Appointments.Queries.GetAppointmentList;
 using LocationSystem.Application.Features.Companys.Queries.GetProviceConpany;
 using LocationSystem.Application.Features.Companys.Queries.ReadConpany;
 using LocationSystem.Application.Utilities;

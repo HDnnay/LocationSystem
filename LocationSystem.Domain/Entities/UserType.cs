@@ -1,8 +1,9 @@
-﻿namespace LocationSystem.Domain.Entities
+namespace LocationSystem.Domain.Entities
 {
     public enum UserType
     {
-        Dentist = 0,
-        Patient = 1,
+        Default = 0,
+        Admin=1,
+        User=2,
     }
 }

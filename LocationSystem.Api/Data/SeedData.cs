@@ -21,10 +21,6 @@ namespace LocationSystem.Api.Data
             var permissionViewPermission = new Permission("权限管理", "permission:view", "查看权限信息");
             var userViewPermission = new Permission("用户管理", "user:view", "查看用户信息");
             var menuViewPermission = new Permission("菜单管理", "menu:view", "查看菜单信息");
-            var dentistViewPermission = new Permission("牙医管理", "dentist:view", "查看牙医信息");
-            var patientViewPermission = new Permission("患者管理", "patient:view", "查看患者信息");
-            var dentalOfficeViewPermission = new Permission("牙科诊所管理", "dental-office:view", "查看牙科诊所信息");
-            var appointmentViewPermission = new Permission("预约管理", "appointment:view", "查看预约信息");
 
             // 添加顶级权限到数据库
             await dbContext.Permissions.AddAsync(companyViewPermission);
@@ -33,27 +29,11 @@ namespace LocationSystem.Api.Data
             await dbContext.Permissions.AddAsync(permissionViewPermission);
             await dbContext.Permissions.AddAsync(userViewPermission);
             await dbContext.Permissions.AddAsync(menuViewPermission);
-            await dbContext.Permissions.AddAsync(dentistViewPermission);
-            await dbContext.Permissions.AddAsync(patientViewPermission);
-            await dbContext.Permissions.AddAsync(dentalOfficeViewPermission);
-            await dbContext.Permissions.AddAsync(appointmentViewPermission);
             await dbContext.SaveChangesAsync();
 
             // 创建子权限
             var permissions = new List<Permission>
             {
-                new Permission("牙医创建", "dentist:create", "创建牙医信息", dentistViewPermission.Id),
-                new Permission("牙医编辑", "dentist:edit", "编辑牙医信息", dentistViewPermission.Id),
-                new Permission("牙医删除", "dentist:delete", "删除牙医信息", dentistViewPermission.Id),
-                new Permission("患者创建", "patient:create", "创建患者信息", patientViewPermission.Id),
-                new Permission("患者编辑", "patient:edit", "编辑患者信息", patientViewPermission.Id),
-                new Permission("患者删除", "patient:delete", "删除患者信息", patientViewPermission.Id),
-                new Permission("牙科诊所创建", "dental-office:create", "创建牙科诊所信息", dentalOfficeViewPermission.Id),
-                new Permission("牙科诊所编辑", "dental-office:edit", "编辑牙科诊所信息", dentalOfficeViewPermission.Id),
-                new Permission("牙科诊所删除", "dental-office:delete", "删除牙科诊所信息", dentalOfficeViewPermission.Id),
-                new Permission("预约创建", "appointment:create", "创建预约信息", appointmentViewPermission.Id),
-                new Permission("预约编辑", "appointment:edit", "编辑预约信息", appointmentViewPermission.Id),
-                new Permission("预约删除", "appointment:delete", "删除预约信息", appointmentViewPermission.Id),
                 new Permission("角色创建", "role:create", "创建角色信息", roleViewPermission.Id),
                 new Permission("角色编辑", "role:edit", "编辑角色信息", roleViewPermission.Id),
                 new Permission("角色删除", "role:delete", "删除角色信息", roleViewPermission.Id),
@@ -79,19 +59,11 @@ namespace LocationSystem.Api.Data
             await dbContext.SaveChangesAsync();
 
             // 创建顶级菜单
-            var dentistMenu = new Menu("牙医管理", "/dentists", "UserFilled", 1);
-            var patientMenu = new Menu("患者管理", "/patients", "User", 2);
-            var dentalOfficeMenu = new Menu("牙科诊所管理", "/dental-offices", "OfficeBuilding", 3);
-            var appointmentMenu = new Menu("预约管理", "/appointments", "Calendar", 4);
-            var rolePermissionMenu = new Menu("角色权限管理", "/role-permissions", "Lock", 5);
-            var companyMenu = new Menu("公司管理", "/company", "OfficeBuilding", 6);
-            var rentMenu = new Menu("租房管理", "/rent", "House", 7);
+            var rolePermissionMenu = new Menu("角色权限管理", "/role-permissions", "Lock", 1);
+            var companyMenu = new Menu("公司管理", "/company", "OfficeBuilding", 2);
+            var rentMenu = new Menu("租房管理", "/rent", "House", 3);
 
             // 添加顶级菜单到数据库
-            await dbContext.Menus.AddAsync(dentistMenu);
-            await dbContext.Menus.AddAsync(patientMenu);
-            await dbContext.Menus.AddAsync(dentalOfficeMenu);
-            await dbContext.Menus.AddAsync(appointmentMenu);
             await dbContext.Menus.AddAsync(rolePermissionMenu);
             await dbContext.Menus.AddAsync(companyMenu);
             await dbContext.Menus.AddAsync(rentMenu);
@@ -121,10 +93,6 @@ namespace LocationSystem.Api.Data
             // 3. 建立权限和菜单的关联关系
             var permissionMenuMappings = new List<(string PermissionCode, string MenuPath)>
             {
-                ("dentist:view", "/dentists"),
-                ("patient:view", "/patients"),
-                ("dental-office:view", "/dental-offices"),
-                ("appointment:view", "/appointments"),
                 ("role:view", "/roles"),
                 ("permission:view", "/permissions"),
                 ("user:view", "/users"),
@@ -171,11 +139,11 @@ namespace LocationSystem.Api.Data
             }
 
             // 6. 创建超级管理员用户
-            var adminEmail = new Email("admin@example.com");
+            var adminEmail = new Email("admin@admin.com");
             var adminUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == adminEmail);
             if (adminUser == null)
             {
-                adminUser = new Dentist("超级管理员", adminEmail, "ADMIN001");
+                adminUser = new AdminUser("超级管理员", adminEmail, UserType.Admin);
                 adminUser.SetPasswordHash("Admin123!");
                 await dbContext.Users.AddAsync(adminUser);
                 await dbContext.SaveChangesAsync();

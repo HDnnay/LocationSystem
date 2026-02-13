@@ -28,19 +28,8 @@ namespace LocationSystem.Application.Features.Auth.Register
             }
 
             // 根据用户类型创建用户
-            User user;
-            if (registerRequest.Type == UserType.Dentist)
-            {
-                user = new Dentist(registerRequest.Name, new Email(registerRequest.Email));
-            }
-            else if (registerRequest.Type == UserType.Patient)
-            {
-                user = new Patient(registerRequest.Name, new Email(registerRequest.Email));
-            }
-            else
-            {
-                throw new Exception("无效的用户类型");
-            }
+            var emailValue = new Email(registerRequest.Email);
+            var user = new DefaultUser(registerRequest.Name, emailValue, registerRequest.Type);
 
             // 设置密码哈希
             user.SetPasswordHash(registerRequest.Password);

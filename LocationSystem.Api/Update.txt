@@ -1,2 +1,2 @@
- Add-Migration permissionToMenu -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
+ Add-Migration init_ -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
  Update-Database -Project LocationSystem.Infrastructure -StartupProject LocationSystem.Api

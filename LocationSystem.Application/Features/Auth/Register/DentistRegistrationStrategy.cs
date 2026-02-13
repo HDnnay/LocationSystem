@@ -7,15 +7,8 @@ namespace LocationSystem.Application.Features.Auth.Register
     {
         public async Task RegisterUser(User user, LocationSystem.Application.Contrats.Repositories.IUserRepository userRepository)
         {
-            if (user is Dentist dentist)
-            {
-                // 具体的牙医注册逻辑
-                await userRepository.AddAsync(user);
-            }
-            else
-            {
-                throw new Exception("Invalid user type for dentist registration");
-            }
+            // 具体的牙医注册逻辑
+            await userRepository.AddAsync(user);
         }
     }
 }

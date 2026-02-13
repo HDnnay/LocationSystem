@@ -1,5 +1,4 @@
-﻿using LocationSystem.Application.Features.Companys.Queries.ReadConpany;
-using LocationSystem.Application.Features.DentalOffices.Queries.GetDetalOfficesList;
+using LocationSystem.Application.Features.Companys.Queries.ReadConpany;
 using LocationSystem.Domain.Entities;
 using System;
 using System.Collections.Concurrent;

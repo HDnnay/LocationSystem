@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿using LocationSystem.Domain.Entities;
+﻿﻿using LocationSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,10 +16,6 @@ namespace LocationSystem.Infrastructure
             base.OnModelCreating(modelBuilder);
             // Additional model configuration can go here
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-            modelBuilder.Entity<User>()
-           .HasDiscriminator<UserType>("UserType")
-           .HasValue<Patient>(UserType.Patient)
-           .HasValue<Dentist>(UserType.Dentist);
 
             // 配置Role和Permission的多对多关系
             modelBuilder.Entity<Role>()
@@ -59,10 +55,6 @@ namespace LocationSystem.Infrastructure
                 .HasForeignKey(pm => pm.MenuId);
         }
         public DbSet<User> Users { get; set; }
-        public DbSet<DentalOffice> DentalOffices { get; set; }
-        public DbSet<Patient> Patients { get; set; }
-        public DbSet<Dentist> Dentists { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<RentHouse> RentHousies { get; set; }
         public DbSet<Role> Roles { get; set; }
