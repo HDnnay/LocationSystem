@@ -13,6 +13,7 @@
     "lint": "eslint . --fix --cache"
   },
   "dependencies": {
+    "@microsoft/signalr": "^8.0.7",
     "@vuepic/vue-datepicker": "^12.1.0",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",

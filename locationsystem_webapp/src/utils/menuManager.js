@@ -14,13 +14,31 @@ class MenuManager {
 
   // 初始化SignalR连接
   initSignalR() {
+    console.log('初始化SignalR连接');
     if (this.hubConnection) return;
+    console.log('动态导入SignalR客户端库');
 
     // 动态导入SignalR客户端库
     import('@microsoft/signalr').then((signalR) => {
       // 构建SignalR连接URL
-      const hubUrl = this.backendUrl ? `${this.backendUrl}/hub/menu` : '/hub/menu';
-      
+      // 在浏览器环境中使用外部可访问的后端服务地址
+      let hubUrl = '';
+      if (this.backendUrl && this.backendUrl.includes('backend')) {
+        // 容器环境，使用localhost地址
+        hubUrl = 'http://localhost:8000/hub/menu';
+        console.log('SignalR连接URL:', hubUrl);
+      } else if (this.backendUrl) {
+        // 其他环境，使用配置的后端地址
+        hubUrl = `${this.backendUrl}/hub/menu`;
+        console.log('SignalR连接URL:', hubUrl);
+
+      } else {
+        // 默认使用相对路径
+        hubUrl = '/hub/menu';
+        console.log('SignalR连接URL:', hubUrl);
+
+      }
+
       this.hubConnection = new signalR.HubConnectionBuilder()
         .withUrl(hubUrl)
         .withAutomaticReconnect()
@@ -60,21 +78,27 @@ class MenuManager {
   async getMenus() {
     // 检查本地缓存是否有效
     if (this.isCacheValid()) {
+      console.log('从缓存获取菜单');
       return JSON.parse(localStorage.getItem(this.cacheKey));
     }
 
     // 缓存无效，从后端获取
     try {
+      console.log('从后端获取菜单');
       const menus = await permissionsApi.getUserMenus();
+      console.log('获取菜单成功:', menus);
       this.saveToCache(menus);
       return menus;
     } catch (error) {
       console.error('获取菜单失败:', error);
+      console.error('错误详情:', error.response);
       // 尝试从缓存获取，即使已过期
       const cachedMenus = localStorage.getItem(this.cacheKey);
       if (cachedMenus) {
+        console.log('从过期缓存获取菜单');
         return JSON.parse(cachedMenus);
       }
+      console.log('无缓存，返回空菜单');
       return [];
     }
   }
