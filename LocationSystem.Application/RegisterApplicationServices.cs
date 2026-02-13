@@ -1,7 +1,5 @@
 using FluentValidation;
-using LocationSystem.Application.Contrats.Services;
-using LocationSystem.Application.Events;
-using LocationSystem.Application.Events.Handlers;
+using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.Auth.Register;
 using LocationSystem.Application.Features.DentalOffices.Commands.CreateDentalOffice;
 using LocationSystem.Application.Features.DentalOffices.Commands.DeleteDentalOffice;
@@ -32,14 +30,10 @@ namespace LocationSystem.Application
             .AddClasses(c=>c.AssignableToAny(typeof(ICacheService))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IJwtService))).AsImplementedInterfaces().WithSingletonLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IUserRegistrationStrategy))).AsImplementedInterfaces().WithTransientLifetime()
-            .AddClasses(c=>c.AssignableToAny(typeof(ICacheManagerService))).AsImplementedInterfaces().WithScopedLifetime()
             );
             
-            // 注册事件总线
-            services.AddSingleton<IEventBus, InMemoryEventBus>();
-            
-            // 注册事件处理程序
-            services.AddScoped<CacheClearHandler>();
+            // 注册事件总线和缓存服务
+            services.AddEventBusAndCacheServices();
             
             // 注册UserRegistrationStrategyFactory
             services.AddTransient<UserRegistrationStrategyFactory>();
