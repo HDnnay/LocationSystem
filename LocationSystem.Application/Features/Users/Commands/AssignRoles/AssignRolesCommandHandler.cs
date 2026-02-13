@@ -1,5 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
+using LocationSystem.Application.Events;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Users.Commands.AssignRoles
@@ -9,12 +10,14 @@ namespace LocationSystem.Application.Features.Users.Commands.AssignRoles
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEventBus _eventBus;
 
-        public AssignRolesCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository, IUnitOfWork unitOfWork)
+        public AssignRolesCommandHandler(IUserRepository userRepository, IRoleRepository roleRepository, IUnitOfWork unitOfWork, IEventBus eventBus)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _unitOfWork = unitOfWork;
+            _eventBus = eventBus;
         }
 
         public async Task<bool> Handle(AssignRolesCommand command)
@@ -52,6 +55,9 @@ namespace LocationSystem.Application.Features.Users.Commands.AssignRoles
 
                 // 提交事务
                 await _unitOfWork.CommitAsync();
+
+                // 发布用户角色变更事件，更新缓存
+                await _eventBus.PublishAsync(new UserRolesChangedEvent { UserId = user.Id });
 
                 return true;
             }

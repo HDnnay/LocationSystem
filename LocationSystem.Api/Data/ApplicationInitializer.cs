@@ -6,17 +6,6 @@ namespace LocationSystem.Api.Data
     {
         public static async Task InitializeAsync(AppDbContext dbContext)
         {
-            // 执行数据库迁移
-            try
-            {
-                await DatabaseMigrator.MigrateAsync(dbContext);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ 数据库迁移失败: {ex.Message}");
-                throw;
-            }
-            
             // 初始化超级管理员账号和角色
             try
             {

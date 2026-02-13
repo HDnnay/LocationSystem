@@ -1,6 +1,7 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Events;
 using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
@@ -17,12 +18,14 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEventBus _eventBus;
 
-        public UpdateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
+        public UpdateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork, IEventBus eventBus)
         {
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
             _unitOfWork = unitOfWork;
+            _eventBus = eventBus;
         }
 
         public async Task<RoleDto> Handle(UpdateRoleCommand request)
@@ -71,6 +74,9 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
             {
                 await _roleRepository.UpdateAsync(role);
                 await _unitOfWork.CommitAsync();
+                
+                // 发布角色权限变更事件，更新缓存
+                await _eventBus.PublishAsync(new RolePermissionsChangedEvent { RoleId = role.Id });
             }
             catch (Exception)
             {

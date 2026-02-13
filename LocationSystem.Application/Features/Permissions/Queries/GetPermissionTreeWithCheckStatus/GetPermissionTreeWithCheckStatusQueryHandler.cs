@@ -27,9 +27,7 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionT
         public async Task<List<PermissionTreeDto>> Handle(GetPermissionTreeWithCheckStatusQuery request)
         {
             // 生成缓存键，包含角色ID以区分不同角色的权限状态
-            var cacheKey = request.RoleId.HasValue ? 
-                $"permissions:tree:check:{request.RoleId.Value}" : 
-                "permissions:tree:check:null";
+            var cacheKey = CacheKeys.PermissionTreeWithCheck(request.RoleId);
 
             try
             {

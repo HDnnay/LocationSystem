@@ -1,6 +1,7 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Events;
 using LocationSystem.Application.Features.Permissions.Commands.UpdatePermission;
 using LocationSystem.Application.Utilities;
 using System;
@@ -15,11 +16,13 @@ namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermiss
     {
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEventBus _eventBus;
 
-        public UpdatePermissionCommandHandler(IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
+        public UpdatePermissionCommandHandler(IPermissionRepository permissionRepository, IUnitOfWork unitOfWork, IEventBus eventBus)
         {
             _permissionRepository = permissionRepository;
             _unitOfWork = unitOfWork;
+            _eventBus = eventBus;
         }
 
         public async Task<PermissionDto> Handle(UpdatePermissionCommand request)
@@ -54,6 +57,9 @@ namespace LocationSystem.Application.Features.Permissions.Commands.UpdatePermiss
             {
                 await _permissionRepository.UpdateAsync(permission);
                 await _unitOfWork.CommitAsync();
+                
+                // 发布权限变更事件，更新缓存
+                await _eventBus.PublishAsync(new PermissionsChangedEvent());
             }
             catch (Exception)
             {

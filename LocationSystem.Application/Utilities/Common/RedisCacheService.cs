@@ -67,5 +67,24 @@ namespace LocationSystem.Application.Utilities.Common
         {
             _Cache.Remove(cacheKey);
         }
+
+        public async Task RemoveByPatternAsync(string pattern)
+        {
+            // 注意：由于使用的是 IDistributedCache，没有直接的方法根据模式删除缓存
+            // 在实际项目中，如果使用的是 StackExchange.Redis，可以通过以下方式实现：
+            // 1. 获取 Redis 连接
+            // 2. 使用 KEYS 或 SCAN 命令查找匹配的键
+            // 3. 使用 DEL 命令删除这些键
+            // 这里暂时留空，实际项目中需要根据具体的缓存实现来修改
+            await Task.CompletedTask;
+        }
+
+        public async Task ClearAllAsync()
+        {
+            // 注意：由于使用的是 IDistributedCache，没有直接的方法清除所有缓存
+            // 在实际项目中，如果使用的是 StackExchange.Redis，可以通过 FLUSHDB 命令实现
+            // 这里暂时留空，实际项目中需要根据具体的缓存实现来修改
+            await Task.CompletedTask;
+        }
     }
 }

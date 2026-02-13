@@ -17,7 +17,7 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
         public async Task<List<string>> Handle(GetUserPermissionsQuery request)
         {
             // 生成缓存键
-            var cacheKey = $"user:permissions:{request.UserId}";
+            var cacheKey = CacheKeys.UserPermissions(request.UserId);
 
             // 从缓存中获取用户权限代码或创建缓存
             var permissionCodes = await _cacheService.GetOrCreateAsync<List<string>>(cacheKey, async (options) => {

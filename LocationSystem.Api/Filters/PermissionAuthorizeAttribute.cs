@@ -40,7 +40,7 @@ namespace LocationSystem.Api.Filters
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
             
             // 生成缓存键
-            var cacheKey = $"user:permissions:{userId.Value}";
+            var cacheKey = CacheKeys.UserPermissions(userId.Value);
             
             // 从缓存中获取用户权限或创建缓存
             var userPermissions = await cacheService.GetOrCreateAsync<List<string>>(cacheKey, async (options) => {

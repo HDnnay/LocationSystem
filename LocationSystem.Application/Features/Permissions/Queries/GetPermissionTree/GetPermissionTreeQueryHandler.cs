@@ -28,7 +28,7 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionT
         public async Task<List<PermissionTreeDto>> Handle(GetPermissionTreeQuery request)
         {
             // 生成缓存键
-            var cacheKey = "permissions:tree";
+            var cacheKey = CacheKeys.PermissionTree;
 
             try
             {

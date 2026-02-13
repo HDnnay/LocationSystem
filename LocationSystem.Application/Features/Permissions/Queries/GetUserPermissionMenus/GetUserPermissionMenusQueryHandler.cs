@@ -20,7 +20,7 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
         public async Task<List<PermissionMenuDto>> Handle(GetUserPermissionMenusQuery request)
         {
             // 生成缓存键
-            var cacheKey = $"user:permission_menus:{request.UserId}";
+            var cacheKey = CacheKeys.UserMenus(request.UserId);
 
             // 从缓存中获取用户权限菜单或创建缓存
             var menuDtos = await _cacheService.GetOrCreateAsync<List<PermissionMenuDto>>(cacheKey, async (options) => {

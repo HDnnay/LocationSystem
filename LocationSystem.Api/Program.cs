@@ -4,6 +4,7 @@ using LocationSystem.Api.BackgroudServices;
 using LocationSystem.Api.Hubs;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
+using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Application.Utilities.RabbitMQs;
 using LocationSystem.Infrastructure;
@@ -47,6 +48,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
+builder.Services.AddEventBusAndCacheServices();
 #region 使用Redis存储
 builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
 builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
@@ -105,6 +107,9 @@ builder.Services.AddHostedService<HostLoadCachBackgroupService>();
 
 // 注册后台数据初始化服务
 builder.Services.AddHostedService<DataInitializationService>();
+
+// 注册事件订阅服务
+builder.Services.AddHostedService<EventSubscriptionService>();
 
 
 var app = builder.Build();

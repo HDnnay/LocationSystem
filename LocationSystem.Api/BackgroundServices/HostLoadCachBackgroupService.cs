@@ -1,4 +1,4 @@
-﻿
+
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Interfaces;
 using LocationSystem.Application.Extentions;
@@ -26,7 +26,7 @@ namespace LocationSystem.Api.BackgroudServices
             using var scope = _scopeFactory.CreateScope();
             var companyRepository = scope.ServiceProvider.GetService<ICompanyRepository>();
             var cachService = scope.ServiceProvider.GetService<ICacheService>();
-            var model = await cachService.GetOrCreateAsync("count_provice", async _ =>
+            var model = await cachService.GetOrCreateAsync(CacheKeys.ProvinceCompanyCount, async _ =>
             {
                 var data = await companyRepository.GetAllFromSelectedFields(t => new CompanyViewModel { Address=t.Address,Province= t.Province });
                 if (data.Any()&&!string.IsNullOrWhiteSpace(data.FirstOrDefault().Province))

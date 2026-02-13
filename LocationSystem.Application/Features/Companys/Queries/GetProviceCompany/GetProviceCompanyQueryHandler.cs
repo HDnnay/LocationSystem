@@ -1,4 +1,4 @@
-﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Interfaces;
 using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.Companys.Queries.GetProviceCompany;
@@ -17,7 +17,7 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
         }
         public async Task<GetProviceCompanyDto> Handle(GetProviceCompanyQuery request)
         {
-            var model =await _cacheService.GetOrCreateAsync("count_provice", async _ =>
+            var model =await _cacheService.GetOrCreateAsync(CacheKeys.ProvinceCompanyCount, async _ =>
             {
                
                 var data = await _companyRepository.GetAllFromSelectedFields(u => new ProvinceDto

@@ -24,7 +24,7 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionL
         public async Task<List<PermissionDto>> Handle(GetPermissionListQuery request)
         {
             // 生成缓存键
-            var cacheKey = "permissions:list";
+            var cacheKey = CacheKeys.PermissionList;
 
             // 从缓存中获取权限列表或创建缓存
             var permissionDtos = await _cacheService.GetOrCreateAsync<List<PermissionDto>>(cacheKey, async (options) => {
