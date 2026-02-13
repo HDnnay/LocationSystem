@@ -49,7 +49,6 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();
-builder.Services.AddEventBusAndCacheServices();
 #region 使用Redis存储
 builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
 builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
