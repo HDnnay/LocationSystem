@@ -17,6 +17,12 @@ export const getPermissionTree = () => {
   return request.get('/api/permissions/tree')
 }
 
+export const getPermissionTreeWithCheckStatus = (roleId) => {
+  return request.get('/api/permissions/tree-with-check', {
+    params: { roleId }
+  })
+}
+
 export const getRoles = () => {
   return request.get('/api/roles')
 }

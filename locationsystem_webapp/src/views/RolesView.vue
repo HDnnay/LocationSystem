@@ -313,31 +313,20 @@ import * as permissionApi from '../api/permissions.js'
                 this.permissionError = null
 
                 try {
-                    // 从API接口获取实际权限数据（树形结构）
-                    const permissionsResponse = await permissionApi.getPermissionTree();
+                    // 从API接口获取带选中状态的权限树数据
+                    const permissionsResponse = await permissionApi.getPermissionTreeWithCheckStatus(role.id);
 
-                    // 从API接口获取角色详情（包含已选权限）
-                    const roleDetailResponse = await api.getRoleById(role.id);
-
-                    // 构建权限树
+                    // 构建权限树并处理选中状态
                     if (permissionsResponse && Array.isArray(permissionsResponse)) {
-                        this.permissionTree = permissionsResponse.map(permission => ({
-                            id: permission.id,
-                            name: permission.name,
-                            code: permission.code,
-                            description: permission.description,
-                            displayName: permission.name,
-                            childPermissions: permission.childPermissions || permission.ChildPermissions || [] // 保留原始的下级权限数据
-                        }));
+                        // 处理权限树数据，提取选中的权限ID
+                        this.permissionTree = permissionsResponse;
+                        // 递归提取选中的权限ID
+                        this.selectedPermissions = this.extractSelectedPermissionsFromTree(permissionsResponse);
                     } else if (permissionsResponse && Array.isArray(permissionsResponse.data)) {
-                        this.permissionTree = permissionsResponse.data.map(permission => ({
-                            id: permission.id,
-                            name: permission.name,
-                            code: permission.code,
-                            description: permission.description,
-                            displayName: permission.name,
-                            childPermissions: permission.childPermissions || permission.ChildPermissions || [] // 保留原始的下级权限数据
-                        }));
+                        // 处理权限树数据，提取选中的权限ID
+                        this.permissionTree = permissionsResponse.data;
+                        // 递归提取选中的权限ID
+                        this.selectedPermissions = this.extractSelectedPermissionsFromTree(permissionsResponse.data);
                     } else {
                         this.permissionTree = [];
                         this.permissionError = '权限数据格式错误';
@@ -347,15 +336,6 @@ import * as permissionApi from '../api/permissions.js'
                         this.expandedPermissions = this.permissionTree.map(p => p.id);
                     } else {
                         this.expandedPermissions = [];
-                    }
-
-                    // 初始化已选权限
-                    if (roleDetailResponse && roleDetailResponse.data && roleDetailResponse.data.permissions && Array.isArray(roleDetailResponse.data.permissions) && roleDetailResponse.data.permissions.length > 0) {
-                        this.selectedPermissions = roleDetailResponse.data.permissions.map(p => p.id);
-                    } else if (roleDetailResponse && Array.isArray(roleDetailResponse.permissions) && roleDetailResponse.permissions.length > 0) {
-                        this.selectedPermissions = roleDetailResponse.permissions.map(p => p.id);
-                    } else {
-                        this.selectedPermissions = [];
                     }
 
                 } catch (error) {
@@ -375,6 +355,25 @@ import * as permissionApi from '../api/permissions.js'
                 } finally {
                     this.permissionLoading = false;
                 }
+            },
+
+            // 从权限树中提取选中的权限ID
+            extractSelectedPermissionsFromTree(permissions) {
+                const selected = [];
+
+                function traverse(tree) {
+                    tree.forEach(permission => {
+                        if (permission.isCheck) {
+                            selected.push(permission.id);
+                        }
+                        if (permission.childPermissions && permission.childPermissions.length > 0) {
+                            traverse(permission.childPermissions);
+                        }
+                    });
+                }
+
+                traverse(permissions);
+                return selected;
             },
             closePermissionModal() {
                 this.showPermission = false

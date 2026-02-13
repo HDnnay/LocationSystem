@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionTree
 {
-    public class GetPermissionTreeQuery : IRequest<List<PermissionDto>>
+    public class GetPermissionTreeQuery : IRequest<List<PermissionTreeDto>>
     {
     }
 }

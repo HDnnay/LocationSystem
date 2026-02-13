@@ -1,4 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -52,6 +53,81 @@ namespace LocationSystem.Infrastructure.Repositories
                     .ThenInclude(cp => cp.Roles)
                 .Include(p => p.Roles)
                 .ToListAsync();
+        }
+
+        public async Task<List<PermissionTreeDto>> GetPermissionTreeDtosAsync()
+        {
+            // 直接从数据库查询并构建专门的权限树DTO，只包含前端需要的字段
+            // 使用Select投影优化查询，只加载需要的字段
+            return await _context.Permissions
+                .Where(p => p.ParentId == null)
+                .Select(p => new PermissionTreeDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    DisplayName = p.Name,
+                    Code = p.Code,
+                    ParentId = p.ParentId,
+                    IsCheck = false,
+                    ChildPermissions = p.ChildPermissions.Select(cp => new PermissionTreeDto
+                    {
+                        Id = cp.Id,
+                        Name = cp.Name,
+                        DisplayName = cp.Name,
+                        Code = cp.Code,
+                        ParentId = cp.ParentId,
+                        IsCheck = false,
+                        ChildPermissions = cp.ChildPermissions.Select(ccp => new PermissionTreeDto
+                        {
+                            Id = ccp.Id,
+                            Name = ccp.Name,
+                            DisplayName = ccp.Name,
+                            Code = ccp.Code,
+                            ParentId = ccp.ParentId,
+                            IsCheck = false
+                        }).ToList()
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<PermissionTreeDto>> GetPermissionTreeWithCheckStatusAsync(Guid? roleId)
+        {
+            // 先获取完整的权限树
+            var permissionTree = await GetPermissionTreeDtosAsync();
+            
+            if (!roleId.HasValue)
+            {
+                // 如果没有提供角色ID，返回所有权限未选中的状态
+                return permissionTree;
+            }
+            
+            // 获取角色拥有的权限ID列表
+            var role = await _context.Roles
+                .Include(r => r.Permissions)
+                .FirstOrDefaultAsync(r => r.Id == roleId.Value);
+            
+            var rolePermissionIds = role?.Permissions.Select(p => p.Id).ToList() ?? new List<Guid>();
+            
+            // 递归设置权限的选中状态
+            SetCheckStatus(permissionTree, rolePermissionIds);
+            
+            return permissionTree;
+        }
+
+        private void SetCheckStatus(List<PermissionTreeDto> permissions, List<Guid> rolePermissionIds)
+        {
+            foreach (var permission in permissions)
+            {
+                // 设置当前权限的选中状态
+                permission.IsCheck = rolePermissionIds.Contains(permission.Id);
+                
+                // 递归处理子权限
+                if (permission.ChildPermissions.Any())
+                {
+                    SetCheckStatus(permission.ChildPermissions, rolePermissionIds);
+                }
+            }
         }
 
         public async Task<Permission?> GetPermissionWithChildrenAsync(Guid id)

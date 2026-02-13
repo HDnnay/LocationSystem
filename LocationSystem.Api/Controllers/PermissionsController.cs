@@ -5,6 +5,7 @@ using LocationSystem.Application.Features.Permissions.Commands.UpdatePermission;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionDetail;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionList;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionTree;
+using LocationSystem.Application.Features.Permissions.Queries.GetPermissionTreeWithCheckStatus;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Api.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -116,6 +117,22 @@ namespace LocationSystem.Api.Controllers
             try
             {
                 var query = new GetPermissionTreeQuery();
+                var permissionTree = await _mediator.Send(query);
+                return Ok(permissionTree);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("tree-with-check")]
+        [PermissionAuthorize("permission:view")]
+        public async Task<IActionResult> GetPermissionTreeWithCheckStatus([FromQuery] Guid? roleId)
+        {
+            try
+            {
+                var query = new GetPermissionTreeWithCheckStatusQuery { RoleId = roleId };
                 var permissionTree = await _mediator.Send(query);
                 return Ok(permissionTree);
             }
