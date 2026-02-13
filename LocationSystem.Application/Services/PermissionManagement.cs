@@ -28,10 +28,9 @@ namespace LocationSystem.Application.Services
         {
             // 获取用户的所有角色
             var userRoles = await _roleRepository.GetRolesByUserIdAsync(userId);
-            var isadmin = userRoles.Any(t => t.Code=="Admin");
             if (!userRoles.Any())
             {
-                return default!;
+                return new List<Guid>();
             }
 
             // 获取所有角色的权限，去重

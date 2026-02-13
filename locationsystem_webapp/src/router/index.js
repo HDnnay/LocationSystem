@@ -70,17 +70,35 @@ const routes = [
         }
     },
   {
-    path: '/company',
-    name: 'company',
-    component: () => import('../views/company/CompanyView.vue'),
+    path: '/role-permissions',
+    name: 'RolePermissions',
+    component: () => import('../views/SystemView.vue'),
     meta: {
-      title: '信息管理',
+      title: '角色权限管理',
       requiresAuth: true
     }
   },
   {
-    path: '/company/province',
-    name: 'company_provice',
+    path: '/company',
+    name: 'company',
+    component: () => import('../views/company/CompanyView.vue'),
+    meta: {
+      title: '公司管理',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/company/list',
+    name: 'company_list',
+    component: () => import('../views/company/CompanyView.vue'),
+    meta: {
+      title: '公司列表',
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/company/statistics',
+    name: 'company_statistics',
     component: () => import('../views/company/CompanyProviceView.vue'),
     meta: {
       title: '统计管理',
@@ -97,11 +115,20 @@ const routes = [
     }
   },
   {
+    path: '/rent/list',
+    name: 'rent_list',
+    component: () => import('../views/renthouse/RentHouseView.vue'),
+    meta: {
+      title: '租房列表',
+      requiresAuth: true
+    }
+  },
+  {
     path: '/rent/create',
     name: 'create-rent',
     component: () => import('../views/renthouse/CreateRentHouseView.vue'),
     meta: {
-      title: '租房管理',
+      title: '租房创建',
       requiresAuth: true
     }
   },

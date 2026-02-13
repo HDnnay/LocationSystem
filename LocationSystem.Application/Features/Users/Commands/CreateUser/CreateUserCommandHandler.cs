@@ -24,7 +24,7 @@ namespace LocationSystem.Application.Features.Users.Commands.CreateUser
         {
             try
             {
-                var userExs= _userRepository.GetUserByEmailAsync(command.Email);
+                var userExs=await _userRepository.GetUserByEmailAsync(command.Email);
                 if (userExs!=null)
                     throw new ArgumentException("该邮箱已被注册");
                 // 开始事务
@@ -43,7 +43,7 @@ namespace LocationSystem.Application.Features.Users.Commands.CreateUser
 
                 return user.Id;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // 回滚事务
                 await _unitOfWork.RollbackAsync();

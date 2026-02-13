@@ -4,7 +4,17 @@ import * as permissionsApi from '../api/permissions';
 
 class MenuManager {
   constructor() {
-    this.cacheKey = `user_menus_${localStorage.getItem('userId') || 'guest'}`;
+    // 从user_info中获取userId
+    let userId = 'guest';
+    try {
+      const userInfo = JSON.parse(localStorage.getItem('user_info') || '{}');
+      if (userInfo && userInfo.id) {
+        userId = userInfo.id;
+      }
+    } catch (error) {
+      console.error('解析用户信息失败:', error);
+    }
+    this.cacheKey = `user_menus_${userId}`;
     this.metaKey = `${this.cacheKey}_meta`;
     this.hubConnection = null;
     this.isConnected = ref(false);
