@@ -45,7 +45,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
     //options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
     //options.JsonSerializerOptions.Converters.Add(new NullableDateTimeJsonConverter());
-}); ;
+}); 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddInfrastructureServices();
 builder.Services.AddApplicationServices();

@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Dentists\**" />
+    <EmbeddedResource Remove="Features\Dentists\**" />
+    <None Remove="Features\Dentists\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.1" />
     <PackageReference Include="RabbitMQ.Client" Version="7.2.0" />
@@ -16,10 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LocationSystem.Domain\LocationSystem.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Dentists\Queries\GetDentistDetail\" />
   </ItemGroup>
 
 </Project>
