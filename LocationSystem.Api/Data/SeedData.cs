@@ -143,7 +143,7 @@ namespace LocationSystem.Api.Data
             var adminUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == adminEmail);
             if (adminUser == null)
             {
-                adminUser = new AdminUser("超级管理员", adminEmail, UserType.Admin);
+                adminUser = new AdminUser("超级管理员", adminEmail, UserType.Admin,true);
                 adminUser.SetPasswordHash("Admin123!");
                 await dbContext.Users.AddAsync(adminUser);
                 await dbContext.SaveChangesAsync();

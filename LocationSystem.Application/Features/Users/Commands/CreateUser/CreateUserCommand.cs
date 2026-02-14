@@ -1,4 +1,5 @@
 using LocationSystem.Application.Utilities;
+using LocationSystem.Domain.Entities;
 
 namespace LocationSystem.Application.Features.Users.Commands.CreateUser
 {
@@ -6,6 +7,6 @@ namespace LocationSystem.Application.Features.Users.Commands.CreateUser
     {
         public string Name { get; set; }
         public string Email { get; set; }
-        public string UserType { get; set; }
+        public UserType UserType { get; set; }
     }
 }

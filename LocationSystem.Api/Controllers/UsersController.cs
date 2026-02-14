@@ -128,8 +128,12 @@ namespace LocationSystem.Api.Controllers
         {
             try
             {
+                // 从当前用户信息中获取用户ID
+                // 这里假设用户信息存储在HttpContext.User中
+                var currentUserId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new Exception("当前用户未登录"));
+
                 // 创建删除用户命令
-                var command = new DeleteUserCommand { UserId = id };
+                var command = new DeleteUserCommand { UserId = id, CurrentUserId = currentUserId };
 
                 // 执行命令
                 await _mediator.Send(command);

@@ -8,7 +8,7 @@ namespace LocationSystem.Domain.Entities
     {
         private DefaultUser() { }
         public DefaultUser(string name, Email email, UserType userType)
-            : base(name, email)
+            : base(name, email, false)
         {
             UserType = userType;
         }

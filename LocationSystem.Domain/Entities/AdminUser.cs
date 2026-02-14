@@ -8,7 +8,13 @@ namespace LocationSystem.Domain.Entities
     {
         private AdminUser() { }
         public AdminUser(string name, Email email, UserType userType)
-            : base(name, email)
+            : base(name, email, userType == UserType.Admin)
+        {
+            UserType = userType;
+        }
+
+        public AdminUser(string name, Email email, UserType userType, bool isSuperAdmin)
+            : base(name, email, isSuperAdmin)
         {
             UserType = userType;
         }
