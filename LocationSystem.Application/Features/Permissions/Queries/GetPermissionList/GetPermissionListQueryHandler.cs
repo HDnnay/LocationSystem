@@ -2,6 +2,7 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionList;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Application.Utilities.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionList
 {
-    public class GetPermissionListQueryHandler : IRequestHandler<GetPermissionListQuery, List<PermissionDto>>
+    public class GetPermissionListQueryHandler : IRequestHandler<GetPermissionListQuery, PageResult<PermissionDto>>
     {
         private readonly IPermissionRepository _permissionRepository;
         private readonly ICacheService _cacheService;
@@ -21,18 +22,19 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionL
             _cacheService = cacheService;
         }
 
-        public async Task<List<PermissionDto>> Handle(GetPermissionListQuery request)
+        public async Task<PageResult<PermissionDto>> Handle(GetPermissionListQuery request)
         {
             // 生成缓存键
-            var cacheKey = CacheKeys.PermissionList;
+            var cacheKey = CacheKeys.PermissionWithPage(request);
 
             // 从缓存中获取权限列表或创建缓存
-            var permissionDtos = await _cacheService.GetOrCreateAsync<List<PermissionDto>>(cacheKey, async (options) => {
+            var permissionDtos = await _cacheService.GetOrCreateAsync<PageResult<PermissionDto>>(cacheKey, async (options) => {
                 // 获取所有权限及其角色
-                var permissions = await _permissionRepository.GetPermissionsWithRolesAsync();
-
+                var dics = await _permissionRepository.GetPermissionsPage(request);
+                var permissionsDic = dics.FirstOrDefault();
+                var total = permissionsDic.Key;
                 // 转换为DTO
-                return permissions.Select(permission => new PermissionDto
+                var model = permissionsDic.Value.Select(permission => new PermissionDto
                 {
                     Id = permission.Id,
                     Name = permission.Name,
@@ -62,9 +64,10 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionL
                         ChildPermissions = new List<PermissionDto>()
                     }).ToList()
                 }).ToList();
-            }, 1800); // 缓存30分钟（1800秒）
+                return new PageResult<PermissionDto>() { CurrentPage=request.Page, Total= total,Data=model };
+            },600); // 缓存30分钟（1800秒）
 
-            return permissionDtos;
+            return permissionDtos!;
         }
     }
 }

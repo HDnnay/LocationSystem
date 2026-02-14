@@ -1,5 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,5 +19,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<List<PermissionTreeDto>> GetPermissionTreeDtosAsync();
         Task<List<PermissionTreeDto>> GetPermissionTreeWithCheckStatusAsync(Guid? roleId);
         Task<Permission?> GetPermissionWithChildrenAsync(Guid id);
+        Task<Dictionary<int,IEnumerable<Permission>>> GetPermissionsPage(PageRequest pageRequest);
+
     }
 }

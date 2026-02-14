@@ -1,3 +1,4 @@
+using LocationSystem.Application.Utilities.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,7 +25,13 @@ namespace LocationSystem.Application.Utilities
         
         // 权限列表缓存键
         public static string PermissionList => "permissions:list";
-        
+        public static string PermissionWithPage(PageRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.KeyWord))
+                return $"permissions:{request.Page}:{request.PageSize}";
+            else
+                return $"permissions:{request.Page}:{request.PageSize}:{request.KeyWord}";
+        }
         // 省份公司数量缓存键
         public static string ProvinceCompanyCount => "count_provice";
     }

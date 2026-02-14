@@ -236,7 +236,12 @@ import menuManager from '@/utils/menuManager'
                             children.forEach(child => extractPermissions(child))
                         }
                     }
-                    response.forEach(menu => extractPermissions(menu))
+                    // 确保response是一个数组
+                    if (Array.isArray(response)) {
+                        response.forEach(menu => extractPermissions(menu))
+                    } else {
+                        console.error('菜单数据不是一个数组，无法提取权限:', response)
+                    }
                     localStorage.setItem('userPermissions', JSON.stringify(permissions))
                 } catch (error) {
                     console.error('加载菜单失败:', error)

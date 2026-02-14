@@ -23,7 +23,7 @@ namespace LocationSystem.Api.Controllers
             {
                 Page = request.Page,
                 PageSize = request.PageSize,
-                keyWord = request.keyWord
+                KeyWord = request.KeyWord
             };
             var model = await _mediator.Send(command);
             return Ok(model);

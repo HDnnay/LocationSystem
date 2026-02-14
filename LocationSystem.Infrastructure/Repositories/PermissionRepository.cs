@@ -1,5 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -33,13 +34,27 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(p => p.Roles)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
-
         public async Task<IEnumerable<Permission>> GetPermissionsWithRolesAsync()
         {
             return await _context.Permissions
                 .Include(p => p.Roles)
                 .Include(p => p.ChildPermissions)
                 .ToListAsync();
+        }
+
+        public async Task<Dictionary<int, IEnumerable<Permission>>> GetPermissionsPage(PageRequest pageRequest)
+        {
+
+            var query = _context.Permissions.AsNoTracking().AsQueryable();
+            var count =await query.CountAsync();
+            if (!string.IsNullOrWhiteSpace(pageRequest.KeyWord))
+            {
+                query = query.Where(t => t.Code.Contains(pageRequest.KeyWord)||t.Name.Contains(pageRequest.KeyWord));
+            }
+            var result =await query.Skip(pageRequest.PageSize*(pageRequest.Page-1)).Take(pageRequest.PageSize).ToListAsync();
+            Dictionary<int, IEnumerable<Permission>> data = new Dictionary<int, IEnumerable<Permission>>();
+            data.Add(count,result);
+            return data;
         }
 
         public async Task<IEnumerable<Permission>> GetPermissionTreeAsync()

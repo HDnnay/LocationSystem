@@ -159,11 +159,36 @@ export default {
     // 加载角色列表
     const loadRoles = async () => {
       try {
-        const response = await api.permissions.getRoles()
-        roles.value = response || []
+        // 调试：检查api.roles对象
+        console.log('api.roles:', api.roles)
+        console.log('api.roles.getAllRoles:', api.roles.getAllRoles)
+
+        // 确保getAllRoles是一个函数
+        if (typeof api.roles.getAllRoles !== 'function') {
+          throw new Error('api.roles.getAllRoles不是一个函数')
+        }
+
+        const response = await api.roles.getAllRoles()
+        console.log('获取到的角色数据:', response)
+        // 检查响应数据结构
+        if (Array.isArray(response)) {
+          roles.value = response
+        } else if (response && Array.isArray(response.data)) {
+          roles.value = response.data
+        } else {
+          roles.value = []
+          console.error('角色数据格式错误:', response)
+        }
       } catch (error) {
         console.error('加载角色列表失败:', error)
-        ElMessage.error('加载角色列表失败')
+        // 显示具体的错误信息
+        const errorMessage = error.response?.data?.message || error.message || '加载角色列表失败'
+        ElMessage.error(errorMessage)
+        // 如果是403错误，可能是权限不足
+        if (error.response?.status === 403) {
+          ElMessage.warning('您没有查看角色的权限')
+        }
+        roles.value = []
       }
     }
 
