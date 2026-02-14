@@ -9,11 +9,7 @@
         <el-form-item label="密码" prop="password">
           <el-input v-model="loginForm.password" placeholder="请输入密码" type="password" show-password />
         </el-form-item>
-        <el-form-item label="用户类型" prop="type">
-          <el-radio-group v-model="loginForm.type">
-            <el-radio v-for="type in userTypes" :key="type.value" :value="type.value">{{ type.name }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" @click="handleLogin" :loading="loading" style="width: 100%">
             登录
@@ -30,16 +26,13 @@
 </template>
 
 <script>
-import { getUserTypes } from '../../api/users'
-
 export default {
   name: 'LoginView',
   data() {
     return {
       loginForm: {
         email: '',
-        password: '',
-        type: 0 // 默认用户
+        password: ''
       },
       rules: {
         email: [
@@ -49,37 +42,17 @@ export default {
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, message: '密码长度至少为6位', trigger: 'blur' }
-        ],
-        type: [
-          { required: true, message: '请选择用户类型', trigger: 'change' }
         ]
       },
-      loading: false,
-      userTypes: []
+      loading: false
     }
   },
   mounted() {
     // 强制清空表单值，确保没有默认值
     this.loginForm.email = '';
     this.loginForm.password = '';
-    // 获取用户类型
-    this.fetchUserTypes();
   },
   methods: {
-            async fetchUserTypes() {
-                try {
-                    const response = await getUserTypes();
-                    this.userTypes = response.data;
-                } catch (error) {
-                    console.error('获取用户类型失败:', error);
-                    // 如果获取失败，使用默认值
-                    this.userTypes = [
-                        { value: 0, name: '默认用户' },
-                        { value: 1, name: '管理员' },
-                        { value: 2, name: '普通用户' }
-                    ];
-                }
-            },
             async handleLogin() {
                 const valid = await this.$refs.loginFormRef.validate()
                 if (!valid) return
@@ -92,7 +65,6 @@ export default {
                     // 保存token和用户信息
                     localStorage.setItem('access_token', data.accessToken)
                     localStorage.setItem('refresh_token', data.refreshToken)
-                    localStorage.setItem('user_type', this.loginForm.type)
                     localStorage.setItem('user_info', JSON.stringify(data.userInfo))
 
                     // 更新App.vue中的登录状态
