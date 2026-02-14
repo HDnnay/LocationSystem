@@ -9,8 +9,8 @@ export const getUserPermissions = () => {
   return request.get('/api/permissions/user-permissions')
 }
 
-export const getPermissions = () => {
-  return request.get('/api/permissions')
+export const getPermissions = (params) => {
+  return request.get('/api/permissions', { params })
 }
 
 export const getPermissionTree = () => {

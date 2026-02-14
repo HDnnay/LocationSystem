@@ -32,11 +32,16 @@ namespace LocationSystem.Api.Controllers
 
         [HttpGet]
         [PermissionAuthorize("permission:view")]
-        public async Task<IActionResult> GetPermissions()
+        public async Task<IActionResult> GetPermissions([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? keyWord = "")
         {
             try
             {
-                var query = new GetPermissionListQuery();
+                var query = new GetPermissionListQuery
+                {
+                    Page = page,
+                    PageSize = pageSize,
+                    KeyWord = keyWord
+                };
                 var permissions = await _mediator.Send(query);
                 return Ok(permissions);
             }
