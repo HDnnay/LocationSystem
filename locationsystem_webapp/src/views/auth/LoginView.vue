@@ -11,9 +11,7 @@
         </el-form-item>
         <el-form-item label="用户类型" prop="type">
           <el-radio-group v-model="loginForm.type">
-            <el-radio :value="0">Default</el-radio>
-            <el-radio :value="1">Admin</el-radio>
-            <el-radio :value="2">User</el-radio>
+            <el-radio v-for="type in userTypes" :key="type.value" :value="type.value">{{ type.name }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item>
@@ -32,6 +30,8 @@
 </template>
 
 <script>
+import { getUserTypes } from '../../api/users'
+
 export default {
   name: 'LoginView',
   data() {
@@ -39,7 +39,7 @@ export default {
       loginForm: {
         email: '',
         password: '',
-        type: 0 // 默认牙医
+        type: 0 // 默认用户
       },
       rules: {
         email: [
@@ -54,15 +54,32 @@ export default {
           { required: true, message: '请选择用户类型', trigger: 'change' }
         ]
       },
-      loading: false
+      loading: false,
+      userTypes: []
     }
   },
   mounted() {
     // 强制清空表单值，确保没有默认值
     this.loginForm.email = '';
     this.loginForm.password = '';
+    // 获取用户类型
+    this.fetchUserTypes();
   },
   methods: {
+            async fetchUserTypes() {
+                try {
+                    const response = await getUserTypes();
+                    this.userTypes = response.data;
+                } catch (error) {
+                    console.error('获取用户类型失败:', error);
+                    // 如果获取失败，使用默认值
+                    this.userTypes = [
+                        { value: 0, name: '默认用户' },
+                        { value: 1, name: '管理员' },
+                        { value: 2, name: '普通用户' }
+                    ];
+                }
+            },
             async handleLogin() {
                 const valid = await this.$refs.loginFormRef.validate()
                 if (!valid) return

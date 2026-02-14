@@ -1,4 +1,5 @@
 using LocationSystem.Api.Data;
+using LocationSystem.Domain.Entities;
 using LocationSystem.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,12 +30,16 @@ namespace LocationSystem.Api.BackgroudServices
                     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                     // 检查是否已有超级管理员用户
-                    var hasAdminUser = await dbContext.Users.AnyAsync(u => u.Email.Value == "admin@example.com", stoppingToken);
-                    
+                    var hasAdminUser = await dbContext.Users.AnyAsync(u => u.UserType==UserType.Admin, stoppingToken);
+
                     if (!hasAdminUser)
                     {
                         // 执行应用初始化
-                        await ApplicationInitializer.InitializeAsync(dbContext);
+                        // 初始化超级管理员账号和角色
+                        Console.WriteLine("🔄 正在初始化超级管理员账号和角色...");
+                        await SeedData.InitializeAsync(dbContext);
+                        Console.WriteLine("✅ 超级管理员账号和角色初始化完成");
+
                         Console.WriteLine("✅ 后台数据初始化完成");
                     }
                     else

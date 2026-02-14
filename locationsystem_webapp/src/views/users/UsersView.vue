@@ -74,8 +74,7 @@
         </el-form-item>
         <el-form-item label="用户类型">
           <el-select v-model="form.userType">
-            <el-option label="牙医" value="Dentist" />
-            <el-option label="患者" value="Patient" />
+            <el-option v-for="type in userTypes" :key="type.value" :label="type.name" :value="type.value" />
           </el-select>
         </el-form-item>
       </el-form>
@@ -121,6 +120,7 @@ import { ref, onMounted } from 'vue'
 import { Plus, Edit, Delete, SetUp } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import api from '@/api'
+import { getUserTypes } from '@/api/users'
 
 export default {
   name: 'UsersView',
@@ -133,6 +133,7 @@ export default {
   setup() {
     const users = ref([])
     const roles = ref([])
+    const userTypes = ref([])
     const currentPage = ref(1)
     const pageSize = ref(10)
     const total = ref(0)
@@ -163,6 +164,24 @@ export default {
       } catch (error) {
         console.error('加载角色列表失败:', error)
         ElMessage.error('加载角色列表失败')
+      }
+    }
+
+    // 加载用户类型列表
+    const loadUserTypes = async () => {
+      try {
+        const response = await getUserTypes()
+        console.log('用户类型数据:', response)
+        userTypes.value = Array.isArray(response) ? response : (response.data || [])
+      } catch (error) {
+        console.error('加载用户类型列表失败:', error)
+        ElMessage.error('加载用户类型列表失败')
+        // 如果获取失败，使用默认值
+        userTypes.value = [
+          { value: 0, name: '默认用户' },
+          { value: 1, name: '管理员' },
+          { value: 2, name: '普通用户' }
+        ];
       }
     }
 
@@ -278,11 +297,13 @@ export default {
     onMounted(() => {
       loadUsers()
       loadRoles()
+      loadUserTypes()
     })
 
     return {
       users,
       roles,
+      userTypes,
       currentPage,
       pageSize,
       total,

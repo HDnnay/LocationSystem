@@ -6,7 +6,10 @@ using LocationSystem.Application.Features.Users.Commands.EnableUser;
 using LocationSystem.Application.Features.Users.Commands.UpdateUser;
 using LocationSystem.Application.Features.Users.Queries;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -19,6 +22,33 @@ namespace LocationSystem.Api.Controllers
         public UsersController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        // GET: api/Users/types
+        [HttpGet("types")]
+        public IActionResult GetUserTypes()
+        {
+            try
+            {
+                var userTypes = new List<object>();
+                foreach (UserType type in Enum.GetValues(typeof(UserType)))
+                {
+                    var displayAttribute = type.GetType().GetField(type.ToString())
+                        .GetCustomAttributes(typeof(DisplayAttribute), false)
+                        .FirstOrDefault() as DisplayAttribute;
+                    
+                    userTypes.Add(new
+                    {
+                        Value = (int)type,
+                        Name = displayAttribute?.Name ?? type.ToString()
+                    });
+                }
+                return Ok(userTypes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // GET: api/Users

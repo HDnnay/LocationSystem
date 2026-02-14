@@ -34,3 +34,8 @@ export const assignRoles = (id, roleIds) => {
 export const removeRoles = (id) => {
   return request.delete(`/api/users/${id}/roles`)
 }
+
+// 获取用户类型
+export const getUserTypes = () => {
+  return request.get('/api/users/types')
+}
