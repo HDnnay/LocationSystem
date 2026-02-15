@@ -41,10 +41,8 @@ const checkTokenRefresh = () => {
     if (refreshToken && userType) {
       isRefreshing = true
       // 主动刷新token
-      // 发送数字类型的Type参数，与UserType枚举的整数值对应
       api.auth.refreshToken({
-        RefreshToken: refreshToken,
-        Type: parseInt(userType)
+        RefreshToken: refreshToken
       }).then(res => {
         if (res.accessToken) {
           localStorage.setItem('access_token', res.accessToken)

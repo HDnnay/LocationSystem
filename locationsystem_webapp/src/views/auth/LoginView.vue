@@ -66,6 +66,8 @@ export default {
                     localStorage.setItem('access_token', data.accessToken)
                     localStorage.setItem('refresh_token', data.refreshToken)
                     localStorage.setItem('user_info', JSON.stringify(data.userInfo))
+                    // 保存user_type
+                    localStorage.setItem('user_type', data.userInfo.userType)
 
                     // 更新App.vue中的登录状态
                     this.$root.$data.isLoggedIn = true

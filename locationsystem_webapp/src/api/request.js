@@ -18,7 +18,8 @@ service.interceptors.request.use(
     config => {
         // 在发送请求之前做一些处理，比如添加token
         const token = localStorage.getItem('access_token');
-        if (token) {
+        // 当请求的是 /api/auth/refresh-token 接口时，不添加 Authorization 头
+        if (token && !config.url.includes('/api/auth/refresh-token')) {
             config.headers['Authorization'] = "Bearer "+token;
         }
         // 只有在不是文件上传时才设置Content-Type为application/json
@@ -72,8 +73,7 @@ service.interceptors.response.use(
                 const userType = localStorage.getItem('user_type');
                 if (refreshToken && userType) {
                     const res = await service.post('/api/auth/refresh-token', {
-                        RefreshToken: refreshToken,
-                        Type: parseInt(userType)
+                        RefreshToken: refreshToken
                     });
                     if (res.accessToken) {
                         let newToken = res.accessToken;
