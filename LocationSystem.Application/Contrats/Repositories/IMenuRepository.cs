@@ -10,5 +10,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<int> GetTotalCount();
         Task<IEnumerable<Menu>> GetMenuTreeAsync();
         Task<IEnumerable<Menu>> GetAllWithPermissionsAsync();
+        Task<Menu?> GetByIdWithPermissionsAsync(Guid id);
     }
 }

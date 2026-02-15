@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LocationSystem.Domain.Entities
@@ -15,6 +16,8 @@ namespace LocationSystem.Domain.Entities
         public List<PermissionMenu> PermissionMenus { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
+        [Timestamp]
+        public byte[] Version { get; private set; }
 
         public Menu(string name, string path, string icon, int order, Guid? parentId = null)
         {
