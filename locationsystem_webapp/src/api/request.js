@@ -90,6 +90,14 @@ service.interceptors.response.use(
                         return service(originalRequest);
                     }
                 }
+                // 如果refreshToken或userType不存在，清除本地存储并跳转到登录页
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user_type');
+                localStorage.removeItem('user_info');
+                // 跳转到登录页
+                window.location.href = '/login';
+                return Promise.reject(new Error('登录已过期，请重新登录'));
             } catch (err) {
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');

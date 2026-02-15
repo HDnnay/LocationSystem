@@ -31,6 +31,10 @@
             <el-icon><Plus /></el-icon>
             子菜单
           </el-button>
+          <el-button size="small" type="info" @click="handleAssignPermissions(scope.row)">
+            <el-icon><SetUp /></el-icon>
+            分配权限
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -86,14 +90,36 @@
         </span>
       </template>
     </el-dialog>
+
+    <!-- 分配权限对话框 -->
+    <el-dialog
+      v-model="permissionDialogVisible"
+      :title="`为菜单分配权限 - ${selectedMenu?.name || ''}`"
+      width="600px"
+    >
+      <PermissionTree
+        :permissionTree="permissionTree"
+        :selectedPermissions="checkedPermissionIds"
+        :loading="isLoadingPermissions"
+        :error="permissionError"
+        @permission-change="handlePermissionChange"
+      />
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="permissionDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="handleSavePermissions">保存</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { ref, computed, onMounted } from 'vue'
-import { Plus, Edit, Delete } from '@element-plus/icons-vue'
+import { Plus, Edit, Delete, SetUp } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import IconSelector from '@/components/IconSelector.vue'
+import PermissionTree from '@/components/PermissionTree.vue'
 
 export default {
   name: 'MenusView',
@@ -101,7 +127,9 @@ export default {
     Plus,
     Edit,
     Delete,
-    IconSelector
+    SetUp,
+    IconSelector,
+    PermissionTree
   },
   setup() {
     const menus = ref([])
@@ -110,7 +138,7 @@ export default {
     const dialogTitle = ref('新增菜单')
     const form = ref({})
     const filterText = ref('')
-    const currentPage = 1
+    const currentPage = ref(1)
     const pageSize = ref(10)
     const total = ref(0)
     const isLoading = ref(false)
@@ -122,6 +150,13 @@ export default {
       value: 'id',
       checkStrictly: true
     }
+    // 分配权限相关
+    const permissionDialogVisible = ref(false)
+    const selectedMenu = ref(null)
+    const permissionTree = ref([])
+    const checkedPermissionIds = ref([])
+    const isLoadingPermissions = ref(false)
+    const permissionError = ref(null)
     // 加载所有菜单（用于构建完整的菜单树）
     const loadAllMenus = async () => {
       try {
@@ -388,6 +423,49 @@ export default {
       }
     }
 
+    // 加载权限树
+    const loadPermissions = async () => {
+      try {
+        isLoadingPermissions.value = true
+        permissionError.value = null
+        const api = await import('@/api')
+        const response = await api.default.permissions.getPermissionTree()
+        permissionTree.value = response
+      } catch (error) {
+        console.error('加载权限树失败:', error)
+        permissionError.value = error.message
+        ElMessage.error('加载权限树失败')
+      } finally {
+        isLoadingPermissions.value = false
+      }
+    }
+
+    // 处理权限变化
+    const handlePermissionChange = (selectedIds) => {
+      checkedPermissionIds.value = selectedIds
+    }
+
+    // 处理分配权限
+    const handleAssignPermissions = async (menu) => {
+      selectedMenu.value = menu
+      checkedPermissionIds.value = []
+      await loadPermissions()
+      permissionDialogVisible.value = true
+    }
+
+    // 处理保存权限
+    const handleSavePermissions = async () => {
+      try {
+        const api = await import('@/api')
+        await api.default.menus.assignPermissionsToMenu(selectedMenu.value.id, checkedPermissionIds.value)
+        ElMessage.success('分配权限成功')
+        permissionDialogVisible.value = false
+      } catch (error) {
+        console.error('分配权限失败:', error)
+        ElMessage.error('分配权限失败')
+      }
+    }
+
     // 页面加载时初始化数据
     onMounted(() => {
       loadMenus()
@@ -407,6 +485,12 @@ export default {
       currentPage,
       pageSize,
       total,
+      permissionDialogVisible,
+      selectedMenu,
+      permissionTree,
+      checkedPermissionIds,
+      isLoadingPermissions,
+      permissionError,
       handleSizeChange,
       handleCurrentChange,
       handleCascaderChange,
@@ -414,7 +498,10 @@ export default {
       handleCreateSubMenu,
       handleEditMenu,
       handleSaveMenu,
-      handleDeleteMenu
+      handleDeleteMenu,
+      handleAssignPermissions,
+      handleSavePermissions,
+      handlePermissionChange
     }
   }
 }

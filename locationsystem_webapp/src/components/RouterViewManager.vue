@@ -216,7 +216,7 @@ import menuManager from '@/utils/menuManager'
             // 加载菜单
             async loadMenus() {
                 try {
-                    // 使用菜单管理器获取菜单数据（会自动使用本地缓存）
+                    // 使用菜单管理器获取菜单数据（直接从API加载）
                     const response = await menuManager.getMenus()
 
                     // 直接使用后端返回的数据作为菜单数据

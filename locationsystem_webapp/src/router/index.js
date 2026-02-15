@@ -197,23 +197,6 @@ router.beforeEach(async (to, from, next) => {
 // 获取用户权限
 async function getUserPermissions() {
     try {
-        // 尝试从localStorage获取权限
-        const cachedPermissions = localStorage.getItem('userPermissions')
-
-        // 检查cachedPermissions是否存在且不是空数组的字符串表示
-        if (cachedPermissions && cachedPermissions !== "[]") {
-            try {
-                const parsedPermissions = JSON.parse(cachedPermissions)
-                // 检查解析后的权限是否非空
-                if (parsedPermissions && parsedPermissions.length > 0) {
-                    return parsedPermissions
-                }
-            } catch (parseError) {
-                console.error('解析权限数据失败:', parseError)
-                // 解析失败，继续从后端获取
-            }
-        }
-
         // 从后端获取权限
         const permissions = await apiGetUserPermissions()
 

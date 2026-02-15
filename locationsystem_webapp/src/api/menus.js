@@ -29,3 +29,8 @@ export const updateMenu = (id, menu) => {
 export const deleteMenu = (id) => {
   return request.delete(`/api/menus/${id}`)
 }
+
+// 为菜单分配权限
+export const assignPermissionsToMenu = (menuId, permissionIds) => {
+  return request.post(`/api/menus/${menuId}/permissions`, permissionIds)
+}

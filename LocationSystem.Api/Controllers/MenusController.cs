@@ -1,3 +1,4 @@
+using LocationSystem.Application.Features.Menus.Commands.AssignPermissionsToMenu;
 using LocationSystem.Application.Features.Menus.Commands.CreateMenu;
 using LocationSystem.Application.Features.Menus.Commands.DeleteMenu;
 using LocationSystem.Application.Features.Menus.Commands.UpdateMenu;
@@ -127,6 +128,22 @@ namespace LocationSystem.Api.Controllers
                 var query = new GetMenuTreeQuery();
                 var menuTree = await _mediator.Send(query);
                 return Ok(menuTree);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: api/Menus/{id}/permissions
+        [HttpPost("{id}/permissions")]
+        public async Task<IActionResult> AssignPermissionsToMenu(Guid id, [FromBody] List<Guid> permissionIds)
+        {
+            try
+            {
+                var command = new AssignPermissionsToMenuCommand { MenuId = id, PermissionIds = permissionIds };
+                await _mediator.Send(command);
+                return Ok(new { success = true });
             }
             catch (Exception ex)
             {

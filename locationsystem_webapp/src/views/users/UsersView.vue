@@ -11,7 +11,7 @@
     </div>
 
     <!-- 用户列表 -->
-    <el-table :data="users" style="width: 100%">
+    <el-table :data="users" style="width: 100%" stripe border>
       <el-table-column label="序号" width="180">
         <template #default="scope">
           {{ (currentPage - 1) * pageSize + scope.$index + 1 }}
@@ -168,10 +168,17 @@ export default {
           throw new Error('api.roles.getAllRoles不是一个函数')
         }
 
+        console.log('开始调用api.roles.getAllRoles()')
         const response = await api.roles.getAllRoles()
         console.log('获取到的角色数据:', response)
+        console.log('response类型:', typeof response)
+        console.log('response是否为数组:', Array.isArray(response))
+        
         // 检查响应数据结构
-        if (Array.isArray(response)) {
+        if (response === undefined || response === null) {
+          console.error('角色数据为undefined或null:', response)
+          roles.value = []
+        } else if (Array.isArray(response)) {
           roles.value = response
         } else if (response && Array.isArray(response.data)) {
           roles.value = response.data
@@ -181,6 +188,8 @@ export default {
         }
       } catch (error) {
         console.error('加载角色列表失败:', error)
+        console.error('错误详情:', error.response)
+        console.error('错误消息:', error.message)
         // 显示具体的错误信息
         const errorMessage = error.response?.data?.message || error.message || '加载角色列表失败'
         ElMessage.error(errorMessage)
