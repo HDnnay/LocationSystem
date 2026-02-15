@@ -1,5 +1,7 @@
 // Token 工具函数
 
+import authStorage from './authStorage'
+
 /**
  * 解析JWT token，获取payload
  * @param {string} token - JWT token
@@ -41,7 +43,7 @@ export const isTokenExpired = (token, bufferMinutes = 5) => {
  * @returns {boolean} 是否需要刷新
  */
 export const needRefreshToken = (bufferMinutes = 5) => {
-  const token = localStorage.getItem('access_token')
+  const token = authStorage.getAccessToken()
   if (!token) return false
 
   return isTokenExpired(token, bufferMinutes)
@@ -63,10 +65,7 @@ export const getTokenExpiration = (token) => {
  * 清除所有认证信息
  */
 export const clearAuthInfo = () => {
-  localStorage.removeItem('access_token')
-  localStorage.removeItem('refresh_token')
-  localStorage.removeItem('user_type')
-  localStorage.removeItem('user_info')
+  authStorage.clearAuthData()
 }
 
 /**
@@ -74,13 +73,5 @@ export const clearAuthInfo = () => {
  * @param {object} authData - 认证数据
  */
 export const saveAuthInfo = (authData) => {
-  if (authData.accessToken) {
-    localStorage.setItem('access_token', authData.accessToken)
-  }
-  if (authData.refreshToken) {
-    localStorage.setItem('refresh_token', authData.refreshToken)
-  }
-  if (authData.userInfo) {
-    localStorage.setItem('user_info', JSON.stringify(authData.userInfo))
-  }
+  authStorage.saveAuthData(authData)
 }

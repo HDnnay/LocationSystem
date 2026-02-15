@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import authStorage from '../../utils/authStorage'
+
 export default {
   name: 'LoginView',
   data() {
@@ -63,17 +65,17 @@ export default {
                     console.log('登录响应数据:', data)
 
                     // 保存token和用户信息
-                    localStorage.setItem('access_token', data.accessToken)
-                    localStorage.setItem('refresh_token', data.refreshToken)
-                    localStorage.setItem('user_info', JSON.stringify(data.userInfo))
-                    // 保存user_type
-                    localStorage.setItem('user_type', data.userInfo.userType)
+                    authStorage.saveAuthData({
+                        accessToken: data.accessToken,
+                        refreshToken: data.refreshToken,
+                        userInfo: data.userInfo
+                    })
 
                     // 更新App.vue中的登录状态
                     this.$root.$data.isLoggedIn = true
 
                     // 跳转到首页
-                    this.$router.push('/')
+                    this.$router.push('/dashboard')
                 } catch (error) {
                     this.$message.error('登录失败：' + (error.response?.data?.message || error.message))
                 } finally {

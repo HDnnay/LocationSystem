@@ -6,7 +6,7 @@
         </template>
 
         <!-- 登录和注册页面模板 -->
-        <template v-else-if="isAuthRoute || !isLoggedIn">
+        <template v-else-if="isAuthRoute">
             <transition name="fade" mode="out-in">
                 <div class="auth-view-container" :key="$route.path">
                     <router-view />
@@ -15,7 +15,7 @@
         </template>
 
         <!-- 后台管理模板 -->
-        <template v-else>
+        <template v-else-if="isLoggedIn">
             <el-container style="min-height: 100vh; background-color: #f5f7fa;">
                 <!-- 后台导航栏 -->
                 <el-header height="60px" style="background-color: #2c3e50; color: white; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
@@ -115,6 +115,15 @@
                 </el-container>
             </el-container>
         </template>
+
+        <!-- 未登录状态模板 -->
+        <template v-else>
+            <transition name="fade" mode="out-in">
+                <div class="auth-view-container" :key="$route.path">
+                    <router-view />
+                </div>
+            </transition>
+        </template>
     </div>
 </template>
 
@@ -122,6 +131,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { User, UserFilled, OfficeBuilding, Calendar, List, Document, Lock, SetUp, Key, Menu, House } from '@element-plus/icons-vue'
 import menuManager from '@/utils/menuManager'
+import authStorage from '@/utils/authStorage'
     export default {
         name: 'RouterViewManager',
         components: {
@@ -348,8 +358,7 @@ import menuManager from '@/utils/menuManager'
             // 获取用户信息
             getUserInfo() {
                 try {
-                    const userInfo = localStorage.getItem('user_info')
-                    return userInfo ? JSON.parse(userInfo) : {}
+                    return authStorage.getUserInfo() || {}
                 } catch (error) {
                     console.error('获取用户信息失败:', error)
                     return {}

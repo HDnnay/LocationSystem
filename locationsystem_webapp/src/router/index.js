@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { getUserMenus, getUserPermissions as apiGetUserPermissions } from '../api/permissions'
+import authStorage from '../utils/authStorage'
 
 // 懒加载页面组件
 const routes = [
@@ -160,14 +161,14 @@ router.beforeEach(async (to, from, next) => {
     document.title = to.meta.title ? `${to.meta.title} - 内容管理系统` : '内容管理系统'
 
     // 检查是否需要认证
-    if (to.meta.requiresAuth !== false) {
-        // 获取token
-        const token = localStorage.getItem('access_token')
-        if (!token) {
-            // 没有token，跳转到登录页
-            next({ path: '/login' })
-            return
-        }
+        if (to.meta.requiresAuth !== false) {
+            // 获取token
+            const token = authStorage.getAccessToken()
+            if (!token) {
+                // 没有token，跳转到登录页
+                next({ path: '/login' })
+                return
+            }
 
         // 检查是否需要权限
         if (to.meta.permission) {

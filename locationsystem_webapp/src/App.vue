@@ -13,6 +13,7 @@
 
 <script>
     import RouterViewManager from './components/RouterViewManager.vue'
+    import authStorage from './utils/authStorage'
 
     export default {
         name: 'App',
@@ -29,8 +30,8 @@
     },
     mounted() {
         this.checkScreenSize()
-        // 从localStorage读取登录状态
-        this.isLoggedIn = localStorage.getItem('access_token') !== null
+        // 从authStorage读取登录状态
+        this.isLoggedIn = authStorage.isAuthenticated()
         window.addEventListener('resize', this.checkScreenSize)
 
         // 全局路由守卫已移除，不再需要登录检查
@@ -49,10 +50,7 @@
             },
             handleLogout() {
                 // 清除localStorage中的token和用户信息
-                localStorage.removeItem('access_token')
-                localStorage.removeItem('refresh_token')
-                localStorage.removeItem('user_type')
-                localStorage.removeItem('user_info')
+                authStorage.clearAuthData()
 
                 // 更新登录状态
                 this.isLoggedIn = false

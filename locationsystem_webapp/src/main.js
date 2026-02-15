@@ -15,6 +15,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import api from './api'
 import { needRefreshToken } from './utils/tokenUtils'
+import authService from './utils/authService'
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -24,46 +25,20 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // 全局注册API
 app.config.globalProperties.$api = api
 
-// 全局刷新状态，避免并发刷新
-let isRefreshing = false
-
 // 检查token是否需要刷新
 const checkTokenRefresh = () => {
   // 如果正在刷新或者没有token，直接返回
-  if (isRefreshing || !localStorage.getItem('access_token')) {
+  if (authService.getIsRefreshing() || !localStorage.getItem('access_token')) {
     return
   }
 
   if (needRefreshToken()) {
-    const refreshToken = localStorage.getItem('refresh_token')
-    const userType = localStorage.getItem('user_type')
-
-    if (refreshToken && userType) {
-      isRefreshing = true
-      // 主动刷新token
-      api.auth.refreshToken({
-        RefreshToken: refreshToken
-      }).then(res => {
-        if (res.accessToken) {
-          localStorage.setItem('access_token', res.accessToken)
-          localStorage.setItem('refresh_token', res.refreshToken)
-          // 更新用户信息
-          if (res.userInfo) {
-            localStorage.setItem('user_info', JSON.stringify(res.userInfo))
-          }
-        }
-      }).catch(error => {
-        console.error('刷新token失败:', error)
-        // 刷新失败，跳转到登录页
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
-        localStorage.removeItem('user_type')
-        localStorage.removeItem('user_info')
-        router.push('/login')
-      }).finally(() => {
-        isRefreshing = false
-      })
-    }
+    // 主动刷新token
+    authService.refreshToken().catch(error => {
+      console.error('刷新token失败:', error)
+      // 刷新失败，跳转到登录页
+      router.push('/login')
+    })
   }
 }
 

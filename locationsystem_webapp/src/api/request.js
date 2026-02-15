@@ -1,23 +1,19 @@
 // 导入axios
 import axios from 'axios';
+import authService from '../utils/authService';
+import authStorage from '../utils/authStorage';
 
-
-
-// 导入element-ui的Message组件用于消息提醒
 // 创建axios实例
 const service = axios.create({
     baseURL: "/", // API的基础URL
 
 });
 
-let isRefreshing = false;
-let refreshSubscribers = [];
-
 // 请求拦截器
 service.interceptors.request.use(
     config => {
         // 在发送请求之前做一些处理，比如添加token
-        const token = localStorage.getItem('access_token');
+        const token = authStorage.getAccessToken();
         // 当请求的是 /api/auth/refresh-token 接口时，不添加 Authorization 头
         if (token && !config.url.includes('/api/auth/refresh-token')) {
             config.headers['Authorization'] = "Bearer "+token;
@@ -33,12 +29,6 @@ service.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
-// 通知所有订阅者
-function notifySubscribers(newToken) {
-    refreshSubscribers.forEach(callback => callback(newToken));
-    refreshSubscribers = [];
-}
 
 // 响应拦截器
 service.interceptors.response.use(
@@ -57,57 +47,24 @@ service.interceptors.response.use(
         const originalRequest = error.config;
         if (error.response?.status === 401 && !originalRequest._retry)
         {
-            if (isRefreshing) {
-                // 正在刷新token，将请求加入队列
-                return new Promise(resolve => {
-                    refreshSubscribers.push(newToken => {
-                        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                        resolve(service(originalRequest));
-                    });
-                });
+            if (authService.getIsRefreshing()) {
+                // 正在刷新token，等待刷新完成后重试
+                try {
+                    const newToken = await authService.refreshToken();
+                    originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                    return service(originalRequest);
+                } catch (err) {
+                    return Promise.reject(err);
+                }
             }
-            isRefreshing = true;
+
             originalRequest._retry = true;
             try {
-                const refreshToken = localStorage.getItem('refresh_token');
-                const userType = localStorage.getItem('user_type');
-                if (refreshToken && userType) {
-                    const res = await service.post('/api/auth/refresh-token', {
-                        RefreshToken: refreshToken
-                    });
-                    if (res.accessToken) {
-                        let newToken = res.accessToken;
-                        let newRefreshToken = res.refreshToken;
-                        localStorage.setItem('access_token', newToken);
-                        localStorage.setItem('refresh_token', newRefreshToken);
-                        // 更新用户信息
-                        if (res.userInfo) {
-                            localStorage.setItem('user_info', JSON.stringify(res.userInfo));
-                        }
-                        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                        // 通知所有订阅者
-                        notifySubscribers(newToken);
-                        return service(originalRequest);
-                    }
-                }
-                // 如果refreshToken或userType不存在，清除本地存储并跳转到登录页
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
-                localStorage.removeItem('user_type');
-                localStorage.removeItem('user_info');
-                // 跳转到登录页
-                window.location.href = '/login';
-                return Promise.reject(new Error('登录已过期，请重新登录'));
+                const newToken = await authService.refreshToken();
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+                return service(originalRequest);
             } catch (err) {
-                localStorage.removeItem('access_token');
-                localStorage.removeItem('refresh_token');
-                localStorage.removeItem('user_type');
-                localStorage.removeItem('user_info');
-                // 跳转到登录页
-                window.location.href = '/login';
                 return Promise.reject(err);
-            } finally {
-                isRefreshing = false;
             }
         } else {
             return Promise.reject(error);
