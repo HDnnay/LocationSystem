@@ -1,18 +1,18 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Exceptions;
-using LocationSystem.Application.Features.Auth.Login;
+using LocationSystem.Application.Features.Auth.Login.Commands;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Domain.Entities;
 
-namespace LocationSystem.Application.Features.Auth.RefreshToken
+namespace LocationSystem.Application.Features.Auth.RefreshToken.Commands
 {
     public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, LoginResponseDto>
     {
-        private readonly LocationSystem.Application.Contrats.Repositories.IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
 
-        public RefreshTokenCommandHandler(LocationSystem.Application.Contrats.Repositories.IUserRepository userRepository, IJwtService jwtService)
+        public RefreshTokenCommandHandler(IUserRepository userRepository, IJwtService jwtService)
         {
             _userRepository = userRepository;
             _jwtService = jwtService;

@@ -1,6 +1,6 @@
 using FluentValidation;
 using LocationSystem.Application.Extentions;
-using LocationSystem.Application.Features.Auth.Register;
+using LocationSystem.Application.Features.Auth.Register.Commands;
 using LocationSystem.Application.Services;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;

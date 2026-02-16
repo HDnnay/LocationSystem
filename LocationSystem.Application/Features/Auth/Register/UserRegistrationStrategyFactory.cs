@@ -10,7 +10,7 @@ namespace LocationSystem.Application.Features.Auth.Register
         {
             _strategies = new Dictionary<UserType, IUserRegistrationStrategy>
             {
-                { UserType.Default, new DentistRegistrationStrategy() }
+                
             };
         }
 

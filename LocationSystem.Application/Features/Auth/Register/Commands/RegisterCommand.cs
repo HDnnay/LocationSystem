@@ -1,6 +1,6 @@
 using LocationSystem.Application.Utilities;
 
-namespace LocationSystem.Application.Features.Auth.Register
+namespace LocationSystem.Application.Features.Auth.Register.Commands
 {
     public class RegisterCommand : IRequest<RegisterResponseDto>
     {

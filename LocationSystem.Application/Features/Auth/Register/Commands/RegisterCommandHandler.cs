@@ -3,11 +3,11 @@ using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.ValueObjects;
 
-namespace LocationSystem.Application.Features.Auth.Register
+namespace LocationSystem.Application.Features.Auth.Register.Commands
 {
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponseDto>
     {
-        private readonly LocationSystem.Application.Contrats.Repositories.IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
         private readonly UserRegistrationStrategyFactory _strategyFactory;
 
         public RegisterCommandHandler(IUserRepository userRepository, UserRegistrationStrategyFactory strategyFactory)

@@ -1,4 +1,4 @@
-namespace LocationSystem.Application.Features.Auth.Login
+namespace LocationSystem.Application.Features.Auth.Login.Commands
 {
     public class LoginRequestDto
     {

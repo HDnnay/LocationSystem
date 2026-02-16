@@ -1,7 +1,7 @@
 using LocationSystem.Application.Exceptions;
-using LocationSystem.Application.Features.Auth.Login;
-using LocationSystem.Application.Features.Auth.RefreshToken;
-using LocationSystem.Application.Features.Auth.Register;
+using LocationSystem.Application.Features.Auth.Login.Commands;
+using LocationSystem.Application.Features.Auth.RefreshToken.Commands;
+using LocationSystem.Application.Features.Auth.Register.Commands;
 using LocationSystem.Application.Utilities;
 using Microsoft.AspNetCore.Mvc;
 

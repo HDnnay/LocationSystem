@@ -1,6 +1,6 @@
 using LocationSystem.Domain.Entities;
 
-namespace LocationSystem.Application.Features.Auth.RefreshToken
+namespace LocationSystem.Application.Features.Auth.RefreshToken.Commands
 {
     public class RefreshTokenRequestDto
 {

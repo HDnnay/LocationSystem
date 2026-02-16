@@ -1,6 +1,6 @@
 using LocationSystem.Domain.Entities;
 
-namespace LocationSystem.Application.Features.Auth.Register
+namespace LocationSystem.Application.Features.Auth.Register.Commands
 {
     public class RegisterRequestDto
     {

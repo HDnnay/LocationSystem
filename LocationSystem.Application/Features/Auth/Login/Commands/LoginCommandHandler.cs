@@ -5,7 +5,7 @@ using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Domain.Entities;
 
-namespace LocationSystem.Application.Features.Auth.Login
+namespace LocationSystem.Application.Features.Auth.Login.Commands
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponseDto>
     {

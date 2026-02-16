@@ -1,7 +1,7 @@
-using LocationSystem.Application.Features.Auth.Login;
+using LocationSystem.Application.Features.Auth.Login.Commands;
 using LocationSystem.Application.Utilities;
 
-namespace LocationSystem.Application.Features.Auth.RefreshToken
+namespace LocationSystem.Application.Features.Auth.RefreshToken.Commands
 {
     public class RefreshTokenCommand : IRequest<LoginResponseDto>
     {
