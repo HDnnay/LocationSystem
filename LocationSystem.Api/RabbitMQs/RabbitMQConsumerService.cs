@@ -23,16 +23,16 @@ namespace LocationSystem.Application.Utilities.RabbitMQs
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("🚀 RabbitMQ 消费者服务启动");
+            _logger.LogInformation("RabbitMQ 消费者服务启动");
             try
             {
                 // 等待连接建立
                 await _rabbitMQService.EnsureConnectedAsync(stoppingToken);
-                _logger.LogInformation("✅ RabbitMQ 连接成功");
+                _logger.LogInformation("RabbitMQ 连接成功");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ RabbitMQ 连接失败");
+                _logger.LogError(ex, "RabbitMQ 连接失败");
                 return; // 连接失败，直接返回，不再继续执行
             }
             // 等待 RabbitMQ 服务初始化完成
@@ -62,7 +62,7 @@ namespace LocationSystem.Application.Utilities.RabbitMQs
                     var body = ea.Body.ToArray();
                     var message = Encoding.UTF8.GetString(body);
 
-                    _logger.LogInformation($"📩 收到消息: {message}");
+                    _logger.LogInformation($"收到消息: {message}");
 
                     // 处理业务逻辑
                     await ProcessMessageAsync(message);
@@ -105,7 +105,7 @@ namespace LocationSystem.Application.Utilities.RabbitMQs
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("🛑 RabbitMQ 消费者服务停止");
+            _logger.LogInformation("RabbitMQ 消费者服务停止");
             await base.StopAsync(cancellationToken);
         }
     }

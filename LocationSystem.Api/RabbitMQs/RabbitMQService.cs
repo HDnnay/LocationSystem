@@ -61,12 +61,12 @@ namespace LocationSystem.Application.Utilities.RabbitMQs
                     return Task.CompletedTask;
                 };
 
-                _logger.LogInformation("✅ RabbitMQ 连接已建立");
+                _logger.LogInformation("RabbitMQ 连接已建立");
                 return connection;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ RabbitMQ 连接失败");
+                _logger.LogError(ex, "RabbitMQ 连接失败");
                 throw;
             }
         }
