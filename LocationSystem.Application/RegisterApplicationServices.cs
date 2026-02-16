@@ -24,14 +24,10 @@ namespace LocationSystem.Application
             .AddClasses(c=>c.AssignableToAny(typeof(IRequestHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(ICacheService))).AsImplementedInterfaces().WithScopedLifetime()
             .AddClasses(c=>c.AssignableToAny(typeof(IJwtService))).AsImplementedInterfaces().WithSingletonLifetime()
-            .AddClasses(c=>c.AssignableToAny(typeof(IUserRegistrationStrategy))).AsImplementedInterfaces().WithTransientLifetime()
             );
             
             // 注册事件总线和缓存服务
             services.AddEventBusAndCacheServices();
-            
-            // 注册UserRegistrationStrategyFactory
-            services.AddTransient<UserRegistrationStrategyFactory>();
             
             // 注册RoleManagement
             services.AddTransient<LocationSystem.Application.Services.RoleManagement>();

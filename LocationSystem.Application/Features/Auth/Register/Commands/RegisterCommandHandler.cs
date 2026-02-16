@@ -8,12 +8,10 @@ namespace LocationSystem.Application.Features.Auth.Register.Commands
     public class RegisterCommandHandler : IRequestHandler<RegisterCommand, RegisterResponseDto>
     {
         private readonly IUserRepository _userRepository;
-        private readonly UserRegistrationStrategyFactory _strategyFactory;
 
-        public RegisterCommandHandler(IUserRepository userRepository, UserRegistrationStrategyFactory strategyFactory)
+        public RegisterCommandHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            _strategyFactory = strategyFactory;
         }
 
         public async Task<RegisterResponseDto> Handle(RegisterCommand request)
@@ -29,14 +27,13 @@ namespace LocationSystem.Application.Features.Auth.Register.Commands
 
             // 根据用户类型创建用户
             var emailValue = new Email(registerRequest.Email);
-            var user = new DefaultUser(registerRequest.Name, emailValue, registerRequest.Type);
+            var user = new RegularUser(registerRequest.Name, emailValue,UserType.User);
 
             // 设置密码哈希
             user.SetPasswordHash(registerRequest.Password);
 
-            // 使用策略注册用户
-            var strategy = _strategyFactory.GetStrategy(registerRequest.Type);
-            await strategy.RegisterUser(user, _userRepository);
+            // 直接保存用户
+            await _userRepository.AddAsync(user);
 
             return new RegisterResponseDto
             {
