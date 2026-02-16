@@ -11,7 +11,7 @@
     </div>
 
     <!-- 菜单列表 -->
-    <el-table :data="menuList" style="width: 100%">
+    <el-table :data="menuList" style="width: 100%" border>
       <el-table-column prop="name" label="菜单名称" />
       <el-table-column prop="path" label="菜单路径" />
       <el-table-column prop="icon" label="菜单图标" />
@@ -19,18 +19,20 @@
       <el-table-column label="父菜单" />
       <el-table-column label="操作" width="200">
         <template #default="scope">
-          <el-button size="small" @click="handleEditMenu(scope.row)">
+          <el-button size="small" type="primary" @click="handleEditMenu(scope.row)" style="margin-bottom: 5px">
             <el-icon><Edit /></el-icon>
             编辑
           </el-button>
-          <el-button size="small" type="danger" @click="handleDeleteMenu(scope.row.id)">
+          <el-button size="small" type="danger" @click="handleDeleteMenu(scope.row.id)" style="margin-bottom: 5px">
             <el-icon><Delete /></el-icon>
             删除
           </el-button>
-          <el-button size="small" type="warning" @click="handleCreateSubMenu(scope.row)">
+          <br>
+          <el-button size="small" type="warning" @click="handleCreateSubMenu(scope.row)" style="margin-bottom: 5px">
             <el-icon><Plus /></el-icon>
             子菜单
           </el-button>
+          <br>
           <el-button size="small" type="info" @click="handleAssignPermissions(scope.row)">
             <el-icon><SetUp /></el-icon>
             分配权限

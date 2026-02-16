@@ -28,13 +28,13 @@
           <span v-if="scope.row.roles.length === 0" class="text-gray-400">无</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="200">
+      <el-table-column label="操作" width="300">
         <template #default="scope">
-          <el-button size="small" @click="handleEditUser(scope.row)">
+          <el-button size="small" type="primary" @click="handleEditUser(scope.row)" style="margin-right: 5px">
             <el-icon><Edit /></el-icon>
             编辑
           </el-button>
-          <el-button size="small" type="danger" @click="handleDeleteUser(scope.row.id)">
+          <el-button size="small" type="danger" @click="handleDeleteUser(scope.row.id)" style="margin-right: 5px">
             <el-icon><Delete /></el-icon>
             删除
           </el-button>
