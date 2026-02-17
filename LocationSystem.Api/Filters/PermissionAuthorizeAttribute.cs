@@ -49,7 +49,7 @@ namespace LocationSystem.Api.Filters
                 
                 // 获取用户的所有权限代码
                 return await permissionManagement.GetUserPermissionCodesAsync(userId.Value);
-            }, 1800); // 缓存30分钟（1800秒）
+            }, 1800); 
             
             // 检查用户是否是超级管理员（拥有admin角色）
             var roleRepository = context.HttpContext.RequestServices.GetRequiredService<LocationSystem.Application.Contrats.Repositories.IRoleRepository>();
