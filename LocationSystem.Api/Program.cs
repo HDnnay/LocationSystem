@@ -112,7 +112,6 @@ builder.Services.AddHostedService<EventSubscriptionService>();
 
 var app = builder.Build();
 
-app.UseIpRateLimiting();
 // 4️⃣ 应用启动时，确保服务已启动
 app.Lifetime.ApplicationStarted.Register(() =>
 {
@@ -130,7 +129,9 @@ if (app.Environment.IsDevelopment())
            .AddDocument("internal", "Internal API", "internal/openapi.json");
     });
 }
+
 app.UseCustomExceptionHandler();
+app.UseIpRateLimiting();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
 // // 1. 添加自定义中间件来拦截静态文件请求
@@ -181,7 +182,6 @@ app.UseAuthorization();
 
 // 配置 SignalR Hub 路由
 app.MapHub<MenuHub>("/hub/menu");
-
 app.MapControllers();
 
 app.Run();
