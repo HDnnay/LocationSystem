@@ -73,31 +73,25 @@ namespace LocationSystem.Application.Utilities.Jwt
 
         public ClaimsPrincipal ValidateToken(string token)
         {
-            try
-            {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
 
-                var tokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = key,
-                    ValidateIssuer = true,
-                    ValidIssuer = _jwtSettings.Issuer,
-                    ValidateAudience = true,
-                    ValidAudience = _jwtSettings.Audience,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
 
-                var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
-                return claimsPrincipal;
-            }
-            catch (Exception)
+            var tokenValidationParameters = new TokenValidationParameters
             {
-                // 捕获JWT格式错误或验证错误，返回null
-                return null;
-            }
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateIssuer = true,
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = _jwtSettings.Audience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+
+            var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
+            return claimsPrincipal;
+
         }
 
         public string GetUserIdFromToken(string token)
