@@ -67,11 +67,10 @@ namespace LocationSystem.Api.Controllers
             try
             {
                 var createdMenu = await _mediator.Send(command);
-                
                 // 通知前端菜单已更新
                 await _hubContext.Clients.All.SendAsync("MenuUpdated");
                 
-                return CreatedAtAction(nameof(GetMenu), new { id = createdMenu.Id }, createdMenu);
+                return Ok(createdMenu);
             }
             catch (Exception ex)
             {
