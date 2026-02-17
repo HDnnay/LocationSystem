@@ -36,21 +36,21 @@ namespace LocationSystem.Api.BackgroudServices
                     {
                         // 执行应用初始化
                         // 初始化超级管理员账号和角色
-                        Console.WriteLine("🔄 正在初始化超级管理员账号和角色...");
+                        Console.WriteLine("正在初始化超级管理员账号和角色...");
                         await SeedData.InitializeAsync(dbContext);
-                        Console.WriteLine("✅ 超级管理员账号和角色初始化完成");
+                        Console.WriteLine("超级管理员账号和角色初始化完成");
 
-                        Console.WriteLine("✅ 后台数据初始化完成");
+                        Console.WriteLine("后台数据初始化完成");
                     }
                     else
                     {
-                        Console.WriteLine("ℹ️  数据库中已存在超级管理员，跳过初始化");
+                        Console.WriteLine("数据库中已存在超级管理员，跳过初始化");
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ 后台数据初始化失败: {ex.Message}");
+                Console.WriteLine($"后台数据初始化失败: {ex.Message}");
             }
         }
     }
