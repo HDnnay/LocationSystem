@@ -11,7 +11,7 @@ namespace LocationSystem.Application.Utilities.Jwt
     public interface IJwtService
     {
         string GenerateAccessToken(User user);
-        string GenerateRefreshToken();
+        string GenerateRefreshToken(Guid userId);
         ClaimsPrincipal ValidateToken(string token);
         string GetUserIdFromToken(string token);
     }
@@ -49,30 +49,55 @@ namespace LocationSystem.Application.Utilities.Jwt
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string GenerateRefreshToken()
+        public string GenerateRefreshToken(Guid userId)
         {
-            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim("token_type", "refresh_token")
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.Now.AddDays(_jwtSettings.RefreshTokenExpirationDays),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public ClaimsPrincipal ValidateToken(string token)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
-
-            var tokenValidationParameters = new TokenValidationParameters
+            try
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = key,
-                ValidateIssuer = true,
-                ValidIssuer = _jwtSettings.Issuer,
-                ValidateAudience = true,
-                ValidAudience = _jwtSettings.Audience,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.Zero
-            };
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
 
-            var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
-            return claimsPrincipal;
+                var tokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateIssuer = true,
+                    ValidIssuer = _jwtSettings.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = _jwtSettings.Audience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+
+                var claimsPrincipal = tokenHandler.ValidateToken(token, tokenValidationParameters, out _);
+                return claimsPrincipal;
+            }
+            catch (Exception)
+            {
+                // 捕获JWT格式错误或验证错误，返回null
+                return null;
+            }
         }
 
         public string GetUserIdFromToken(string token)

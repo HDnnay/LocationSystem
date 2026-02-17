@@ -49,7 +49,7 @@ namespace LocationSystem.Application.Features.Auth.Login.Commands
 
                 // 生成token
                 var accessToken = _jwtService.GenerateAccessToken(user);
-                var refreshToken = _jwtService.GenerateRefreshToken();
+                var refreshToken = _jwtService.GenerateRefreshToken(user.Id);
                 // 保存refresh token到数据库
                 await _userRepository.SaveRefreshToken(user.Id, refreshToken);
                 await _unitOfWork.CommitAsync();

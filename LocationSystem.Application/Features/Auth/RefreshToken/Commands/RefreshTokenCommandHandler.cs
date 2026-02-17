@@ -4,6 +4,7 @@ using LocationSystem.Application.Features.Auth.Login.Commands;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Domain.Entities;
+using System.Security.Claims;
 
 namespace LocationSystem.Application.Features.Auth.RefreshToken.Commands
 {
@@ -22,24 +23,32 @@ namespace LocationSystem.Application.Features.Auth.RefreshToken.Commands
         {
             var refreshTokenRequest = request.Request;
             var refreshToken = refreshTokenRequest.RefreshToken;
-
-            // 根据 refreshToken 查询用户
-            User? user = await _userRepository.GetUserByRefreshTokenAsync(refreshToken);
-
-            if (user == null)
+            var principal = _jwtService.ValidateToken(refreshToken);
+            if (principal == null)
+            {
+                throw new InvalidRefreshTokenException();
+            }
+            var tokenType = principal.FindFirst("token_type")?.Value;
+            if (tokenType != "refresh_token")
+            {
+                throw new RefreshTokenException("令牌类型错误");
+            }
+            // 获取用户ID
+            var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (!Guid.TryParse(userIdClaim, out Guid userId))
             {
                 throw new InvalidRefreshTokenException();
             }
 
-            // 验证 refreshToken 是否过期
-            if (user.RefreshTokenExpiryTime < DateTime.Now)
+            // 根据用户ID获取用户信息
+            User? user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
             {
-                throw new RefreshTokenExpiredException();
+                throw new InvalidRefreshTokenException();
             }
-
             // 生成新的 token
             var newAccessToken = _jwtService.GenerateAccessToken(user);
-            var newRefreshToken = _jwtService.GenerateRefreshToken();
+            var newRefreshToken = _jwtService.GenerateRefreshToken(user.Id);
 
             // 保存新的 refreshToken 到数据库
             await _userRepository.SaveRefreshToken(user.Id, newRefreshToken);
