@@ -31,10 +31,7 @@ namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
                 }
 
                 // 检查是否是超级管理员
-                if (user.IsSuperAdmin)
-                {
-                    throw new ApplicationCustomException("超级管理员不允许删除", 403);
-                }
+             
 
                 // 检查是否是删除自己
                 if (command.UserId == command.CurrentUserId)

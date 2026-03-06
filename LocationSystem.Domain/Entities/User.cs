@@ -16,7 +16,6 @@ namespace LocationSystem.Domain.Entities
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public bool IsDisabled { get; private set; } = false;
-        public bool IsSuperAdmin { get;private set; }
         // 导航属性
         public ICollection<Role> Roles { get; private set; } = new List<Role>();
         
@@ -31,7 +30,6 @@ namespace LocationSystem.Domain.Entities
             Name = name;
             Email = email;
             Id = Guid.NewGuid();
-            IsSuperAdmin = isSuperAdmin;
         }
         public virtual void UpdateName(string name)
         {

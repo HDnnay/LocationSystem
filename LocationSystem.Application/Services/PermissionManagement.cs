@@ -59,8 +59,8 @@ namespace LocationSystem.Application.Services
         {
             // 获取用户的所有权限ID
             var userPermissionIds = await GetUserPermissionIdsAsync(userId);
-            var userRoles = await _roleRepository.GetRolesByUserIdAsync(userId);
-            var isAdmin = userRoles.Any(t => t.Code=="admin");
+            var roles = await _roleRepository.GetRolesByUserIdAsync(userId);
+            var isAdmin = roles.Any(t => t.IsSuperAdmin);
             if (!userPermissionIds.Any())
             {
                 return new List<Menu>();
@@ -109,6 +109,8 @@ namespace LocationSystem.Application.Services
 
             return finalMenus;
         }
+
+        
 
         /// <summary>
         /// 检查用户是否有指定权限

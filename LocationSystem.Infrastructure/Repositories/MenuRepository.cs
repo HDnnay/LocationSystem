@@ -60,5 +60,6 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(m => m.PermissionMenus)
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
+
     }
 }

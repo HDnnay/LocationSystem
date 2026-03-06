@@ -125,7 +125,7 @@ namespace LocationSystem.Api.Data
             var adminRole = await dbContext.Roles.FirstOrDefaultAsync(r => r.Name == "超级管理员");
             if (adminRole == null)
             {
-                adminRole = new Role("超级管理员", "admin", "系统超级管理员，拥有所有权限");
+                adminRole = new Role("超级管理员", "admin", true,"系统超级管理员，拥有所有权限");
                 await dbContext.Roles.AddAsync(adminRole);
                 await dbContext.SaveChangesAsync();
 

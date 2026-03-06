@@ -17,7 +17,7 @@ namespace LocationSystem.Domain.Entities
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
         public bool IsDisabled { get; private set; } = false;
-
+        public bool IsSuperAdmin { get;private set; }
         // 导航属性
         public ICollection<Permission> Permissions { get; private set; } = new List<Permission>();
         public ICollection<User> Users { get; private set; } = new List<User>();
@@ -41,6 +41,10 @@ namespace LocationSystem.Domain.Entities
             Code = code;
             Description = description;
             CreatedAt = DateTime.UtcNow;
+        }
+        public Role(string name,string code,bool isSuperAdmin,string? description=null):this(name,code,description)
+        {
+            IsSuperAdmin = isSuperAdmin;
         }
 
         public void Update(string name, string code, string? description = null)
