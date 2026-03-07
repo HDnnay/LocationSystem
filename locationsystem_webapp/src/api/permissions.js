@@ -22,7 +22,11 @@ export const getPermissionTreeWithCheckStatus = (roleId) => {
     params: { roleId }
   })
 }
-
+export const getMeuPermissionTreeWithCheck = (menuId) => {
+  return request.get('/api/permissions/emun-permissions', {
+    params: { menuId }
+  })
+}
 export const getRoles = () => {
   return request.get('/api/roles')
 }

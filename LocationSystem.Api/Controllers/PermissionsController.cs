@@ -1,17 +1,17 @@
+using LocationSystem.Api.Filters;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Permissions.Commands.CreatePermission;
 using LocationSystem.Application.Features.Permissions.Commands.DeletePermission;
 using LocationSystem.Application.Features.Permissions.Commands.UpdatePermission;
+using LocationSystem.Application.Features.Permissions.Queries.GetMenuPermissionTreeWithCheck;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionDetail;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionList;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionTree;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionTreeWithCheckStatus;
-using LocationSystem.Application.Utilities;
-using LocationSystem.Api.Filters;
-using Microsoft.AspNetCore.Mvc;
-
 using LocationSystem.Application.Features.Permissions.Queries.GetUserPermissionMenus;
 using LocationSystem.Application.Features.Permissions.Queries.GetUserPermissions;
+using LocationSystem.Application.Utilities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -194,11 +194,14 @@ namespace LocationSystem.Api.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [HttpGet("emun-permissions")]
 
         public async Task<IActionResult>GetMenuPerissions(Guid menuId)
         {
-
-            return Ok();
+            if (menuId==default)
+                return BadRequest("id不存在");
+            var model = await _mediator.Send(new GetMenuPermissionTreeWithCheckQuery { MenuId=menuId});
+            return Ok(model);
         }
     }
 }
