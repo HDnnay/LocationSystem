@@ -18,6 +18,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<IEnumerable<Permission>> GetPermissionTreeAsync();
         Task<List<PermissionTreeDto>> GetPermissionTreeDtosAsync();
         Task<List<PermissionTreeDto>> GetPermissionTreeWithCheckStatusAsync(Guid? roleId);
+        Task<List<PermissionTreeDto>> GetMenuPermissionTreeWithCheck(Guid? menuId);
         Task<Permission?> GetPermissionWithChildrenAsync(Guid id);
         Task<Dictionary<int,IEnumerable<Permission>>> GetPermissionsPage(PageRequest pageRequest);
 

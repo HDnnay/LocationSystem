@@ -1,5 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -105,7 +106,21 @@ namespace LocationSystem.Infrastructure.Repositories
                 })
                 .ToListAsync();
         }
+        public async Task<List<PermissionTreeDto>> GetMenuPermissionTreeWithCheck(Guid? menuId)
+        {
+            // 先获取完整的权限树
+            var permissionTree = await GetPermissionTreeDtosAsync();
+            if (!menuId.HasValue)
+                return permissionTree;
+            var menu = await _context.Menus.Include(m => m.PermissionMenus).FirstOrDefaultAsync(t => t.Id ==menuId.Value);
+            if (menu==null)
+                throw new NotFoundException($"菜单不存在：{menuId.Value}");
+            var menuPermissionIds =menu.PermissionMenus.Select(m => m.PermissionId).ToList();
+            // 递归设置权限的选中状态
+            SetCheckStatus(permissionTree, menuPermissionIds);
 
+            return permissionTree;
+        }
         public async Task<List<PermissionTreeDto>> GetPermissionTreeWithCheckStatusAsync(Guid? roleId)
         {
             // 先获取完整的权限树

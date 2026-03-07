@@ -31,9 +31,6 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionT
 
             try
             {
-                _logger.LogInformation($"开始处理带选中状态的权限树查询，缓存键: {cacheKey}");
-                var startTime = DateTime.Now;
-
                 // 从缓存中获取权限树或创建缓存
                 var permissionDtos = await _cacheService.GetOrCreateAsync<List<PermissionTreeDto>>(cacheKey, async (options) => {
                     _logger.LogInformation($"缓存未命中，从数据库获取带选中状态的权限树");
@@ -47,9 +44,6 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionT
                     
                     return dtos;
                 }, 1800); // 缓存30分钟（1800秒）
-
-                var endTime = DateTime.Now;
-                _logger.LogInformation($"带选中状态的权限树查询处理完成，总耗时: {(endTime - startTime).TotalMilliseconds}ms");
                 return permissionDtos;
             }
             catch (Exception ex)

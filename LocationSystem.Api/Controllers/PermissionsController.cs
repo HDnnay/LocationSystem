@@ -194,5 +194,11 @@ namespace LocationSystem.Api.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        public async Task<IActionResult>GetMenuPerissions(Guid menuId)
+        {
+
+            return Ok();
+        }
     }
 }
