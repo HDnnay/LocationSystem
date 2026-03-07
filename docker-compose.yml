@@ -20,7 +20,25 @@ services:
       - db
     extra_hosts:
       - "host.docker.internal:host-gateway"
-
+  backend2:  # 新增的后端服务
+    build:
+      context: .
+      dockerfile: LocationSystem.Api/Dockerfile   # 假设使用同一个 Dockerfile
+    ports:
+      - "8001:8080"   # 主机端口换成 8001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__SqlServerConnectionString=Server=db;Database=LocationSystem;User Id=sa;Password=Password123!;TrustServerCertificate=True;
+      - ConnectionStrings__Redis=host.docker.internal:6379,password=123456,abortConnect=false
+      - RabbitMQ__HostName=host.docker.internal
+      - RabbitMQ__Port=5672
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__VirtualHost=/
+    depends_on:
+      - db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   frontend:
     build:
       context: ./locationsystem_webapp
