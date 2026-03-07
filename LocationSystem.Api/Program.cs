@@ -18,178 +18,194 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
+using Serilog;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-// 添加CORS服务配置
-builder.Services.AddCors(options =>
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+try
 {
-    var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new string[] { "http://localhost:5173", "http://localhost:5174" };
-    options.AddPolicy("AllowFrontend", policy =>
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Services.AddSerilog(); // <-- Add this line
+
+    // Add services to the container.
+
+    // 添加CORS服务配置
+    builder.Services.AddCors(options =>
     {
-        policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    });
-});
-
-//// 加载限流配置
-builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
-    options.JsonSerializerOptions.IncludeFields = true;
-    options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
-
-    options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
-
-    //options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
-    //options.JsonSerializerOptions.Converters.Add(new NullableDateTimeJsonConverter());
-}); 
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddInfrastructureServices();
-builder.Services.AddApplicationServices();
-#region 使用Redis存储
-builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
-builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
-builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
-#endregion
-#region open api
-builder.Services.AddOpenApi();
-#endregion
-builder.Services.Configure<FormOptions>(options =>
-{
-    options.ValueLengthLimit = int.MaxValue;
-    options.MultipartBodyLengthLimit = long.MaxValue; // 如果不限制，设置为long.MaxValue
-    options.MemoryBufferThreshold = int.MaxValue;
-});
-
-// 配置JWT设置
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
-
-// 添加JWT认证
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
-        options.TokenValidationParameters = new TokenValidationParameters
+        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new string[] { "http://localhost:5173", "http://localhost:5174" };
+        options.AddPolicy("AllowFrontend", policy =>
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
-            ValidateIssuer = true,
-            ValidIssuer = jwtSettings.Issuer,
-            ValidateAudience = true,
-            ValidAudience = jwtSettings.Audience,
-            ValidateLifetime = true,
-            ClockSkew = TimeSpan.Zero
-        };
+            policy.WithOrigins(allowedOrigins).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+        });
     });
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    options.Configuration = builder.Configuration.GetConnectionString("Redis");
-    options.InstanceName = "Sys_";
-});
 
-// 添加 SignalR 服务
-builder.Services.AddSignalR();
-
-// 1️⃣ 注册 RabbitMQ 服务（单例）
-builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
-
-// 2️⃣ 注册消费者后台服务
-builder.Services.AddHostedService<RabbitMQTestService>();
-
-builder.Services.AddHostedService<HostLoadCachBackgroupService>();
-
-// 注册后台数据初始化服务
-builder.Services.AddHostedService<DataInitializationService>();
-
-// 注册事件订阅服务
-builder.Services.AddHostedService<EventSubscriptionService>();
-
-
-var app = builder.Build();
-
-// 4️⃣ 应用启动时，确保服务已启动
-app.Lifetime.ApplicationStarted.Register(() =>
-{
-    Console.WriteLine("✅ 应用已启动，所有后台服务正在运行");
-});
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference(options =>
+    //// 加载限流配置
+    builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+    builder.Services.AddControllers().AddJsonOptions(options =>
     {
-        options.AddDocument("v1", "Production API", "api/v1/openapi.json")
-           .AddDocument("v2-beta", "Beta API", "api/v2-beta/openapi.json", isDefault: true)
-           .AddDocument("internal", "Internal API", "internal/openapi.json");
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
+        options.JsonSerializerOptions.IncludeFields = true;
+        options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+
+        options.JsonSerializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+
+        //options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
+        //options.JsonSerializerOptions.Converters.Add(new NullableDateTimeJsonConverter());
     });
-}
-
-app.UseCustomExceptionHandler();
-app.UseIpRateLimiting();
-app.UseCors("AllowFrontend");
-app.UseAuthentication();
-// // 1. 添加自定义中间件来拦截静态文件请求
-app.Use(async (context, next) =>
-{
-    var path = context.Request.Path.Value?.ToLower() ?? "";
-
-    // 定义需要保护的目录和文件类型
-    var protectedPatterns = new[]
+    // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+    builder.Services.AddInfrastructureServices();
+    builder.Services.AddApplicationServices();
+    #region 使用Redis存储
+    builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
+    builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
+    builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+    builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
+    #endregion
+    #region open api
+    builder.Services.AddOpenApi();
+    #endregion
+    builder.Services.Configure<FormOptions>(options =>
     {
+        options.ValueLengthLimit = int.MaxValue;
+        options.MultipartBodyLengthLimit = long.MaxValue; // 如果不限制，设置为long.MaxValue
+        options.MemoryBufferThreshold = int.MaxValue;
+    });
+
+    // 配置JWT设置
+    builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
+    // 添加JWT认证
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+                ValidateIssuer = true,
+                ValidIssuer = jwtSettings.Issuer,
+                ValidateAudience = true,
+                ValidAudience = jwtSettings.Audience,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
+        });
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = builder.Configuration.GetConnectionString("Redis");
+        options.InstanceName = "Sys_";
+    });
+
+    // 添加 SignalR 服务
+    builder.Services.AddSignalR();
+
+    // 1️⃣ 注册 RabbitMQ 服务（单例）
+    builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
+
+    // 2️⃣ 注册消费者后台服务
+    builder.Services.AddHostedService<RabbitMQTestService>();
+
+    builder.Services.AddHostedService<HostLoadCachBackgroupService>();
+
+    // 注册后台数据初始化服务
+    builder.Services.AddHostedService<DataInitializationService>();
+
+    // 注册事件订阅服务
+    builder.Services.AddHostedService<EventSubscriptionService>();
+
+
+    var app = builder.Build();
+
+    // 4️⃣ 应用启动时，确保服务已启动
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        Console.WriteLine("✅ 应用已启动，所有后台服务正在运行");
+    });
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapOpenApi();
+        app.MapScalarApiReference(options =>
+        {
+            options.AddDocument("v1", "Production API", "api/v1/openapi.json")
+               .AddDocument("v2-beta", "Beta API", "api/v2-beta/openapi.json", isDefault: true)
+               .AddDocument("internal", "Internal API", "internal/openapi.json");
+        });
+    }
+
+    app.UseCustomExceptionHandler();
+    app.UseIpRateLimiting();
+    app.UseCors("AllowFrontend");
+    app.UseAuthentication();
+    // // 1. 添加自定义中间件来拦截静态文件请求
+    app.Use(async (context, next) =>
+    {
+        var path = context.Request.Path.Value?.ToLower() ?? "";
+
+        // 定义需要保护的目录和文件类型
+        var protectedPatterns = new[]
+        {
         "/uploads/",    // 上传文件目录
         "/private/",    // 私有文件目录
         ".config",      // 配置文件      // JSON文件
         ".xml",         // XML文件
         ".db"           // 数据库文件
-    };
+        };
 
-    // 检查当前请求是否匹配受保护的模式
-    var isProtected = protectedPatterns.Any(pattern =>
-        pattern.StartsWith("/") ? path.Contains(pattern) : path.EndsWith(pattern));
+        // 检查当前请求是否匹配受保护的模式
+        var isProtected = protectedPatterns.Any(pattern =>
+            pattern.StartsWith("/") ? path.Contains(pattern) : path.EndsWith(pattern));
 
-    if (isProtected)
+        if (isProtected)
+        {
+            // 验证访问权限
+            context.Response.StatusCode = 403;
+            context.Response.ContentType = "text/plain; charset=utf-8";
+            await context.Response.WriteAsync("拒绝访问", Encoding.UTF8);
+            return;
+            // 可选：记录访问日志
+        }
+
+        await next();
+    });
+
+
+
+    var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+    if (!Directory.Exists(uploadsPath))
+        Directory.CreateDirectory(uploadsPath);
+
+    // 配置默认静态文件
+    app.UseStaticFiles();
+
+    // 配置上传文件目录
+    app.UseStaticFiles(new StaticFileOptions
     {
-        // 验证访问权限
-        context.Response.StatusCode = 403;
-        context.Response.ContentType = "text/plain; charset=utf-8";
-        await context.Response.WriteAsync("拒绝访问", Encoding.UTF8);
-        return;
-        // 可选：记录访问日志
-    }
+        FileProvider = new PhysicalFileProvider(uploadsPath),
+        RequestPath = "/uploads",
+        OnPrepareResponse = ctx =>
+        {
+            // 可以添加缓存头或其他响应头
+            ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=604800");
+        }
+    });
+    app.UseAuthorization();
 
-    await next();
-});
+    // 配置 SignalR Hub 路由
+    app.MapHub<MenuHub>("/hub/menu");
+    app.MapControllers();
 
-
-
-var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-if (!Directory.Exists(uploadsPath))
-    Directory.CreateDirectory(uploadsPath);
-
-// 配置默认静态文件
-app.UseStaticFiles();
-
-// 配置上传文件目录
-app.UseStaticFiles(new StaticFileOptions
+    app.Run();
+}
+catch (Exception ex)
 {
-    FileProvider = new PhysicalFileProvider(uploadsPath),
-    RequestPath = "/uploads",
-    OnPrepareResponse = ctx =>
-    {
-        // 可以添加缓存头或其他响应头
-        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=604800");
-    }
-});
-app.UseAuthorization();
-
-// 配置 SignalR Hub 路由
-app.MapHub<MenuHub>("/hub/menu");
-app.MapControllers();
-
-app.Run();
+    Log.Fatal(ex, "Application terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
