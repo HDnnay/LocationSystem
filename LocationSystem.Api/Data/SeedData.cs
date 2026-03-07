@@ -102,6 +102,7 @@ namespace LocationSystem.Api.Data
                 ("company:statistics:view", "/company/statistics"),
                 ("rent:view", "/rent/list"),
                 ("rent:list", "/rent/list"),
+                ("permission:view", "/role-permissions"),
                 ("rent:create", "/rent/create")
             };
 
