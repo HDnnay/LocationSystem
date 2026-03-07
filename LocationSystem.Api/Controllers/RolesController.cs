@@ -67,7 +67,7 @@ namespace LocationSystem.Api.Controllers
             {
                 var command = new CreateRoleCommand { RoleDto = roleDto };
                 var createdRole = await _mediator.Send(command);
-                return CreatedAtAction(nameof(GetRole), new { id = createdRole.Id }, createdRole);
+                return Ok();
             }
             catch (Exception ex)
             {
