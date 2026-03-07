@@ -1,4 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Events;
+using LocationSystem.Application.Events.Handlers;
 using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Utilities;
 
@@ -7,10 +9,11 @@ namespace LocationSystem.Application.Features.Menus.Commands.DeleteMenu
     public class DeleteMenuCommandHandler : IRequestHandler<DeleteMenuCommand, bool>
     {
         private readonly IMenuRepository _menuRepository;
-
-        public DeleteMenuCommandHandler(IMenuRepository menuRepository)
+        private readonly IEventBus _eventBus;
+        public DeleteMenuCommandHandler(IMenuRepository menuRepository, IEventBus eventBus)
         {
             _menuRepository = menuRepository;
+            _eventBus = eventBus;
         }
 
         public async Task<bool> Handle(DeleteMenuCommand command)

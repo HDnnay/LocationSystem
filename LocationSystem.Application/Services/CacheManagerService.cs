@@ -27,7 +27,11 @@ namespace LocationSystem.Application.Services
             
             return Task.CompletedTask;
         }
-        
+        public Task ClearMenuCacheAsync(Guid userId)
+        {
+            _cacheService.Remove(CacheKeys.UserMenus(userId));
+            return Task.CompletedTask;
+        }
         // 清除角色相关缓存
         public async Task ClearRoleCacheAsync(Guid roleId)
         {

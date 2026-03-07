@@ -15,7 +15,8 @@ namespace LocationSystem.Application.Contrats.Services
         
         // 清除权限相关缓存
         Task ClearPermissionCacheAsync();
-        
+        //清除菜单相关权限
+        Task ClearMenuCacheAsync(Guid userId);
         // 清除所有缓存
         Task ClearAllCacheAsync();
     }

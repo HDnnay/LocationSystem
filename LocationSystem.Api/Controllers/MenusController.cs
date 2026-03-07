@@ -1,3 +1,5 @@
+using LocationSystem.Api.Hubs;
+using LocationSystem.Application.Events;
 using LocationSystem.Application.Features.Menus.Commands.AssignPermissionsToMenu;
 using LocationSystem.Application.Features.Menus.Commands.CreateMenu;
 using LocationSystem.Application.Features.Menus.Commands.DeleteMenu;
@@ -6,7 +8,6 @@ using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
 using LocationSystem.Application.Features.Menus.Queries.GetMenuById;
 using LocationSystem.Application.Features.Menus.Queries.GetMenuTree;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Api.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
@@ -18,11 +19,13 @@ namespace LocationSystem.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly IHubContext<MenuHub> _hubContext;
+        private readonly IEventBus _eventBus;
 
-        public MenusController(IMediator mediator, IHubContext<MenuHub> hubContext)
+        public MenusController(IMediator mediator, IHubContext<MenuHub> hubContext,IEventBus eventBus)
         {
             _mediator = mediator;
             _hubContext = hubContext;
+            _eventBus = eventBus;
         }
 
         // GET: api/Menus
@@ -106,7 +109,8 @@ namespace LocationSystem.Api.Controllers
             {
                 var command = new DeleteMenuCommand { MenuId = id };
                 await _mediator.Send(command);
-                
+                await _eventBus.PublishAsync(new MenuChangedEvent() { ActionType=ActionType.Delete, UserId=User?.GetUserId().Value });
+
                 // 通知前端菜单已更新
                 await _hubContext.Clients.All.SendAsync("MenuUpdated");
                 
