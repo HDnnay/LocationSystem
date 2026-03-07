@@ -61,7 +61,7 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddInfrastructureServices();
     builder.Services.AddApplicationServices();
-    #region 使用Redis存储
+    #region 使用Redis存储限流
     builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
     builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
     builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
