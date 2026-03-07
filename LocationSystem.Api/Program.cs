@@ -19,6 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using Serilog;
+using Serilog.Events;
 using System.Text;
 
 Log.Logger = new LoggerConfiguration()
@@ -27,7 +28,10 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
-    builder.Services.AddSerilog(); // <-- Add this line
+    builder.Services.AddSerilog((services, lc) => lc
+       .ReadFrom.Configuration(builder.Configuration)
+       .ReadFrom.Services(services)
+       .Enrich.FromLogContext().WriteTo.Console());
 
     // Add services to the container.
 
@@ -118,7 +122,21 @@ try
 
 
     var app = builder.Build();
+    app.UseSerilogRequestLogging(options =>
+    {
+        // Customize the message template
+        options.MessageTemplate = "Handled {RequestPath}";
 
+        // Emit debug-level events instead of the defaults
+        options.GetLevel = (httpContext, elapsed, ex) => LogEventLevel.Debug;
+
+        // Attach additional properties to the request completion event
+        options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+        {
+            diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
+            diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+        };
+    });
     // 4️⃣ 应用启动时，确保服务已启动
     app.Lifetime.ApplicationStarted.Register(() =>
     {
