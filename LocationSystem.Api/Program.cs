@@ -8,6 +8,7 @@ using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Application.Utilities.RabbitMQs;
 using LocationSystem.Infrastructure;
+using LocationSystem.ServiceDefaults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.SignalR;
@@ -28,6 +29,7 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    builder.AddServiceDefaults();
     builder.Services.AddSerilog((services, lc) => lc
        .ReadFrom.Configuration(builder.Configuration)
        .ReadFrom.Services(services)
@@ -216,6 +218,7 @@ try
     // 配置 SignalR Hub 路由
     app.MapHub<MenuHub>("/hub/menu");
     app.MapControllers();
+    app.MapDefaultEndpoints();
 
     app.Run();
 }
