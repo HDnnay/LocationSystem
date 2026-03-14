@@ -2,6 +2,7 @@ using AspNetCoreRateLimit;
 using BCrypt.Net;
 using LocationSystem.Api.BackgroudServices;
 using LocationSystem.Api.Hubs;
+using LocationSystem.Api.GraphQL;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Application.Extentions;
@@ -47,8 +48,6 @@ try
         });
     });
 
-    //// 加载限流配置
-    builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
     builder.Services.AddControllers().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.Never;
@@ -63,12 +62,6 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddInfrastructureServices();
     builder.Services.AddApplicationServices();
-    #region 使用Redis存储限流
-    builder.Services.AddSingleton<IIpPolicyStore, DistributedCacheIpPolicyStore>();
-    builder.Services.AddSingleton<IRateLimitCounterStore, DistributedCacheRateLimitCounterStore>();
-    builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
-    builder.Services.AddSingleton<IProcessingStrategy, AsyncKeyLockProcessingStrategy>();
-    #endregion
     #region open api
     builder.Services.AddOpenApi();
     #endregion
@@ -82,7 +75,7 @@ try
     // 配置JWT设置
     builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
 
-    // 添加JWT认证
+    // 添加 JWT 认证
     builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options =>
         {
@@ -108,19 +101,31 @@ try
     // 添加 SignalR 服务
     builder.Services.AddSignalR();
 
-    // 1️⃣ 注册 RabbitMQ 服务（单例）
-    builder.Services.AddSingleton<IRabbitMQService, RabbitMQService>();
-
-    // 2️⃣ 注册消费者后台服务
-    builder.Services.AddHostedService<RabbitMQTestService>();
-
-    builder.Services.AddHostedService<HostLoadCachBackgroupService>();
-
     // 注册后台数据初始化服务
     builder.Services.AddHostedService<DataInitializationService>();
 
     // 注册事件订阅服务
     builder.Services.AddHostedService<EventSubscriptionService>();
+
+    // 配置 GraphQL 服务
+    builder.Services
+        .AddScoped<Query>()
+        .AddScoped<Mutation>()
+        .AddGraphQLServer()
+        .AddQueryType<Query>()
+        .AddMutationType<MutationType>()
+        .AddType<MenuType>()
+        .AddType<PermissionType>()
+        .AddType<SuccessResponseType>()
+        .AddType<CreateMenuCommandType>()
+        .AddType<UpdateMenuCommandType>();
+
+    // 注册自定义 DataLoader
+    builder.Services.AddScoped<MenuDataLoader>();
+    builder.Services.AddScoped<PermissionDataLoader>();
+
+    // 注册 AutoMapper
+    builder.Services.AddAutoMapper(typeof(Program));
 
 
     var app = builder.Build();
@@ -158,7 +163,6 @@ try
     }
 
     app.UseCustomExceptionHandler();
-    app.UseIpRateLimiting();
     app.UseCors("AllowFrontend");
     app.UseAuthentication();
     // // 1. 添加自定义中间件来拦截静态文件请求
@@ -195,7 +199,7 @@ try
 
 
 
-    var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+    var uploadsPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
     if (!Directory.Exists(uploadsPath))
         Directory.CreateDirectory(uploadsPath);
 
@@ -219,6 +223,9 @@ try
     app.MapHub<MenuHub>("/hub/menu");
     app.MapControllers();
     app.MapDefaultEndpoints();
+
+    // 配置 GraphQL 中间件
+    app.MapGraphQL();
 
     app.Run();
 }

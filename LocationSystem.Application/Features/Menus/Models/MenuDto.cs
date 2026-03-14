@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LocationSystem.Application.Features.Permissions.Models;
 
 namespace LocationSystem.Application.Features.Menus.Models
 {
@@ -14,5 +15,6 @@ namespace LocationSystem.Application.Features.Menus.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public List<MenuDto> ChildMenus { get; set; }
+        public List<PermissionDto> Permissions { get; set; }
     }
 }

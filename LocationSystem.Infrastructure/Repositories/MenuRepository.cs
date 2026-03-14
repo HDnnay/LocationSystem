@@ -35,7 +35,7 @@ namespace LocationSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<Menu>> GetMenuTreeAsync()
         {
-            // 获取所有根菜单（没有父菜单的菜单），并包含其所有子菜单
+            // 获取所有根菜单（没有父菜单的菜单），只包含其所有子菜单，不包含权限
             return await _context.Menus
                 .Where(m => m.ParentId == null)
                 .Include(m => m.Children)
@@ -58,7 +58,16 @@ namespace LocationSystem.Infrastructure.Repositories
             // 获取菜单，并包含其权限信息
             return await _context.Menus
                 .Include(m => m.PermissionMenus)
+                    .ThenInclude(pm => pm.Permission)
                 .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<IEnumerable<Menu>> GetByIdsAsync(IEnumerable<Guid> ids)
+        {
+            // 根据ID列表获取多个菜单
+            return await _context.Menus
+                .Where(m => ids.Contains(m.Id))
+                .ToListAsync();
         }
 
     }

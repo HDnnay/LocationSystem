@@ -7,6 +7,8 @@ using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
+using IO = System.IO;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -74,7 +76,7 @@ namespace LocationSystem.Api.Controllers
             // 处理文件上传和描述
             if (files == null || files.Count == 0)
                 return BadRequest("没有上传文件");
-            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+            var uploadsFolder = IO.Path.Combine(_environment.WebRootPath, "uploads");
             if (!Directory.Exists(uploadsFolder))
                 Directory.CreateDirectory(uploadsFolder);
 
@@ -86,7 +88,7 @@ namespace LocationSystem.Api.Controllers
                 {
                     // 计算文件哈希值用于重复检测
                     var fileHash = await CalculateFileHash(file.OpenReadStream());
-                    var extension = Path.GetExtension(file.FileName);
+                    var extension = IO.Path.GetExtension(file.FileName);
                     
                     // 检查是否已存在相同哈希值的文件
                     var existingFile = FindExistingFile(uploadsFolder, fileHash);
@@ -97,7 +99,7 @@ namespace LocationSystem.Api.Controllers
                         {
                             OriginalName = file.FileName,
                             FileSize = file.Length,
-                            FileUrl = Path.GetFileName(existingFile),
+                            FileUrl = IO.Path.GetFileName(existingFile),
                             IsDuplicate = true
                         });
                         continue;
@@ -106,7 +108,7 @@ namespace LocationSystem.Api.Controllers
                     // 文件不存在，正常上传
                     string timestamp = DateTime.Now.ToString("yyyyMMddHHmmssfff");
                     var fileName = $"{fileHash.Substring(0, 8)}_{timestamp}{extension}";
-                    var filePath = Path.Combine(uploadsFolder, fileName);
+                    var filePath = IO.Path.Combine(uploadsFolder, fileName);
 
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
@@ -151,7 +153,7 @@ namespace LocationSystem.Api.Controllers
             var files = Directory.GetFiles(directory);
             foreach (var filePath in files)
             {
-                var fileName = Path.GetFileName(filePath);
+                var fileName = IO.Path.GetFileName(filePath);
                 // 检查文件名是否包含哈希值前缀
                 if (fileName.StartsWith(fileHash.Substring(0, 8)))
                 {
@@ -173,13 +175,13 @@ namespace LocationSystem.Api.Controllers
             if (string.IsNullOrEmpty(fileName))
                 return BadRequest("文件名不能为空");
 
-            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-            var filePath = Path.Combine(uploadsFolder, fileName);
+            var uploadsFolder = IO.Path.Combine(_environment.WebRootPath, "uploads");
+            var filePath = IO.Path.Combine(uploadsFolder, fileName);
 
             if (!System.IO.File.Exists(filePath))
                 return NotFound("文件不存在");
 
-            var extension = Path.GetExtension(fileName).ToLower();
+            var extension = IO.Path.GetExtension(fileName).ToLower();
             var contentType = GetContentType(extension);
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);

@@ -23,7 +23,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetMenuTree
 
         private List<MenuDto> MapMenusToDto(IEnumerable<Menu> menus)
         {
-            return menus.Select(menu => new MenuDto
+            return menus?.Select(menu => new MenuDto
             {
                 Id = menu.Id,
                 Name = menu.Name,
@@ -34,7 +34,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetMenuTree
                 CreatedAt = menu.CreatedAt,
                 UpdatedAt = menu.UpdatedAt,
                 ChildMenus = MapMenusToDto(menu.Children)
-            }).ToList();
+            }).ToList() ?? new List<MenuDto>();
         }
     }
 }

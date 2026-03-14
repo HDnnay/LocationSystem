@@ -16,7 +16,7 @@ namespace LocationSystem.Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            services.AddTransient<IMediator, SimpleMediator>();
+            services.AddScoped<IMediator, SimpleMediator>();
             
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.Scan(s => s.FromAssembliesOf(typeof(RegisterApplicationServices))

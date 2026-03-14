@@ -3,6 +3,7 @@ using LocationSystem.Application.Utilities;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using IO = System.IO;
 
 namespace LocationSystem.Api.BackgroudServices
 {
@@ -81,7 +82,7 @@ namespace LocationSystem.Api.BackgroudServices
             try
             {
                 // 确保SQLite数据库文件所在的目录存在
-                var sqlitePath = Path.Combine(Directory.GetCurrentDirectory(), "Sqlite");
+                var sqlitePath = IO.Path.Combine(Directory.GetCurrentDirectory(), "Sqlite");
                 if (!Directory.Exists(sqlitePath))
                 {
                     Directory.CreateDirectory(sqlitePath);
