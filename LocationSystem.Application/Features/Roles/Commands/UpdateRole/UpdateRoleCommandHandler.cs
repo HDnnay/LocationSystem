@@ -38,27 +38,27 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
             }
 
             // 检查角色名称是否已被其他角色使用
-            var existingRole = await _roleRepository.GetByNameAsync(request.RoleDto.Name);
+            var existingRole = await _roleRepository.GetByNameAsync(request.Name);
             if (existingRole != null && existingRole.Id != request.RoleId)
             {
-                throw new Exception($"角色名称 {request.RoleDto.Name} 已存在");
+                throw new Exception($"角色名称 {request.Name} 已存在");
             }
 
             // 检查角色代码是否已被其他角色使用
-            existingRole = await _roleRepository.GetByCodeAsync(request.RoleDto.Code);
+            existingRole = await _roleRepository.GetByCodeAsync(request.Code);
             if (existingRole != null && existingRole.Id != request.RoleId)
             {
-                throw new Exception($"角色代码 {request.RoleDto.Code} 已存在");
+                throw new Exception($"角色代码 {request.Code} 已存在");
             }
 
             // 更新角色信息
-            role.Update(request.RoleDto.Name, request.RoleDto.Code, request.RoleDto.Description);
+            role.Update(request.Name, request.Code, request.Description);
 
             // 更新角色权限
             role.ClearPermissions();
-            if (request.RoleDto.PermissionIds != null && request.RoleDto.PermissionIds.Count > 0)
+            if (request.PermissionIds != null && request.PermissionIds.Count > 0)
             {
-                foreach (var permissionId in request.RoleDto.PermissionIds)
+                foreach (var permissionId in request.PermissionIds)
                 {
                     var permission = await _permissionRepository.GetByIdAsync(permissionId);
                     if (permission != null)

@@ -31,7 +31,10 @@ namespace LocationSystem.Application.Features.Users.Commands.CreateUser
                 await _unitOfWork.BeginTransactionAsync();
 
                 // 创建用户实体
-                var userType = command.UserType;
+                if (!Enum.TryParse<LocationSystem.Domain.Entities.UserType>(command.UserType, true, out var userType))
+                {
+                    throw new ArgumentException($"无效的用户类型: {command.UserType}");
+                }
                 // 使用默认密码 "123456"
                 var user = _userFactory.CreateUser(userType, command.Name, command.Email, "123456",false);
 

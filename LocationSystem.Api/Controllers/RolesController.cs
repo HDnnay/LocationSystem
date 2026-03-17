@@ -65,7 +65,13 @@ namespace LocationSystem.Api.Controllers
         {
             try
             {
-                var command = new CreateRoleCommand { RoleDto = roleDto };
+                var command = new CreateRoleCommand 
+                {
+                    Name = roleDto.Name,
+                    Code = roleDto.Code,
+                    Description = roleDto.Description,
+                    PermissionIds = roleDto.PermissionIds
+                };
                 var createdRole = await _mediator.Send(command);
                 return Ok();
             }
@@ -81,7 +87,14 @@ namespace LocationSystem.Api.Controllers
         {
             try
             {
-                var command = new UpdateRoleCommand { RoleId = id, RoleDto = roleDto };
+                var command = new UpdateRoleCommand 
+                {
+                    RoleId = id,
+                    Name = roleDto.Name,
+                    Code = roleDto.Code,
+                    Description = roleDto.Description,
+                    PermissionIds = roleDto.PermissionIds
+                };
                 var updatedRole = await _mediator.Send(command);
                 return Ok(updatedRole);
             }

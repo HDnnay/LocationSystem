@@ -8,6 +8,9 @@ namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
 {
     public class CreateRoleCommand : IRequest<RoleDto>
     {
-        public CreateRoleDto RoleDto { get; set; } = null!;
+        public string Name { get; set; } = null!;
+        public string Code { get; set; } = null!;
+        public string? Description { get; set; }
+        public List<Guid>? PermissionIds { get; set; }
     }
 }

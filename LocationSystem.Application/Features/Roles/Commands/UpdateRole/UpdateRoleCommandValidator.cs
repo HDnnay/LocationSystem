@@ -10,20 +10,17 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
     {
         public UpdateRoleCommandValidator()
         {
-            RuleFor(x => x.RoleId)
-                .NotEmpty().WithMessage("角色ID不能为空");
-
-            RuleFor(x => x.RoleDto.Name)
+            RuleFor(x => x.Name)
                 .NotEmpty().WithMessage("角色名称不能为空")
                 .MaximumLength(50).WithMessage("角色名称不能超过50个字符");
 
-            RuleFor(x => x.RoleDto.Code)
+            RuleFor(x => x.Code)
                 .NotEmpty().WithMessage("角色代码不能为空")
                 .MaximumLength(50).WithMessage("角色代码不能超过50个字符")
                 .Matches("^[a-zA-Z0-9_]+$", System.Text.RegularExpressions.RegexOptions.IgnoreCase)
                 .WithMessage("角色代码只能包含字母、数字和下划线");
 
-            RuleFor(x => x.RoleDto.Description)
+            RuleFor(x => x.Description)
                 .MaximumLength(200).WithMessage("角色描述不能超过200个字符");
         }
     }

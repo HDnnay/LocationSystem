@@ -48,5 +48,19 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(u => u.Roles) // 加载角色信息，用于生成 token
                 .FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
         }
+
+        public new async Task<IEnumerable<User>> GetAll()
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<User?> GetByIdWithRolesAsync(Guid userId)
+        {
+            return await _context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }

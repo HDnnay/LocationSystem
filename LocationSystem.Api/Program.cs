@@ -3,6 +3,7 @@ using BCrypt.Net;
 using LocationSystem.Api.BackgroudServices;
 using LocationSystem.Api.Hubs;
 using LocationSystem.Api.GraphQL;
+using LocationSystem.Api.Extensions;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Application.Extentions;
@@ -108,21 +109,7 @@ try
     builder.Services.AddHostedService<EventSubscriptionService>();
 
     // 配置 GraphQL 服务
-    builder.Services
-        .AddScoped<Query>()
-        .AddScoped<Mutation>()
-        .AddGraphQLServer()
-        .AddQueryType<Query>()
-        .AddMutationType<MutationType>()
-        .AddType<MenuType>()
-        .AddType<PermissionType>()
-        .AddType<SuccessResponseType>()
-        .AddType<CreateMenuCommandType>()
-        .AddType<UpdateMenuCommandType>();
-
-    // 注册自定义 DataLoader
-    builder.Services.AddScoped<MenuDataLoader>();
-    builder.Services.AddScoped<PermissionDataLoader>();
+    builder.Services.AddGraphQLServices();
 
     // 注册 AutoMapper
     builder.Services.AddAutoMapper(typeof(Program));
