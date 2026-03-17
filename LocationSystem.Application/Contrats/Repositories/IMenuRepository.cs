@@ -12,5 +12,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<IEnumerable<Menu>> GetAllWithPermissionsAsync();
         Task<Menu?> GetByIdWithPermissionsAsync(Guid id);
         Task<IEnumerable<Menu>> GetByIdsAsync(IEnumerable<Guid> ids);
+        Task<List<Menu>> GetByIdsWithPermissionsAsync(List<Guid> menuIds);
     }
 }

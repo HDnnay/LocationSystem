@@ -62,5 +62,13 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(u => u.Roles)
                 .FirstOrDefaultAsync(u => u.Id == userId);
         }
+
+        public async Task<List<User>> GetByIdsWithRolesAsync(List<Guid> userIds)
+        {
+            return await _context.Users
+                .Include(u => u.Roles)
+                .Where(u => userIds.Contains(u.Id))
+                .ToListAsync();
+        }
     }
 }

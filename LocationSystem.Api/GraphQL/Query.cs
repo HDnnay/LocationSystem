@@ -1,5 +1,6 @@
 using HotChocolate;
 using HotChocolate.Types;
+using HotChocolate.DataLoader;
 using LocationSystem.Application.Contrats.Repositories;
 using Dtos = LocationSystem.Application.Dtos;
 using MenuModels = LocationSystem.Application.Features.Menus.Models;
@@ -105,173 +106,154 @@ namespace LocationSystem.Api.GraphQL
         [GraphQLType(typeof(ListType<PermissionType>))]
         public async Task<List<Dtos.PermissionDto>> GetPermissions()
         {
-            var permissions = await _permissionRepository.GetAll();
+            var permissions = await _permissionRepository.GetPermissionTreeAsync();
             return _mapper.Map<List<Dtos.PermissionDto>>(permissions);
         }
     }
 
-    public class MenuDataLoader
+    public class MenuDataLoader : BatchDataLoader<Guid, Menu>
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly Dictionary<Guid, Task<Menu>> _cache = new Dictionary<Guid, Task<Menu>>();
-        private readonly object _cacheLock = new object();
 
-        public MenuDataLoader(IServiceProvider serviceProvider)
+        public MenuDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public Task<Menu> LoadAsync(Guid id, CancellationToken cancellationToken)
+        protected override async Task<IReadOnlyDictionary<Guid, Menu>> LoadBatchAsync(IReadOnlyList<Guid> menuIds, CancellationToken cancellationToken)
         {
-            // 检查缓存中是否已有结果
-            lock (_cacheLock)
-            {
-                if (_cache.TryGetValue(id, out var existingTask))
-                {
-                    return existingTask;
-                }
-
-                // 创建一个新的任务并添加到缓存
-                var task = LoadMenuAsync(id, cancellationToken);
-                _cache[id] = task;
-                return task;
-            }
-        }
-
-        private async Task<Menu> LoadMenuAsync(Guid id, CancellationToken cancellationToken)
-        {
-            // 创建一个新的作用域，获取新的 IMenuRepository 实例
             using (var scope = _serviceProvider.CreateScope())
             {
                 var menuRepository = scope.ServiceProvider.GetRequiredService<IMenuRepository>();
-                var menus = await menuRepository.GetByIdsAsync(new[] { id });
-                var menu = menus.FirstOrDefault();
-                if (menu == null)
+                var menus = await menuRepository.GetByIdsAsync(menuIds);
+                var result = new Dictionary<Guid, Menu>();
+
+                foreach (var menu in menus)
                 {
-                    throw new Exception($"Menu with id {id} not found");
+                    result[menu.Id] = menu;
                 }
-                return menu;
+
+                // 确保所有请求的菜单都有结果
+                foreach (var menuId in menuIds)
+                {
+                    if (!result.ContainsKey(menuId))
+                    {
+                        throw new Exception($"Menu with id {menuId} not found");
+                    }
+                }
+
+                return result;
             }
         }
     }
 
-    public class PermissionDataLoader
+    public class PermissionDataLoader : BatchDataLoader<Guid, List<Dtos.PermissionDto>>
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly Dictionary<Guid, Task<List<Dtos.PermissionDto>>> _cache = new Dictionary<Guid, Task<List<Dtos.PermissionDto>>>();
-        private readonly object _cacheLock = new object();
 
-        public PermissionDataLoader(IServiceProvider serviceProvider)
+        public PermissionDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public Task<List<Dtos.PermissionDto>> LoadAsync(Guid menuId, CancellationToken cancellationToken)
+        protected override async Task<IReadOnlyDictionary<Guid, List<Dtos.PermissionDto>>> LoadBatchAsync(IReadOnlyList<Guid> menuIds, CancellationToken cancellationToken)
         {
-            // 检查缓存中是否已有结果
-            lock (_cacheLock)
-            {
-                if (_cache.TryGetValue(menuId, out var existingTask))
-                {
-                    return existingTask;
-                }
-
-                // 创建一个新的任务并添加到缓存
-                var task = LoadPermissionsAsync(menuId, cancellationToken);
-                _cache[menuId] = task;
-                return task;
-            }
-        }
-
-        private async Task<List<Dtos.PermissionDto>> LoadPermissionsAsync(Guid menuId, CancellationToken cancellationToken)
-        {
-            // 创建一个新的作用域，获取新的 IMenuRepository 实例
             using (var scope = _serviceProvider.CreateScope())
             {
                 var menuRepository = scope.ServiceProvider.GetRequiredService<IMenuRepository>();
                 var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-                var menu = await menuRepository.GetByIdWithPermissionsAsync(menuId);
-                if (menu == null)
+                var menus = await menuRepository.GetByIdsWithPermissionsAsync(menuIds.ToList());
+                var result = new Dictionary<Guid, List<Dtos.PermissionDto>>();
+
+                foreach (var menu in menus)
                 {
-                    return new List<Dtos.PermissionDto>();
+                    var permissions = menu.PermissionMenus.Select(pm => pm.Permission).ToList();
+                    result[menu.Id] = mapper.Map<List<Dtos.PermissionDto>>(permissions);
                 }
-                var permissions = menu.PermissionMenus.Select(pm => pm.Permission).ToList();
-                return mapper.Map<List<Dtos.PermissionDto>>(permissions);
+
+                // 确保所有请求的菜单都有结果
+                foreach (var menuId in menuIds)
+                {
+                    if (!result.ContainsKey(menuId))
+                    {
+                        result[menuId] = new List<Dtos.PermissionDto>();
+                    }
+                }
+
+                return result;
             }
         }
     }
 
-    public class UserRolesDataLoader
+    public class UserRolesDataLoader : BatchDataLoader<Guid, List<Role>>
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly Dictionary<Guid, Task<List<Role>>> _cache = new Dictionary<Guid, Task<List<Role>>>();
-        private readonly object _cacheLock = new object();
 
-        public UserRolesDataLoader(IServiceProvider serviceProvider)
+        public UserRolesDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public Task<List<Role>> LoadAsync(Guid userId, CancellationToken cancellationToken)
-        {
-            lock (_cacheLock)
-            {
-                if (_cache.TryGetValue(userId, out var existingTask))
-                {
-                    return existingTask;
-                }
-
-                var task = LoadRolesAsync(userId, cancellationToken);
-                _cache[userId] = task;
-                return task;
-            }
-        }
-
-        private async Task<List<Role>> LoadRolesAsync(Guid userId, CancellationToken cancellationToken)
+        protected override async Task<IReadOnlyDictionary<Guid, List<Role>>> LoadBatchAsync(IReadOnlyList<Guid> userIds, CancellationToken cancellationToken)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
                 var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-                var user = await userRepository.GetByIdWithRolesAsync(userId);
-                return user?.Roles.ToList() ?? new List<Role>();
+                var users = await userRepository.GetByIdsWithRolesAsync(userIds.ToList());
+                
+                var result = new Dictionary<Guid, List<Role>>();
+                foreach (var user in users)
+                {
+                    result[user.Id] = user.Roles.ToList();
+                }
+                
+                // 确保所有请求的用户都有结果
+                foreach (var userId in userIds)
+                {
+                    if (!result.ContainsKey(userId))
+                    {
+                        result[userId] = new List<Role>();
+                    }
+                }
+                
+                return result;
             }
         }
     }
 
-    public class RolePermissionsDataLoader
+    public class RolePermissionsDataLoader : BatchDataLoader<Guid, List<Permission>>
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly Dictionary<Guid, Task<List<Permission>>> _cache = new Dictionary<Guid, Task<List<Permission>>>();
-        private readonly object _cacheLock = new object();
 
-        public RolePermissionsDataLoader(IServiceProvider serviceProvider)
+        public RolePermissionsDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public Task<List<Permission>> LoadAsync(Guid roleId, CancellationToken cancellationToken)
-        {
-            lock (_cacheLock)
-            {
-                if (_cache.TryGetValue(roleId, out var existingTask))
-                {
-                    return existingTask;
-                }
-
-                var task = LoadPermissionsAsync(roleId, cancellationToken);
-                _cache[roleId] = task;
-                return task;
-            }
-        }
-
-        private async Task<List<Permission>> LoadPermissionsAsync(Guid roleId, CancellationToken cancellationToken)
+        protected override async Task<IReadOnlyDictionary<Guid, List<Permission>>> LoadBatchAsync(IReadOnlyList<Guid> roleIds, CancellationToken cancellationToken)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
                 var roleRepository = scope.ServiceProvider.GetRequiredService<IRoleRepository>();
-                var role = await roleRepository.GetRoleWithPermissionsAsync(roleId);
-                return role?.Permissions.ToList() ?? new List<Permission>();
+                var roles = await roleRepository.GetRolesWithPermissionsByIdsAsync(roleIds.ToList());
+                
+                var result = new Dictionary<Guid, List<Permission>>();
+                foreach (var role in roles)
+                {
+                    result[role.Id] = role.Permissions.ToList();
+                }
+                
+                // 确保所有请求的角色都有结果
+                foreach (var roleId in roleIds)
+                {
+                    if (!result.ContainsKey(roleId))
+                    {
+                        result[roleId] = new List<Permission>();
+                    }
+                }
+                
+                return result;
             }
         }
     }

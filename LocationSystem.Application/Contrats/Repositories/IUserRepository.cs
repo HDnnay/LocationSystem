@@ -10,5 +10,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task SaveRefreshToken(Guid id, string refreshToken);
         Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
         Task<User?> GetByIdWithRolesAsync(Guid userId);
+        Task<List<User>> GetByIdsWithRolesAsync(List<Guid> userIds);
     }
 }

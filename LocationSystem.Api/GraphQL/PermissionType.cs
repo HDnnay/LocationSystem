@@ -13,6 +13,8 @@ namespace LocationSystem.Api.GraphQL
             descriptor.Field(p => p.Description).Type<StringType>();
             descriptor.Field(p => p.CreatedAt).Type<NonNullType<DateTimeType>>();
             descriptor.Field(p => p.UpdatedAt).Type<DateTimeType>();
+            descriptor.Field(p => p.ParentId).Type<IdType>();
+            descriptor.Field(p => p.ChildPermissions).Type<ListType<PermissionType>>();
         }
     }
 }

@@ -55,11 +55,19 @@ namespace LocationSystem.Infrastructure.Repositories
 
         public async Task<Menu?> GetByIdWithPermissionsAsync(Guid id)
         {
-            // 获取菜单，并包含其权限信息
             return await _context.Menus
                 .Include(m => m.PermissionMenus)
-                    .ThenInclude(pm => pm.Permission)
+                .ThenInclude(pm => pm.Permission)
                 .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<List<Menu>> GetByIdsWithPermissionsAsync(List<Guid> menuIds)
+        {
+            return await _context.Menus
+                .Include(m => m.PermissionMenus)
+                .ThenInclude(pm => pm.Permission)
+                .Where(m => menuIds.Contains(m.Id))
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Menu>> GetByIdsAsync(IEnumerable<Guid> ids)
