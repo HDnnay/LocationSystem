@@ -1,17 +1,8 @@
-using HotChocolate;
-using HotChocolate.Types;
-using HotChocolate.DataLoader;
+using AutoMapper;
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Domain.Entities;
 using Dtos = LocationSystem.Application.Dtos;
 using MenuModels = LocationSystem.Application.Features.Menus.Models;
-using PermissionModels = LocationSystem.Application.Features.Permissions.Models;
-using UserModels = LocationSystem.Application.Features.Users.Models;
-using LocationSystem.Domain.Entities;
-using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LocationSystem.Api.GraphQL
 {
@@ -115,9 +106,14 @@ namespace LocationSystem.Api.GraphQL
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public MenuDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler)
+        public MenuDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler, GetOptions())
         {
             _serviceProvider = serviceProvider;
+        }
+
+        private static DataLoaderOptions GetOptions()
+        {
+            return new DataLoaderOptions();
         }
 
         protected override async Task<IReadOnlyDictionary<Guid, Menu>> LoadBatchAsync(IReadOnlyList<Guid> menuIds, CancellationToken cancellationToken)
@@ -151,9 +147,14 @@ namespace LocationSystem.Api.GraphQL
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public PermissionDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler)
+        public PermissionDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler, GetOptions())
         {
             _serviceProvider = serviceProvider;
+        }
+
+        private static DataLoaderOptions GetOptions()
+        {
+            return new DataLoaderOptions();
         }
 
         protected override async Task<IReadOnlyDictionary<Guid, List<Dtos.PermissionDto>>> LoadBatchAsync(IReadOnlyList<Guid> menuIds, CancellationToken cancellationToken)
@@ -190,9 +191,14 @@ namespace LocationSystem.Api.GraphQL
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public UserRolesDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler)
+        public UserRolesDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler, GetOptions())
         {
             _serviceProvider = serviceProvider;
+        }
+
+        private static DataLoaderOptions GetOptions()
+        {
+            return new DataLoaderOptions();
         }
 
         protected override async Task<IReadOnlyDictionary<Guid, List<Role>>> LoadBatchAsync(IReadOnlyList<Guid> userIds, CancellationToken cancellationToken)
@@ -201,13 +207,13 @@ namespace LocationSystem.Api.GraphQL
             {
                 var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
                 var users = await userRepository.GetByIdsWithRolesAsync(userIds.ToList());
-                
+
                 var result = new Dictionary<Guid, List<Role>>();
                 foreach (var user in users)
                 {
                     result[user.Id] = user.Roles.ToList();
                 }
-                
+
                 // 确保所有请求的用户都有结果
                 foreach (var userId in userIds)
                 {
@@ -216,7 +222,7 @@ namespace LocationSystem.Api.GraphQL
                         result[userId] = new List<Role>();
                     }
                 }
-                
+
                 return result;
             }
         }
@@ -226,9 +232,14 @@ namespace LocationSystem.Api.GraphQL
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public RolePermissionsDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler)
+        public RolePermissionsDataLoader(IBatchScheduler batchScheduler, IServiceProvider serviceProvider) : base(batchScheduler, GetOptions())
         {
             _serviceProvider = serviceProvider;
+        }
+
+        private static DataLoaderOptions GetOptions()
+        {
+            return new DataLoaderOptions();
         }
 
         protected override async Task<IReadOnlyDictionary<Guid, List<Permission>>> LoadBatchAsync(IReadOnlyList<Guid> roleIds, CancellationToken cancellationToken)
@@ -237,13 +248,13 @@ namespace LocationSystem.Api.GraphQL
             {
                 var roleRepository = scope.ServiceProvider.GetRequiredService<IRoleRepository>();
                 var roles = await roleRepository.GetRolesWithPermissionsByIdsAsync(roleIds.ToList());
-                
+
                 var result = new Dictionary<Guid, List<Permission>>();
                 foreach (var role in roles)
                 {
                     result[role.Id] = role.Permissions.ToList();
                 }
-                
+
                 // 确保所有请求的角色都有结果
                 foreach (var roleId in roleIds)
                 {
@@ -252,7 +263,7 @@ namespace LocationSystem.Api.GraphQL
                         result[roleId] = new List<Permission>();
                     }
                 }
-                
+
                 return result;
             }
         }

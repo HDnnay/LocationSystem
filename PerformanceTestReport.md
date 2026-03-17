@@ -13,31 +13,31 @@
 #### Concurrency: 1
 | Metric | Value |
 |--------|-------|
-| Average Response Time | 22.5 ms |
-| Minimum Response Time | 9 ms |
-| Maximum Response Time | 117 ms |
-| P95 Response Time | 117 ms |
-| Throughput | 44.44 req/s |
+| Average Response Time | 47.4 ms |
+| Minimum Response Time | 14 ms |
+| Maximum Response Time | 483 ms |
+| P95 Response Time | 483 ms |
+| Throughput | 21.1 req/s |
 | Success Rate | 100% |
 | Errors | 0 |
 #### Concurrency: 5
 | Metric | Value |
 |--------|-------|
-| Average Response Time | 18 ms |
-| Minimum Response Time | 11 ms |
-| Maximum Response Time | 56 ms |
-| P95 Response Time | 56 ms |
-| Throughput | 55.56 req/s |
+| Average Response Time | 15.95 ms |
+| Minimum Response Time | 12 ms |
+| Maximum Response Time | 33 ms |
+| P95 Response Time | 33 ms |
+| Throughput | 62.7 req/s |
 | Success Rate | 100% |
 | Errors | 0 |
 #### Concurrency: 10
 | Metric | Value |
 |--------|-------|
-| Average Response Time | 33.8 ms |
-| Minimum Response Time | 13 ms |
-| Maximum Response Time | 151 ms |
-| P95 Response Time | 151 ms |
-| Throughput | 29.59 req/s |
+| Average Response Time | 21.85 ms |
+| Minimum Response Time | 10 ms |
+| Maximum Response Time | 142 ms |
+| P95 Response Time | 142 ms |
+| Throughput | 45.77 req/s |
 | Success Rate | 100% |
 | Errors | 0 |
 
@@ -45,31 +45,31 @@
 #### Concurrency: 1
 | Metric | Value |
 |--------|-------|
-| Average Response Time | 34.6 ms |
-| Minimum Response Time | 17 ms |
-| Maximum Response Time | 103 ms |
-| P95 Response Time | 103 ms |
-| Throughput | 28.9 req/s |
+| Average Response Time | 116.15 ms |
+| Minimum Response Time | 35 ms |
+| Maximum Response Time | 1341 ms |
+| P95 Response Time | 1341 ms |
+| Throughput | 8.61 req/s |
 | Success Rate | 100% |
 | Errors | 0 |
 #### Concurrency: 5
 | Metric | Value |
 |--------|-------|
-| Average Response Time | 24.35 ms |
-| Minimum Response Time | 17 ms |
-| Maximum Response Time | 54 ms |
-| P95 Response Time | 54 ms |
-| Throughput | 41.07 req/s |
+| Average Response Time | 33.65 ms |
+| Minimum Response Time | 21 ms |
+| Maximum Response Time | 56 ms |
+| P95 Response Time | 56 ms |
+| Throughput | 29.72 req/s |
 | Success Rate | 100% |
 | Errors | 0 |
 #### Concurrency: 10
 | Metric | Value |
 |--------|-------|
-| Average Response Time | 27.3 ms |
-| Minimum Response Time | 17 ms |
-| Maximum Response Time | 57 ms |
-| P95 Response Time | 57 ms |
-| Throughput | 36.63 req/s |
+| Average Response Time | 45.25 ms |
+| Minimum Response Time | 24 ms |
+| Maximum Response Time | 185 ms |
+| P95 Response Time | 185 ms |
+| Throughput | 22.1 req/s |
 | Success Rate | 100% |
 | Errors | 0 |
 
@@ -79,18 +79,18 @@
 #### Concurrency: 1
 | Metric | RESTful API | GraphQL API | Difference | Difference % |
 |--------|-------------|-------------|------------|-------------|
-| Average Response Time | 22.5 ms | 34.6 ms | 12.1 ms | 53.78% |
-| Throughput | 44.44 req/s | 28.9 req/s | -15.54 req/s | -34.97% |
+| Average Response Time | 47.4 ms | 116.15 ms | 68.75 ms | 145.04% |
+| Throughput | 21.1 req/s | 8.61 req/s | -12.49 req/s | -59.19% |
 #### Concurrency: 5
 | Metric | RESTful API | GraphQL API | Difference | Difference % |
 |--------|-------------|-------------|------------|-------------|
-| Average Response Time | 18 ms | 24.35 ms | 6.35 ms | 35.28% |
-| Throughput | 55.56 req/s | 41.07 req/s | -14.49 req/s | -26.08% |
+| Average Response Time | 15.95 ms | 33.65 ms | 17.7 ms | 110.97% |
+| Throughput | 62.7 req/s | 29.72 req/s | -32.98 req/s | -52.6% |
 #### Concurrency: 10
 | Metric | RESTful API | GraphQL API | Difference | Difference % |
 |--------|-------------|-------------|------------|-------------|
-| Average Response Time | 33.8 ms | 27.3 ms | -6.5 ms | -19.23% |
-| Throughput | 29.59 req/s | 36.63 req/s | 7.04 req/s | 23.79% |
+| Average Response Time | 21.85 ms | 45.25 ms | 23.4 ms | 107.09% |
+| Throughput | 45.77 req/s | 22.1 req/s | -23.67 req/s | -51.72% |
 
 ## Conclusion
 
