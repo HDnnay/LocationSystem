@@ -3,6 +3,7 @@ using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.UserRolePermissions;
+using AutoMapper;
 
 namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
 {
@@ -11,12 +12,14 @@ namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CreateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
+        public CreateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<RoleDto> Handle(CreateRoleCommand request)
@@ -69,15 +72,7 @@ namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
             }
 
             // 返回DTO
-            return new RoleDto
-            {
-                Id = role.Id,
-                Name = role.Name,
-                Code = role.Code,
-                Description = role.Description,
-                CreatedAt = role.CreatedAt,
-                UpdatedAt = role.UpdatedAt
-            };
+            return _mapper.Map<RoleDto>(role);
         }
     }
 }

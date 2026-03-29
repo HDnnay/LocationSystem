@@ -1,8 +1,9 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
-using LocationSystem.Application.Features.Menus.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Menus;
+using AutoMapper;
 
 namespace LocationSystem.Application.Features.Menus.Commands.CreateMenu
 {
@@ -10,11 +11,13 @@ namespace LocationSystem.Application.Features.Menus.Commands.CreateMenu
     {
         private readonly IMenuRepository _menuRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public CreateMenuCommandHandler(IMenuRepository menuRepository, IUnitOfWork unitOfWork)
+        public CreateMenuCommandHandler(IMenuRepository menuRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _menuRepository = menuRepository;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<MenuDto> Handle(CreateMenuCommand command)
@@ -29,15 +32,7 @@ namespace LocationSystem.Application.Features.Menus.Commands.CreateMenu
             await _unitOfWork.BeginTransactionAsync();
             var createdMenu = await _menuRepository.AddAsync(menu);
             await _unitOfWork.CommitAsync();
-            return new MenuDto
-            {
-                Id = createdMenu.Id,
-                Name = createdMenu.Name,
-                Path = createdMenu.Path,
-                Icon = createdMenu.Icon,
-                Order = createdMenu.Order,
-                ParentId = createdMenu.ParentId
-            };
+            return _mapper.Map<MenuDto>(createdMenu);
         }
     }
 }

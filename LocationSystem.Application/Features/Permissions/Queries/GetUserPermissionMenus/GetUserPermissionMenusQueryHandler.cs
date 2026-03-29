@@ -1,4 +1,4 @@
-using LocationSystem.Application.Features.Permissions.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Services;
 using LocationSystem.Application.Utilities;
 

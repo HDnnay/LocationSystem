@@ -1,17 +1,20 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Features.Menus.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
+using AutoMapper;
 
 namespace LocationSystem.Application.Features.Menus.Commands.UpdateMenu
 {
     public class UpdateMenuCommandHandler : IRequestHandler<UpdateMenuCommand, MenuDto>
     {
         private readonly IMenuRepository _menuRepository;
+        private readonly IMapper _mapper;
 
-        public UpdateMenuCommandHandler(IMenuRepository menuRepository)
+        public UpdateMenuCommandHandler(IMenuRepository menuRepository, IMapper mapper)
         {
             _menuRepository = menuRepository;
+            _mapper = mapper;
         }
 
         public async Task<MenuDto> Handle(UpdateMenuCommand command)
@@ -31,15 +34,7 @@ namespace LocationSystem.Application.Features.Menus.Commands.UpdateMenu
             );
 
             await _menuRepository.UpdateAsync(menu);
-            return new MenuDto
-            {
-                Id = menu.Id,
-                Name = menu.Name,
-                Path = menu.Path,
-                Icon = menu.Icon,
-                Order = menu.Order,
-                ParentId = menu.ParentId
-            };
+            return _mapper.Map<MenuDto>(menu);
         }
     }
 }

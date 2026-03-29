@@ -1,6 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
-using LocationSystem.Application.Features.Users.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.Factories;

@@ -1,4 +1,4 @@
-using LocationSystem.Application.Features.Permissions.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermissionMenus

@@ -1,5 +1,8 @@
 using HotChocolate;
 using HotChocolate.Data;
+using HotChocolate.Data.Filters;
+using HotChocolate.Data.Pagination;
+using HotChocolate.Data.Sorting;
 using LocationSystem.Api.GraphQL;
 using LocationSystem.Api.GraphQL.Commands;
 using LocationSystem.Api.GraphQL.DataLoaders;
@@ -28,7 +31,9 @@ namespace LocationSystem.Api.Extensions
               services
                   .AddGraphQLServer()
                   .AddQueryType<Query>()
-                  .AddMutationType<MutationType>()
+                  .AddMutationType<Mutation>()
+                  .AddSorting()
+                  .AddFiltering()
                   .AddTypes(
                       // 菜单相关
                       typeof(MenuType),
@@ -51,8 +56,6 @@ namespace LocationSystem.Api.Extensions
                       // 通用
                       typeof(SuccessResponseType)
                   );
-              // 注意：HotChocolate.Data 的 AddPaging、AddSorting 和 AddFiltering 方法可能在当前版本中不可用
-              // 我们已经在 Query 类中使用了 [UsePaging]、[UseSorting] 和 [UseFiltering] 特性
             
             return services;
         }

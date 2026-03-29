@@ -1,4 +1,4 @@
-using LocationSystem.Application.Features.Menus.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Menus.Commands.CreateMenu

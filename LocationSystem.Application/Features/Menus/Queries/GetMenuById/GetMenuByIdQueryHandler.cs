@@ -1,16 +1,19 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Features.Menus.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
+using AutoMapper;
 
 namespace LocationSystem.Application.Features.Menus.Queries.GetMenuById
 {
     public class GetMenuByIdQueryHandler : IRequestHandler<GetMenuByIdQuery, MenuDto?>
     {
         private readonly IMenuRepository _menuRepository;
+        private readonly IMapper _mapper;
 
-        public GetMenuByIdQueryHandler(IMenuRepository menuRepository)
+        public GetMenuByIdQueryHandler(IMenuRepository menuRepository, IMapper mapper)
         {
             _menuRepository = menuRepository;
+            _mapper = mapper;
         }
 
         public async Task<MenuDto?> Handle(GetMenuByIdQuery query)
@@ -21,15 +24,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetMenuById
                 return null;
             }
 
-            return new MenuDto
-            {
-                Id = menu.Id,
-                Name = menu.Name,
-                Path = menu.Path,
-                Icon = menu.Icon,
-                Order = menu.Order,
-                ParentId = menu.ParentId
-            };
+            return _mapper.Map<MenuDto>(menu);
         }
     }
 }

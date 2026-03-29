@@ -2,14 +2,13 @@ using AutoMapper;
 using HotChocolate.Data;
 using LocationSystem.Application.Contrats;
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using Dtos = LocationSystem.Application.Dtos;
-using MenuModels = LocationSystem.Application.Features.Menus.Models;
 using LocationSystem.Api.GraphQL.Types;
-using LocationSystem.Application.Features.Articles.Models;
 
 namespace LocationSystem.Api.GraphQL
 {
@@ -54,10 +53,10 @@ namespace LocationSystem.Api.GraphQL
 
         [GraphQLDescription("获取菜单树形结构")]
         [GraphQLType(typeof(ListType<MenuType>))]
-        public async Task<List<MenuModels.MenuDto>> GetMenuTree()
+        public async Task<List<Dtos.MenuDto>> GetMenuTree()
         {
             var menus = await _menuRepository.GetMenuTreeAsync();
-            return _mapper.Map<List<MenuModels.MenuDto>>(menus);
+            return _mapper.Map<List<Dtos.MenuDto>>(menus);
         }
 
         [GraphQLDescription("获取用户列表")]
@@ -110,9 +109,9 @@ namespace LocationSystem.Api.GraphQL
             return _mapper.Map<List<Dtos.PermissionDto>>(permissions);
         }
 
-        [UsePaging(IncludeTotalCount = true)] // 启用分页并包含总记录数
-        [UseSorting] // 启用排序
-        [UseFiltering] // 启用过滤
+        [UsePaging(IncludeTotalCount = true)]
+        [UseSorting]
+        [UseFiltering]
         [GraphQLDescription("获取文章列表")]
         public IQueryable<Domain.Entities.Articles.Article> GetArticles()
         {
@@ -121,7 +120,7 @@ namespace LocationSystem.Api.GraphQL
 
         [GraphQLDescription("获取文章详情")]
         [GraphQLType(typeof(ArticleType))]
-        public async Task<Application.Features.Articles.Models.ArticleDto> GetArticle(
+        public async Task<Dtos.ArticleDto> GetArticle(
             [GraphQLDescription("文章ID")] Guid id)
         {
             var article = await _articleRepository.GetByIdAsync(id, true);
@@ -129,7 +128,7 @@ namespace LocationSystem.Api.GraphQL
             {
                 throw new Exception($"文章不存在，ID: {id}");
             }
-            return _mapper.Map<Application.Features.Articles.Models.ArticleDto>(article);
+            return _mapper.Map<Dtos.ArticleDto>(article);
         }
     }
 

@@ -2,12 +2,11 @@ using HotChocolate.Types;
 using LocationSystem.Api.GraphQL.Commands;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats;
-using LocationSystem.Application.Features.Articles.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Menus.Commands.AssignPermissionsToMenu;
 using LocationSystem.Application.Features.Menus.Commands.CreateMenu;
 using LocationSystem.Application.Features.Menus.Commands.DeleteMenu;
 using LocationSystem.Application.Features.Menus.Commands.UpdateMenu;
-using LocationSystem.Application.Features.Menus.Models;
 using LocationSystem.Application.Features.Roles.Commands.CreateRole;
 using LocationSystem.Application.Features.Roles.Commands.DeleteRole;
 using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
@@ -15,7 +14,6 @@ using LocationSystem.Application.Features.Users.Commands.AssignRoles;
 using LocationSystem.Application.Features.Users.Commands.CreateUser;
 using LocationSystem.Application.Features.Users.Commands.DeleteUser;
 using LocationSystem.Application.Features.Users.Commands.UpdateUser;
-using LocationSystem.Application.Features.Users.Models;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Articles;
 using System.Collections.Generic;
@@ -158,12 +156,12 @@ namespace LocationSystem.Api.GraphQL
         }
 
         // 菜单相关操作
-        public async Task<MenuDto> CreateMenu(CreateMenuCommand command)
+        public async Task<Dtos.MenuDto> CreateMenu(CreateMenuCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<MenuDto> UpdateMenu(Guid id, UpdateMenuCommand command)
+        public async Task<Dtos.MenuDto> UpdateMenu(Guid id, UpdateMenuCommand command)
         {
             command.Id = id;
             return await _mediator.Send(command);
@@ -189,7 +187,7 @@ namespace LocationSystem.Api.GraphQL
             return await _mediator.Send(command);
         }
 
-        public async Task<UserDto> UpdateUser(Guid id, UpdateUserCommand command)
+        public async Task<Dtos.UserDto> UpdateUser(Guid id, UpdateUserCommand command)
         {
             command.Id = id;
             return await _mediator.Send(command);
@@ -236,7 +234,7 @@ namespace LocationSystem.Api.GraphQL
         }
 
         // 文章相关操作
-        public async Task<ArticleDto> CreateArticle(string title, string content, bool isVisiable, Guid userId, string? topic, string? subtitle, List<Guid>? tagIds)
+        public async Task<Dtos.ArticleDto> CreateArticle(string title, string content, bool isVisiable, Guid userId, string? topic, string? subtitle, List<Guid>? tagIds)
         {
             var article = new Article(title, content, isVisiable, userId, topic, subtitle);
 
@@ -249,10 +247,10 @@ namespace LocationSystem.Api.GraphQL
             await _articleRepository.AddAsync(article);
             await _articleRepository.SaveChangesAsync();
 
-            return _mapper.Map<ArticleDto>(article);
+            return _mapper.Map<Dtos.ArticleDto>(article);
         }
 
-        public async Task<ArticleDto> UpdateArticle(Guid id, string title, string content, bool isVisiable, string? topic, string? subtitle, List<Guid>? tagIds)
+        public async Task<Dtos.ArticleDto> UpdateArticle(Guid id, string title, string content, bool isVisiable, string? topic, string? subtitle, List<Guid>? tagIds)
         {
             var article = await _articleRepository.GetByIdAsync(id);
             if (article == null)
@@ -272,7 +270,7 @@ namespace LocationSystem.Api.GraphQL
             await _articleRepository.UpdateAsync(article);
             await _articleRepository.SaveChangesAsync();
 
-            return _mapper.Map<ArticleDto>(article);
+            return _mapper.Map<Dtos.ArticleDto>(article);
         }
 
         public async Task<SuccessResponse> DeleteArticle(Guid id)

@@ -1,4 +1,7 @@
-namespace LocationSystem.Application.Features.Articles.Models
+using System;
+using System.Collections.Generic;
+
+namespace LocationSystem.Application.Dtos
 {
     public class ArticleDto
     {
@@ -12,7 +15,7 @@ namespace LocationSystem.Application.Features.Articles.Models
         public string? Topic { get; set; }
         public List<TagDto>? Tags { get; set; }
         public List<ArticleCommentDto>? Comments { get; set; }
-        public LocationSystem.Application.Features.Users.Models.UserDto? CreateUser { get; set; }
+        public UserDto? CreateUser { get; set; }
     }
 
     public class TagDto
@@ -29,6 +32,4 @@ namespace LocationSystem.Application.Features.Articles.Models
         public bool IsVisiable { get; set; }
         public DateTime CreateTiem { get; set; }
     }
-
-
 }

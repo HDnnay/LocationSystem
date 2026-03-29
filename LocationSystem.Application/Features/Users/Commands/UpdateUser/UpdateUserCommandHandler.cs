@@ -1,9 +1,10 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
-using LocationSystem.Application.Features.Users.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
+using AutoMapper;
 
 namespace LocationSystem.Application.Features.Users.Commands.UpdateUser
 {
@@ -11,11 +12,13 @@ namespace LocationSystem.Application.Features.Users.Commands.UpdateUser
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public UpdateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public UpdateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task<UserDto> Handle(UpdateUserCommand command)
@@ -43,19 +46,7 @@ namespace LocationSystem.Application.Features.Users.Commands.UpdateUser
                 // 提交事务
                 await _unitOfWork.CommitAsync();
 
-                return new UserDto
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Email = user.Email.Value,
-                    UserType = user.UserType.ToString(),
-                    Roles = user.Roles.Select(role => new RoleDto
-                    {
-                        Id = role.Id,
-                        Name = role.Name,
-                        Code = role.Code
-                    }).ToList()
-                };
+                return _mapper.Map<UserDto>(user);
             }
             catch (Exception)
             {

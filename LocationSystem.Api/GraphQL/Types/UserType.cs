@@ -1,5 +1,5 @@
 using HotChocolate.Types;
-using LocationSystem.Application.Features.Users.Models;
+using LocationSystem.Application.Dtos;
 
 namespace LocationSystem.Api.GraphQL.Types
 {
@@ -7,6 +7,7 @@ namespace LocationSystem.Api.GraphQL.Types
     {
         protected override void Configure(IObjectTypeDescriptor<UserDto> descriptor)
         {
+            descriptor.Name("AppUserDto");
             descriptor.Field(u => u.Id).Type<NonNullType<IdType>>();
             descriptor.Field(u => u.Name).Type<NonNullType<StringType>>();
             descriptor.Field(u => u.Email).Type<NonNullType<StringType>>();

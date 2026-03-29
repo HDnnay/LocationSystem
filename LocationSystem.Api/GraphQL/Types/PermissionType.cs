@@ -7,6 +7,7 @@ namespace LocationSystem.Api.GraphQL.Types
     {
         protected override void Configure(IObjectTypeDescriptor<PermissionDto> descriptor)
         {
+            descriptor.Name("AppPermissionDto");
             descriptor.Field(p => p.Id).Type<NonNullType<IdType>>();
             descriptor.Field(p => p.Name).Type<NonNullType<StringType>>();
             descriptor.Field(p => p.Code).Type<NonNullType<StringType>>();

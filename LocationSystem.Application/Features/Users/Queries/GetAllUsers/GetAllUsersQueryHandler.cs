@@ -1,5 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Features.Users.Models;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities;

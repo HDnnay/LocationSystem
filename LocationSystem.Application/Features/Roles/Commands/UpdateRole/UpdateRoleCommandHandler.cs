@@ -5,6 +5,7 @@ using LocationSystem.Application.Events;
 using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
+using AutoMapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +20,15 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventBus _eventBus;
+        private readonly IMapper _mapper;
 
-        public UpdateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork, IEventBus eventBus)
+        public UpdateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork, IEventBus eventBus, IMapper mapper)
         {
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
             _unitOfWork = unitOfWork;
             _eventBus = eventBus;
+            _mapper = mapper;
         }
 
         public async Task<RoleDto> Handle(UpdateRoleCommand request)
@@ -85,24 +88,7 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
             }
 
             // 返回更新后的角色
-            return new RoleDto
-            {
-                Id = role.Id,
-                Name = role.Name,
-                Code = role.Code,
-                Description = role.Description,
-                CreatedAt = role.CreatedAt,
-                UpdatedAt = role.UpdatedAt,
-                Permissions = role.Permissions.Select(p => new PermissionDto
-                {
-                    Id = p.Id,
-                    Name = p.Name,
-                    Code = p.Code,
-                    Description = p.Description,
-                    CreatedAt = p.CreatedAt,
-                    UpdatedAt = p.UpdatedAt
-                }).ToList()
-            };
+            return _mapper.Map<RoleDto>(role);
         }
     }
 }

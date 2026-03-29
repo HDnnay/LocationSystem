@@ -1,5 +1,5 @@
 using HotChocolate.Types;
-using LocationSystem.Application.Features.Menus.Models;
+using LocationSystem.Application.Dtos;
 
 namespace LocationSystem.Api.GraphQL.Types
 {
@@ -7,6 +7,7 @@ namespace LocationSystem.Api.GraphQL.Types
     {
         protected override void Configure(IObjectTypeDescriptor<MenuDto> descriptor)
         {
+            descriptor.Name("AppMenuDto");
             descriptor.Field(m => m.Id).Type<IdType>();
             descriptor.Field(m => m.Name).Type<StringType>();
             descriptor.Field(m => m.Path).Type<StringType>();
