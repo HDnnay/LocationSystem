@@ -1,6 +1,7 @@
 using HotChocolate.Types;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Domain.Entities;
+using LocationSystem.Api.GraphQL.DataLoaders;
 using AutoMapper;
 using System.Collections.Generic;
 using System.Threading;

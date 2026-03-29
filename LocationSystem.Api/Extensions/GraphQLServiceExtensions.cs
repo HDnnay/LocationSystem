@@ -1,5 +1,6 @@
 using HotChocolate;
 using LocationSystem.Api.GraphQL;
+using LocationSystem.Api.GraphQL.DataLoaders;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LocationSystem.Api.Extensions

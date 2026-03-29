@@ -1,5 +1,6 @@
 using HotChocolate.Types;
 using LocationSystem.Application.Features.Menus.Models;
+using LocationSystem.Api.GraphQL.DataLoaders;
 using System.Threading;
 using System.Threading.Tasks;
 
