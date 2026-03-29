@@ -35,7 +35,7 @@ namespace LocationSystem.Domain.Entities.Articles
         [Description("主题")]
         public string? Topic { get; private set; }
         [Description("标签")]
-        public virtual ICollection<Tag>? Tags { get; private set; }
+        public virtual ICollection<ArticleTag>? Tags { get; private set; }
         [Description("评论")]
         public virtual ICollection<ArticleComment>? Comments { get; private set; }
         [Description("创建者")]
@@ -53,7 +53,7 @@ namespace LocationSystem.Domain.Entities.Articles
         }
 
         // 添加更新标签方法
-        public void UpdateTags(ICollection<Tag> tags)
+        public void UpdateTags(List<ArticleTag> tags)
         {
             Tags = tags;
         }

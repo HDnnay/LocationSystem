@@ -39,7 +39,24 @@ namespace LocationSystem.Api.BackgroudServices
                     }
                     else
                     {
-                        Console.WriteLine("数据库中已存在超级管理员，跳过初始化");
+                        Console.WriteLine("数据库中已存在超级管理员，跳过基础数据初始化");
+                        // 检查是否已有文章数据
+                        var hasArticles = await dbContext.Articles.AnyAsync(stoppingToken);
+                        if (!hasArticles)
+                        {
+                            Console.WriteLine("正在初始化文章数据...");
+                            // 获取超级管理员用户
+                            var adminUser = await dbContext.Users.FirstOrDefaultAsync(u => u.UserType == UserType.Admin, stoppingToken);
+                            if (adminUser != null)
+                            {
+                                await SeedData.InitializeArticleDataAsync(dbContext, adminUser);
+                                Console.WriteLine("文章数据初始化完成");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("数据库中已存在文章数据，跳过文章数据初始化");
+                        }
                     }
                 }
             }

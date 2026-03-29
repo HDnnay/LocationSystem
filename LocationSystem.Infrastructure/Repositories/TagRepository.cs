@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
-    public class TagRepository : Repository<Tag>, ITagRepository
+    public class TagRepository : Repository<ArticleTag>, ITagRepository
     {
         private readonly AppDbContext _context;
 
@@ -13,9 +13,9 @@ namespace LocationSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Tag>> GetByIdsAsync(IEnumerable<Guid> ids)
+        public async Task<IEnumerable<ArticleTag>> GetByIdsAsync(IEnumerable<Guid> ids)
         {
-            return await _context.Tags
+            return await _context.ArticleTags
                 .Where(t => ids.Contains(t.Id))
                 .ToListAsync();
         }

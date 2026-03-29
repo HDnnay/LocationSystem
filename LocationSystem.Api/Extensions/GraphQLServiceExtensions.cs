@@ -1,5 +1,4 @@
 using HotChocolate;
-using LocationSystem.Application.Contrats.Repositories;
 using HotChocolate.Data;
 using HotChocolate.Data.Filters;
 using HotChocolate.Data.Pagination;

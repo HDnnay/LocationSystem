@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Api.GraphQL.DataLoaders
 {
-    public class ArticleTagsDataLoader : BatchDataLoader<Guid, ICollection<LocationSystem.Domain.Entities.Articles.Tag>>
+    public class ArticleTagsDataLoader : BatchDataLoader<Guid, ICollection<LocationSystem.Domain.Entities.Articles.ArticleTag>>
     {
         private readonly IServiceProvider _serviceProvider;
 
@@ -19,28 +19,16 @@ namespace LocationSystem.Api.GraphQL.DataLoaders
             _serviceProvider = serviceProvider;
         }
 
-        protected override async Task<IReadOnlyDictionary<Guid, ICollection<LocationSystem.Domain.Entities.Articles.Tag>>> LoadBatchAsync(
+        protected override async Task<IReadOnlyDictionary<Guid, ICollection<LocationSystem.Domain.Entities.Articles.ArticleTag>>> LoadBatchAsync(
             IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
         {
             using var scope = _serviceProvider.CreateScope();
             var articleRepository = scope.ServiceProvider.GetRequiredService<IArticleRepository>();
 
-            var result = new Dictionary<Guid, ICollection<LocationSystem.Domain.Entities.Articles.Tag>>();
+            // 批量获取文章的标签
+            var tagsByArticleId = await articleRepository.GetTagsByArticleIdsAsync(keys.ToList());
 
-            foreach (var id in keys)
-            {
-                var article = await articleRepository.GetByIdAsync(id, true);
-                if (article != null)
-                {
-                    result[id] = article.Tags ?? new List<LocationSystem.Domain.Entities.Articles.Tag>();
-                }
-                else
-                {
-                    result[id] = new List<LocationSystem.Domain.Entities.Articles.Tag>();
-                }
-            }
-
-            return result;
+            return tagsByArticleId;
         }
     }
 }

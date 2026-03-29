@@ -1,16 +1,12 @@
 using AutoMapper;
-using HotChocolate.Data;
-using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
-using LocationSystem.Application.Features.Articles.Queries.GetArticles;
-using LocationSystem.Application.Features.Articles.Queries.GetArticle;
-using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities.Articles;
-using LocationSystem.Domain.Entities.Menus;
-using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Api.GraphQL.DataLoaders;
-using Dtos = LocationSystem.Application.Dtos;
 using LocationSystem.Api.GraphQL.Types;
+using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Features.Articles.Queries.GetArticle;
+using LocationSystem.Application.Features.Articles.Queries.GetArticles;
+using LocationSystem.Application.Utilities;
+using LocationSystem.Domain.Entities.Menus;
+using Dtos = LocationSystem.Application.Dtos;
 
 namespace LocationSystem.Api.GraphQL
 {
@@ -115,10 +111,12 @@ namespace LocationSystem.Api.GraphQL
         [UseSorting]
         [UseFiltering]
         [GraphQLDescription("获取文章列表")]
-        public async Task<IQueryable<Domain.Entities.Articles.Article>> GetArticles(
-            [GraphQLDescription("分页参数")] LocationSystem.Application.Utilities.PaginationInput? pagination = null)
+        public async Task<IQueryable<Dtos.ArticleDto>> GetArticles(
+            [GraphQLDescription("排序字段")] string? sortBy = null,
+            [GraphQLDescription("是否降序排序")] bool? sortDescending = null)
         {
-            return await _mediator.Send(new GetArticlesQuery { Pagination = pagination });
+            var articles = await _mediator.Send(new GetArticlesQuery { SortBy = sortBy, SortDescending = sortDescending });
+            return articles.Select(a => _mapper.Map<Dtos.ArticleDto>(a)).AsQueryable();
         }
 
         [GraphQLDescription("获取文章详情")]

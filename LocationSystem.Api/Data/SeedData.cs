@@ -1,3 +1,4 @@
+using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
@@ -154,6 +155,75 @@ namespace LocationSystem.Api.Data
                 adminUser.AddRole(adminRole);
                 await dbContext.SaveChangesAsync();
             }
+
+            // 8. 初始化文章相关数据
+            await InitializeArticleDataAsync(dbContext, adminUser);
+        }
+
+        public static async Task InitializeArticleDataAsync(AppDbContext dbContext, User adminUser)
+        {
+            // 先清空现有文章相关数据，重新创建
+            dbContext.ArticleComments.RemoveRange(await dbContext.ArticleComments.ToListAsync());
+            dbContext.ArticleTags.RemoveRange(await dbContext.ArticleTags.ToListAsync());
+            dbContext.Articles.RemoveRange(await dbContext.Articles.ToListAsync());
+            await dbContext.SaveChangesAsync();
+
+            // 创建标签
+            var tags = new List<LocationSystem.Domain.Entities.Articles.ArticleTag>
+            {
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "技术", IsVisiable = true, CreateTiem = DateTime.Now },
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "生活", IsVisiable = true, CreateTiem = DateTime.Now },
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "工作", IsVisiable = true, CreateTiem = DateTime.Now },
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "学习", IsVisiable = true, CreateTiem = DateTime.Now },
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "娱乐", IsVisiable = true, CreateTiem = DateTime.Now }
+            };
+
+            foreach (var tag in tags)
+            {
+                await dbContext.ArticleTags.AddAsync(tag);
+            }
+            await dbContext.SaveChangesAsync();
+
+            // 创建文章
+            var articles = new List<Article>
+            {
+                new Article("技术文章1", "技术文章内容", true, adminUser.Id, "技术主题", "这是一篇技术文章"),
+                new Article("生活文章1", "生活文章内容", true, adminUser.Id, "生活主题", "这是一篇生活文章"),
+                new Article("工作文章1", "工作文章内容", true, adminUser.Id, "工作主题", "这是一篇工作文章"),
+                new Article("学习文章1", "学习文章内容", true, adminUser.Id, "学习主题", "这是一篇学习文章"),
+                new Article("娱乐文章1", "娱乐文章内容", true, adminUser.Id, "娱乐主题", "这是一篇娱乐文章")
+            };
+
+            foreach (var article in articles)
+            {
+                await dbContext.Articles.AddAsync(article);
+            }
+            await dbContext.SaveChangesAsync();
+
+            // 为文章添加标签
+            articles[0].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[0], tags[3] });
+            articles[1].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[1], tags[4] });
+            articles[2].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[2], tags[3] });
+            articles[3].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[3] });
+            articles[4].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[4] });
+
+            await dbContext.SaveChangesAsync();
+
+            // 创建评论
+            var comments = new List<ArticleComment>
+            {
+                new ArticleComment(adminUser.Id, "这是一条评论1", true, articles[0].Id),
+                new ArticleComment(adminUser.Id, "这是一条评论2", true, articles[0].Id),
+                new ArticleComment(adminUser.Id, "这是一条评论3", true, articles[1].Id),
+                new ArticleComment(adminUser.Id, "这是一条评论4", true, articles[2].Id),
+                new ArticleComment(adminUser.Id, "这是一条评论5", true, articles[3].Id)
+            };
+
+            foreach (var comment in comments)
+            {
+                await dbContext.ArticleComments.AddAsync(comment);
+            }
+            await dbContext.SaveChangesAsync();
         }
     }
 }

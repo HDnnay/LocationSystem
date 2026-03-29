@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Contrats.Repositories
 {
-    public interface ITagRepository : IRepository<Tag>
+    public interface ITagRepository : IRepository<ArticleTag>
     {
-        Task<IEnumerable<Tag>> GetByIdsAsync(IEnumerable<Guid> ids);
+        Task<IEnumerable<ArticleTag>> GetByIdsAsync(IEnumerable<Guid> ids);
     }
 }

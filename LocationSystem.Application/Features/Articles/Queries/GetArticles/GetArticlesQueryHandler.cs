@@ -21,10 +21,10 @@ namespace LocationSystem.Application.Features.Articles.Queries.GetArticles
             var query = _articleRepository.GetAllQueryable();
 
             // 处理排序
-            if (!string.IsNullOrEmpty(request.Pagination?.SortBy))
+            if (!string.IsNullOrEmpty(request.SortBy))
             {
-                var sortBy = request.Pagination.SortBy;
-                var sortDescending = request.Pagination.SortDescending ?? false;
+                var sortBy = request.SortBy;
+                var sortDescending = request.SortDescending ?? false;
 
                 // 根据排序字段进行排序
                 switch (sortBy.ToLower())

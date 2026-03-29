@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace LocationSystem.Domain.Entities.Articles
 {
-    public class Tag : IEntity
+    public class ArticleTag : IEntity
     {
         public Guid Id { get; set; }
         public DateTime CreateTiem { get; set; }

@@ -1,11 +1,11 @@
-using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Application.Utilities;
-using System;
+using LocationSystem.Domain.Entities.Articles;
 
 namespace LocationSystem.Application.Features.Articles.Queries.GetArticles
 {
     public class GetArticlesQuery : IRequest<IQueryable<Article>>
     {
-        public PaginationInput? Pagination { get; set; }
+        public string? SortBy { get; set; }
+        public bool? SortDescending { get; set; }
     }
 }

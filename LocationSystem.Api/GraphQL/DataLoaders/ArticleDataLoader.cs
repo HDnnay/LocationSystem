@@ -25,16 +25,11 @@ namespace LocationSystem.Api.GraphQL.DataLoaders
             using var scope = _serviceProvider.CreateScope();
             var articleRepository = scope.ServiceProvider.GetRequiredService<IArticleRepository>();
 
-            var result = new Dictionary<Guid, Article>();
-
-            foreach (var id in keys)
-            {
-                var article = await articleRepository.GetByIdAsync(id, true);
-                if (article != null)
-                {
-                    result[id] = article;
-                }
-            }
+            // 批量加载文章，不加载关联数据
+            var articles = await articleRepository.GetByIdsAsync(keys.ToList());
+            
+            // 将结果映射到字典
+            var result = articles.ToDictionary(article => article.Id);
 
             return result;
         }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using LocationSystem.Application.Dtos;
+using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 
@@ -27,6 +28,11 @@ namespace LocationSystem.Api.Mappings
 
             // 权限映射
             CreateMap<Permission, PermissionDto>();
+
+            // 文章映射
+            CreateMap<Article, ArticleDto>();
+            CreateMap<ArticleTag, TagDto>();
+            CreateMap<ArticleComment, ArticleCommentDto>();
         }
     }
 }
