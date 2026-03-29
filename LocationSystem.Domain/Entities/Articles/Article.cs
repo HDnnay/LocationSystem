@@ -6,6 +6,20 @@ namespace LocationSystem.Domain.Entities.Articles
 {
     public class Article : IEntityVisiable
     {
+        private Article()
+        {
+            Id = Guid.NewGuid();
+            CreateTiem = DateTime.Now;
+        }
+        public Article(string title, string content, bool isVisiable, Guid userId, string topic, string subtitle = default)
+        {
+            Title = title;
+            Content = content;
+            Topic = topic;
+            Subtitle = subtitle;
+            IsVisiable = isVisiable;
+            UserId = userId;
+        }
         public Guid Id { get; private set; }
         public DateTime CreateTiem { get; private set; }
         [Description("内容")]
@@ -24,7 +38,9 @@ namespace LocationSystem.Domain.Entities.Articles
         public virtual ICollection<Tag>? Tags { get; private set; }
         [Description("评论")]
         public virtual ICollection<ArticleComment>? Comments { get; private set; }
+        [Description("创建者")]
 
-        public virtual User? User { get; set; }
+        public virtual User? CreateUser { get; set; }
+        public
     }
 }
