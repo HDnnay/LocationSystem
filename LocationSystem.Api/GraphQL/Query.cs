@@ -1,6 +1,5 @@
 using AutoMapper;
 using HotChocolate.Data;
-using LocationSystem.Application.Contrats;
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Domain.Entities.Articles;

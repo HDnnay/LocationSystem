@@ -1,4 +1,5 @@
 using HotChocolate;
+using LocationSystem.Application.Contrats.Repositories;
 using HotChocolate.Data;
 using HotChocolate.Data.Filters;
 using HotChocolate.Data.Pagination;
@@ -24,8 +25,6 @@ namespace LocationSystem.Api.Extensions
               services.AddScoped<PermissionDataLoader>();
               services.AddScoped<UserRolesDataLoader>();
               services.AddScoped<RolePermissionsDataLoader>();
-              services.AddScoped<IArticleRepository, ArticleRepository>();
-              services.AddScoped<ITagRepository, TagRepository>();
             
             // 配置 GraphQL 服务器
               services

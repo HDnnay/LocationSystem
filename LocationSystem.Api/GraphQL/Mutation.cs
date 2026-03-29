@@ -1,7 +1,7 @@
 using HotChocolate.Types;
 using LocationSystem.Api.GraphQL.Commands;
 using LocationSystem.Api.GraphQL.Types;
-using LocationSystem.Application.Contrats;
+using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Menus.Commands.AssignPermissionsToMenu;
 using LocationSystem.Application.Features.Menus.Commands.CreateMenu;
@@ -14,11 +14,14 @@ using LocationSystem.Application.Features.Users.Commands.AssignRoles;
 using LocationSystem.Application.Features.Users.Commands.CreateUser;
 using LocationSystem.Application.Features.Users.Commands.DeleteUser;
 using LocationSystem.Application.Features.Users.Commands.UpdateUser;
+using LocationSystem.Application.Features.Articles.Commands.CreateArticle;
+using LocationSystem.Application.Features.Articles.Commands.UpdateArticle;
+using LocationSystem.Application.Features.Articles.Commands.DeleteArticle;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities.Articles;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dtos = LocationSystem.Application.Dtos;
+using SuccessResponse = LocationSystem.Application.Utilities.SuccessResponse;
 
 namespace LocationSystem.Api.GraphQL
 {
@@ -108,28 +111,17 @@ namespace LocationSystem.Api.GraphQL
                 .Type<SuccessResponseType>();
 
             // 文章相关操作
-            descriptor.Field(m => m.CreateArticle(default!, default!, default!, default!, default!, default!, default!))
+            descriptor.Field(m => m.CreateArticle(default!))
                 .Name("createArticle")
                 .Description("创建文章")
-                .Argument("title", a => a.Type<NonNullType<StringType>>())
-                .Argument("content", a => a.Type<NonNullType<StringType>>())
-                .Argument("isVisiable", a => a.Type<NonNullType<BooleanType>>())
-                .Argument("userId", a => a.Type<NonNullType<IdType>>())
-                .Argument("topic", a => a.Type<StringType>())
-                .Argument("subtitle", a => a.Type<StringType>())
-                .Argument("tagIds", a => a.Type<ListType<IdType>>())
+                .Argument("command", a => a.Type<NonNullType<CreateArticleCommandType>>())
                 .Type<ArticleType>();
 
-            descriptor.Field(m => m.UpdateArticle(default!, default!, default!, default!, default!, default!, default!))
+            descriptor.Field(m => m.UpdateArticle(default!, default!))
                 .Name("updateArticle")
                 .Description("更新文章")
                 .Argument("id", a => a.Type<NonNullType<IdType>>())
-                .Argument("title", a => a.Type<NonNullType<StringType>>())
-                .Argument("content", a => a.Type<NonNullType<StringType>>())
-                .Argument("isVisiable", a => a.Type<NonNullType<BooleanType>>())
-                .Argument("topic", a => a.Type<StringType>())
-                .Argument("subtitle", a => a.Type<StringType>())
-                .Argument("tagIds", a => a.Type<ListType<IdType>>())
+                .Argument("command", a => a.Type<NonNullType<UpdateArticleCommandType>>())
                 .Type<ArticleType>();
 
             descriptor.Field(m => m.DeleteArticle(default!))
@@ -143,16 +135,10 @@ namespace LocationSystem.Api.GraphQL
     public class Mutation
     {
         private readonly IMediator _mediator;
-        private readonly IArticleRepository _articleRepository;
-        private readonly ITagRepository _tagRepository;
-        private readonly AutoMapper.IMapper _mapper;
 
-        public Mutation(IMediator mediator, IArticleRepository articleRepository, ITagRepository tagRepository, AutoMapper.IMapper mapper)
+        public Mutation(IMediator mediator)
         {
             _mediator = mediator;
-            _articleRepository = articleRepository;
-            _tagRepository = tagRepository;
-            _mapper = mapper;
         }
 
         // 菜单相关操作
@@ -234,57 +220,21 @@ namespace LocationSystem.Api.GraphQL
         }
 
         // 文章相关操作
-        public async Task<Dtos.ArticleDto> CreateArticle(string title, string content, bool isVisiable, Guid userId, string? topic, string? subtitle, List<Guid>? tagIds)
+        public async Task<Dtos.ArticleDto> CreateArticle(CreateArticleCommand command)
         {
-            var article = new Article(title, content, isVisiable, userId, topic, subtitle);
-
-            if (tagIds != null && tagIds.Any())
-            {
-                var tags = await _tagRepository.GetByIdsAsync(tagIds);
-                article.UpdateTags(tags.ToList());
-            }
-
-            await _articleRepository.AddAsync(article);
-            await _articleRepository.SaveChangesAsync();
-
-            return _mapper.Map<Dtos.ArticleDto>(article);
+            return await _mediator.Send(command);
         }
 
-        public async Task<Dtos.ArticleDto> UpdateArticle(Guid id, string title, string content, bool isVisiable, string? topic, string? subtitle, List<Guid>? tagIds)
+        public async Task<Dtos.ArticleDto> UpdateArticle(Guid id, UpdateArticleCommand command)
         {
-            var article = await _articleRepository.GetByIdAsync(id);
-            if (article == null)
-            {
-                throw new Exception($"文章不存在，ID: {id}");
-            }
-
-            // 使用 Article 实体的 Update 方法更新属性
-            article.Update(title, content, isVisiable, topic, subtitle);
-
-            if (tagIds != null)
-            {
-                var tags = await _tagRepository.GetByIdsAsync(tagIds);
-                article.UpdateTags(tags.ToList());
-            }
-
-            await _articleRepository.UpdateAsync(article);
-            await _articleRepository.SaveChangesAsync();
-
-            return _mapper.Map<Dtos.ArticleDto>(article);
+            command.Id = id;
+            return await _mediator.Send(command);
         }
 
         public async Task<SuccessResponse> DeleteArticle(Guid id)
         {
-            var article = await _articleRepository.GetByIdAsync(id);
-            if (article == null)
-            {
-                throw new Exception($"文章不存在，ID: {id}");
-            }
-
-            await _articleRepository.DeleteAsync(article);
-            await _articleRepository.SaveChangesAsync();
-
-            return new SuccessResponse { Success = true };
+            var command = new DeleteArticleCommand { ArticleId = id };
+            return await _mediator.Send(command);
         }
     }
 
