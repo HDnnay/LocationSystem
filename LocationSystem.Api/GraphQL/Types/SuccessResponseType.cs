@@ -1,4 +1,5 @@
 using HotChocolate.Types;
+using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Api.GraphQL.Types
 {
@@ -7,11 +8,7 @@ namespace LocationSystem.Api.GraphQL.Types
         protected override void Configure(IObjectTypeDescriptor<SuccessResponse> descriptor)
         {
             descriptor.Field(r => r.Success).Type<NonNullType<BooleanType>>();
+            descriptor.Field(r => r.Message).Type<StringType>();
         }
-    }
-
-    public class SuccessResponse
-    {
-        public bool Success { get; set; }
     }
 }

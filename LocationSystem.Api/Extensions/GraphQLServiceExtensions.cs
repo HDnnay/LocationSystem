@@ -51,9 +51,7 @@ namespace LocationSystem.Api.Extensions
                       // 文章相关
                       typeof(ArticleType),
                       typeof(TagType),
-                      typeof(ArticleCommentType),
-                      // 通用
-                      typeof(SuccessResponseType)
+                      typeof(ArticleCommentType)
                   );
             
             return services;

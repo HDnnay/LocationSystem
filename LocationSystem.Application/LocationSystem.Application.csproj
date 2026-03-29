@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Articles\" />
+    <Folder Include="Features\Articles\Qureies\" />
   </ItemGroup>
 
 </Project>

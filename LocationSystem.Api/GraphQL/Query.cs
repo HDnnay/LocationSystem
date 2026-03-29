@@ -2,6 +2,9 @@ using AutoMapper;
 using HotChocolate.Data;
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Features.Articles.Queries.GetArticles;
+using LocationSystem.Application.Features.Articles.Queries.GetArticle;
+using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
@@ -17,19 +20,19 @@ namespace LocationSystem.Api.GraphQL
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
-        private readonly IArticleRepository _articleRepository;
         private readonly MenuDataLoader _menuDataLoader;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public Query(IMenuRepository menuRepository, IUserRepository userRepository, IRoleRepository roleRepository, IPermissionRepository permissionRepository, IArticleRepository articleRepository, MenuDataLoader menuDataLoader, IMapper mapper)
+        public Query(IMenuRepository menuRepository, IUserRepository userRepository, IRoleRepository roleRepository, IPermissionRepository permissionRepository, MenuDataLoader menuDataLoader, IMapper mapper, IMediator mediator)
         {
             _menuRepository = menuRepository;
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
-            _articleRepository = articleRepository;
             _menuDataLoader = menuDataLoader;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         [GraphQLDescription("获取菜单列表")]
@@ -112,9 +115,10 @@ namespace LocationSystem.Api.GraphQL
         [UseSorting]
         [UseFiltering]
         [GraphQLDescription("获取文章列表")]
-        public IQueryable<Domain.Entities.Articles.Article> GetArticles()
+        public async Task<IQueryable<Domain.Entities.Articles.Article>> GetArticles(
+            [GraphQLDescription("分页参数")] LocationSystem.Application.Utilities.PaginationInput? pagination = null)
         {
-            return _articleRepository.GetAllQueryable();
+            return await _mediator.Send(new GetArticlesQuery { Pagination = pagination });
         }
 
         [GraphQLDescription("获取文章详情")]
@@ -122,12 +126,7 @@ namespace LocationSystem.Api.GraphQL
         public async Task<Dtos.ArticleDto> GetArticle(
             [GraphQLDescription("文章ID")] Guid id)
         {
-            var article = await _articleRepository.GetByIdAsync(id, true);
-            if (article == null)
-            {
-                throw new Exception($"文章不存在，ID: {id}");
-            }
-            return _mapper.Map<Dtos.ArticleDto>(article);
+            return await _mediator.Send(new GetArticleQuery { Id = id });
         }
     }
 
