@@ -2,13 +2,8 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Events;
-using LocationSystem.Application.Features.Permissions.Commands.CreatePermission;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermission
 {
@@ -55,7 +50,7 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
             {
                 await _permissionRepository.AddAsync(permission);
                 await _unitOfWork.CommitAsync();
-                
+
                 // 发布权限变更事件，更新缓存
                 await _eventBus.PublishAsync(new PermissionsChangedEvent());
             }

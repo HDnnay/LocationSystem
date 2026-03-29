@@ -1,4 +1,4 @@
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
 using LocationSystem.Infrastructure;
@@ -111,7 +111,7 @@ namespace LocationSystem.Api.Data
             {
                 var permission = await dbContext.Permissions.FirstOrDefaultAsync(p => p.Code == permissionCode);
                 var menu = await dbContext.Menus.FirstOrDefaultAsync(m => m.Path == menuPath);
-                
+
                 if (permission != null && menu != null)
                 {
                     if (!await dbContext.PermissionMenus.AnyAsync(pm => pm.PermissionId == permission.Id && pm.MenuId == menu.Id))
@@ -127,7 +127,7 @@ namespace LocationSystem.Api.Data
             var adminRole = await dbContext.Roles.FirstOrDefaultAsync(r => r.Name == "超级管理员");
             if (adminRole == null)
             {
-                adminRole = new Role("超级管理员", "admin", true,"系统超级管理员，拥有所有权限");
+                adminRole = new Role("超级管理员", "admin", true, "系统超级管理员，拥有所有权限");
                 await dbContext.Roles.AddAsync(adminRole);
                 await dbContext.SaveChangesAsync();
 
@@ -145,7 +145,7 @@ namespace LocationSystem.Api.Data
             var adminUser = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == adminEmail);
             if (adminUser == null)
             {
-                adminUser = new AdminUser("超级管理员", adminEmail, UserType.Admin,true);
+                adminUser = new AdminUser("超级管理员", adminEmail, UserType.Admin, true);
                 adminUser.SetPasswordHash("Admin123!");
                 await dbContext.Users.AddAsync(adminUser);
                 await dbContext.SaveChangesAsync();

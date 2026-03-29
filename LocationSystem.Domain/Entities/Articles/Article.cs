@@ -41,6 +41,5 @@ namespace LocationSystem.Domain.Entities.Articles
         [Description("创建者")]
 
         public virtual User? CreateUser { get; set; }
-        public
     }
 }

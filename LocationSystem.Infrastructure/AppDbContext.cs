@@ -1,10 +1,8 @@
-﻿﻿using LocationSystem.Domain.Entities;
+﻿using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Infrastructure
 {
@@ -63,5 +61,11 @@ namespace LocationSystem.Infrastructure
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<PermissionMenu> PermissionMenus { get; set; }
+
+        public DbSet<Article> Articles { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<ArticleComment> Comments { get; set; }
+        public DbSet<ArticleLog> ArticleLogs { get; set; }
+        public DbSet<ArticleSection> ArticleSections { get; set; }
     }
 }

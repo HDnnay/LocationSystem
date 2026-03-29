@@ -1,8 +1,6 @@
-using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Permissions.Models;
 using LocationSystem.Application.Services;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
 
 namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermissionMenus
 {
@@ -23,7 +21,8 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
             var cacheKey = CacheKeys.UserMenus(request.UserId);
 
             // 从缓存中获取用户权限菜单或创建缓存
-            var menuDtos = await _cacheService.GetOrCreateAsync<List<PermissionMenuDto>>(cacheKey, async (options) => {
+            var menuDtos = await _cacheService.GetOrCreateAsync<List<PermissionMenuDto>>(cacheKey, async (options) =>
+            {
                 // 使用PermissionManagement获取用户有权限的菜单
                 var userMenus = await _permissionManagement.GetUserPermissionMenusAsync(request.UserId);
                 if (!userMenus.Any())
@@ -33,7 +32,8 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
 
                 // 转换为DTO
                 var dtos = userMenus
-                    .Select(m => {
+                    .Select(m =>
+                    {
                         // 获取菜单关联的第一个权限代码作为菜单的权限标识
                         string? permissionCode = null;
                         var firstPermissionMenu = m.PermissionMenus.FirstOrDefault();
@@ -42,7 +42,7 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
                             // 这里简化处理，实际应该通过权限ID获取权限信息
                             permissionCode = "";
                         }
-                        
+
                         return new PermissionMenuDto
                         {
                             Id = m.Id,
@@ -54,8 +54,8 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
                             MenuPath = m.Path,
                             MenuIcon = m.Icon,
                             Order = m.Order,
-                            CreatedAt = m.CreatedAt,
-                            UpdatedAt = m.UpdatedAt ?? m.CreatedAt
+                            CreatedAt = m.CreateTiem,
+                            UpdatedAt = m.UpdatedAt ?? m.CreateTiem
                         };
                     })
                     .ToList();

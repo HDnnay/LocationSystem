@@ -1,6 +1,6 @@
 using LocationSystem.Application.Features.Permissions.Models;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermissionMenu
 {

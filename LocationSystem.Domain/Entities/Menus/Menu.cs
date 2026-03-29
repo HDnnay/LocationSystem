@@ -15,11 +15,12 @@ namespace LocationSystem.Domain.Entities.Menus
         public Menu? Parent { get; private set; }
         public List<Menu> Children { get; private set; }
         public List<PermissionMenu> PermissionMenus { get; private set; }
-        public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
         [Timestamp]
         public byte[] Version { get; private set; }
         public bool IsVisiable { get; set; }
+
+        public DateTime CreateTiem { get; private set; }
 
         public Menu(string name, string path, string icon, int order, Guid? parentId = null)
         {
@@ -31,7 +32,7 @@ namespace LocationSystem.Domain.Entities.Menus
             ParentId = parentId;
             Children = new List<Menu>();
             PermissionMenus = new List<PermissionMenu>();
-            CreatedAt = DateTime.UtcNow;
+            CreateTiem = DateTime.Now;
         }
 
         public void Update(string name, string path, string icon, int order, Guid? parentId = null)

@@ -1,13 +1,8 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
-using LocationSystem.Application.Features.Roles.Commands.CreateRole;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Application.Features.Roles.Commands.CreateRole
 {

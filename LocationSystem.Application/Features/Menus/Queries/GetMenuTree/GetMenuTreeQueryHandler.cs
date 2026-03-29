@@ -1,6 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Menus.Models;
-using LocationSystem.Application.Features.Menus.Queries.GetMenuTree;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Menus;
 
@@ -31,7 +30,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetMenuTree
                 Icon = menu.Icon,
                 Order = menu.Order,
                 ParentId = menu.ParentId,
-                CreatedAt = menu.CreatedAt,
+                CreatedAt = menu.CreateTiem,
                 UpdatedAt = menu.UpdatedAt,
                 ChildMenus = MapMenusToDto(menu.Children)
             }).ToList() ?? new List<MenuDto>();

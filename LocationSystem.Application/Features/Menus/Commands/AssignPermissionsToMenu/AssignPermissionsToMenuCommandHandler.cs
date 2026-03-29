@@ -1,8 +1,7 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
-using System.Threading.Tasks;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Application.Features.Menus.Commands.AssignPermissionsToMenu
 {
@@ -54,7 +53,7 @@ namespace LocationSystem.Application.Features.Menus.Commands.AssignPermissionsTo
                 await _unitOfWork.CommitAsync();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await _unitOfWork.RollbackAsync();
                 throw;

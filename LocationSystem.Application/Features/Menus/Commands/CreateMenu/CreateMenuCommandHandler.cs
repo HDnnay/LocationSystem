@@ -2,7 +2,7 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Features.Menus.Models;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Menus;
 
 namespace LocationSystem.Application.Features.Menus.Commands.CreateMenu
 {
@@ -11,7 +11,7 @@ namespace LocationSystem.Application.Features.Menus.Commands.CreateMenu
         private readonly IMenuRepository _menuRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateMenuCommandHandler(IMenuRepository menuRepository,IUnitOfWork unitOfWork)
+        public CreateMenuCommandHandler(IMenuRepository menuRepository, IUnitOfWork unitOfWork)
         {
             _menuRepository = menuRepository;
             _unitOfWork = unitOfWork;
