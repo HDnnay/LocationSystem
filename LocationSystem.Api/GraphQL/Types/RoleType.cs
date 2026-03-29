@@ -1,11 +1,5 @@
 using HotChocolate.Types;
 using LocationSystem.Application.Dtos;
-using LocationSystem.Domain.Entities;
-using LocationSystem.Api.GraphQL.DataLoaders;
-using AutoMapper;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace LocationSystem.Api.GraphQL.Types
 {
@@ -20,23 +14,7 @@ namespace LocationSystem.Api.GraphQL.Types
             descriptor.Field(r => r.IsDisabled).Type<NonNullType<BooleanType>>();
             descriptor.Field(r => r.CreatedAt).Type<NonNullType<DateTimeType>>();
             descriptor.Field(r => r.UpdatedAt).Type<DateTimeType>();
-            
-            descriptor.Field("permissions")
-                .Type<ListType<PermissionType>>()
-                .ResolveWith<RoleResolvers>(r => r.GetPermissions(default!, default!, default!, default!));
-        }
-
-        private class RoleResolvers
-        {
-            public async Task<List<PermissionDto>> GetPermissions(
-                [Parent] RoleDto role,
-                RolePermissionsDataLoader rolePermissionsDataLoader,
-                IMapper mapper,
-                CancellationToken cancellationToken)
-            {
-                var permissions = await rolePermissionsDataLoader.LoadAsync(role.Id, cancellationToken);
-                return mapper.Map<List<PermissionDto>>(permissions);
-            }
+            descriptor.Field(r => r.Permissions).Type<ListType<PermissionType>>();
         }
     }
 }

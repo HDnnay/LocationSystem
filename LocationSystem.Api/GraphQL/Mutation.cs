@@ -1,8 +1,12 @@
+using HotChocolate.Types;
+using LocationSystem.Api.GraphQL.Commands;
+using LocationSystem.Api.GraphQL.Mutations;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Features.Menus.Commands.AssignPermissionsToMenu;
 using LocationSystem.Application.Features.Menus.Commands.CreateMenu;
 using LocationSystem.Application.Features.Menus.Commands.DeleteMenu;
 using LocationSystem.Application.Features.Menus.Commands.UpdateMenu;
+using LocationSystem.Application.Features.Menus.Models;
 using LocationSystem.Application.Features.Roles.Commands.CreateRole;
 using LocationSystem.Application.Features.Roles.Commands.DeleteRole;
 using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
@@ -10,26 +14,14 @@ using LocationSystem.Application.Features.Users.Commands.AssignRoles;
 using LocationSystem.Application.Features.Users.Commands.CreateUser;
 using LocationSystem.Application.Features.Users.Commands.DeleteUser;
 using LocationSystem.Application.Features.Users.Commands.UpdateUser;
+using LocationSystem.Application.Features.Users.Models;
 using LocationSystem.Application.Utilities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Dtos = LocationSystem.Application.Dtos;
-using MenuModels = LocationSystem.Application.Features.Menus.Models;
-using UserModels = LocationSystem.Application.Features.Users.Models;
 
 namespace LocationSystem.Api.GraphQL
 {
-    public class SuccessResponseType : ObjectType<SuccessResponse>
-    {
-        protected override void Configure(IObjectTypeDescriptor<SuccessResponse> descriptor)
-        {
-            descriptor.Field(r => r.Success).Type<NonNullType<BooleanType>>();
-        }
-    }
-
-    public class SuccessResponse
-    {
-        public bool Success { get; set; }
-    }
-
     public class MutationType : ObjectType<Mutation>
     {
         protected override void Configure(IObjectTypeDescriptor<Mutation> descriptor)
@@ -117,159 +109,82 @@ namespace LocationSystem.Api.GraphQL
         }
     }
 
-    public class CreateMenuCommandType : InputObjectType<CreateMenuCommand>
-    {
-        protected override void Configure(IInputObjectTypeDescriptor<CreateMenuCommand> descriptor)
-        {
-            descriptor.Field(c => c.Name).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.Path).Type<StringType>();
-            descriptor.Field(c => c.Icon).Type<StringType>();
-            descriptor.Field(c => c.Order).Type<IntType>();
-            descriptor.Field(c => c.ParentId).Type<IdType>();
-        }
-    }
-
-    public class UpdateMenuCommandType : InputObjectType<UpdateMenuCommand>
-    {
-        protected override void Configure(IInputObjectTypeDescriptor<UpdateMenuCommand> descriptor)
-        {
-            descriptor.Field(c => c.Name).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.Path).Type<StringType>();
-            descriptor.Field(c => c.Icon).Type<StringType>();
-            descriptor.Field(c => c.Order).Type<IntType>();
-            descriptor.Field(c => c.ParentId).Type<IdType>();
-        }
-    }
-
-    // 用户相关命令类型
-    public class CreateUserCommandType : InputObjectType<CreateUserCommand>
-    {
-        protected override void Configure(IInputObjectTypeDescriptor<CreateUserCommand> descriptor)
-        {
-            descriptor.Field(c => c.Name).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.Email).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.UserType).Type<NonNullType<StringType>>();
-        }
-    }
-
-    public class UpdateUserCommandType : InputObjectType<UpdateUserCommand>
-    {
-        protected override void Configure(IInputObjectTypeDescriptor<UpdateUserCommand> descriptor)
-        {
-            descriptor.Field(c => c.Name).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.Email).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.UserType).Type<NonNullType<StringType>>();
-        }
-    }
-
-    // 角色相关命令类型
-    public class CreateRoleCommandType : InputObjectType<CreateRoleCommand>
-    {
-        protected override void Configure(IInputObjectTypeDescriptor<CreateRoleCommand> descriptor)
-        {
-            descriptor.Field(c => c.Name).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.Code).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.Description).Type<StringType>();
-            descriptor.Field(c => c.PermissionIds).Type<ListType<IdType>>();
-        }
-    }
-
-    public class UpdateRoleCommandType : InputObjectType<UpdateRoleCommand>
-    {
-        protected override void Configure(IInputObjectTypeDescriptor<UpdateRoleCommand> descriptor)
-        {
-            descriptor.Field(c => c.Name).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.Code).Type<NonNullType<StringType>>();
-            descriptor.Field(c => c.Description).Type<StringType>();
-            descriptor.Field(c => c.PermissionIds).Type<ListType<IdType>>();
-        }
-    }
-
     public class Mutation
     {
-        private readonly IMediator _mediator;
+        private readonly MenuMutation _menuMutation;
+        private readonly UserMutation _userMutation;
+        private readonly RoleMutation _roleMutation;
 
         public Mutation(IMediator mediator)
         {
-            _mediator = mediator;
+            _menuMutation = new MenuMutation(mediator);
+            _userMutation = new UserMutation(mediator);
+            _roleMutation = new RoleMutation(mediator);
         }
 
         // 菜单相关操作
-        public async Task<MenuModels.MenuDto> CreateMenu(CreateMenuCommand command)
+        public async Task<MenuDto> CreateMenu(CreateMenuCommand command)
         {
-            return await _mediator.Send(command);
+            return await _menuMutation.CreateMenu(command);
         }
 
-        public async Task<MenuModels.MenuDto> UpdateMenu(Guid id, UpdateMenuCommand command)
+        public async Task<MenuDto> UpdateMenu(Guid id, UpdateMenuCommand command)
         {
-            command.Id = id;
-            return await _mediator.Send(command);
+            return await _menuMutation.UpdateMenu(id, command);
         }
 
         public async Task<SuccessResponse> DeleteMenu(Guid id)
         {
-            var command = new DeleteMenuCommand { MenuId = id };
-            await _mediator.Send(command);
-            return new SuccessResponse { Success = true };
+            return await _menuMutation.DeleteMenu(id);
         }
 
         public async Task<SuccessResponse> AssignPermissionsToMenu(Guid id, List<Guid> permissionIds)
         {
-            var command = new AssignPermissionsToMenuCommand { MenuId = id, PermissionIds = permissionIds };
-            await _mediator.Send(command);
-            return new SuccessResponse { Success = true };
+            return await _menuMutation.AssignPermissionsToMenu(id, permissionIds);
         }
 
         // 用户相关操作
         public async Task<Guid> CreateUser(CreateUserCommand command)
         {
-            return await _mediator.Send(command);
+            return await _userMutation.CreateUser(command);
         }
 
-        public async Task<UserModels.UserDto> UpdateUser(Guid id, UpdateUserCommand command)
+        public async Task<UserDto> UpdateUser(Guid id, UpdateUserCommand command)
         {
-            command.Id = id;
-            return await _mediator.Send(command);
+            return await _userMutation.UpdateUser(id, command);
         }
 
         public async Task<SuccessResponse> DeleteUser(Guid id)
         {
-            var command = new DeleteUserCommand { UserId = id };
-            await _mediator.Send(command);
-            return new SuccessResponse { Success = true };
+            return await _userMutation.DeleteUser(id);
         }
 
         public async Task<SuccessResponse> AssignRolesToUser(Guid id, List<Guid> roleIds)
         {
-            var command = new AssignRolesCommand { UserId = id, RoleIds = roleIds };
-            await _mediator.Send(command);
-            return new SuccessResponse { Success = true };
+            return await _userMutation.AssignRolesToUser(id, roleIds);
         }
 
         // 角色相关操作
         public async Task<Dtos.RoleDto> CreateRole(CreateRoleCommand command)
         {
-            return await _mediator.Send(command);
+            return await _roleMutation.CreateRole(command);
         }
 
         public async Task<Dtos.RoleDto> UpdateRole(Guid id, UpdateRoleCommand command)
         {
-            command.RoleId = id;
-            return await _mediator.Send(command);
+            return await _roleMutation.UpdateRole(id, command);
         }
 
         public async Task<SuccessResponse> DeleteRole(Guid id)
         {
-            var command = new DeleteRoleCommand { RoleId = id };
-            await _mediator.Send(command);
-            return new SuccessResponse { Success = true };
+            return await _roleMutation.DeleteRole(id);
         }
 
         public async Task<SuccessResponse> AssignPermissionsToRole(Guid id, List<Guid> permissionIds)
         {
-            var command = new UpdateRoleCommand { RoleId = id, PermissionIds = permissionIds };
-            await _mediator.Send(command);
-            return new SuccessResponse { Success = true };
+            return await _roleMutation.AssignPermissionsToRole(id, permissionIds);
         }
     }
+
+
 }

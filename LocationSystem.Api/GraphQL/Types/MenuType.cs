@@ -1,4 +1,4 @@
-using LocationSystem.Api.GraphQL.DataLoaders;
+using HotChocolate.Types;
 using LocationSystem.Application.Features.Menus.Models;
 
 namespace LocationSystem.Api.GraphQL.Types
@@ -16,14 +16,6 @@ namespace LocationSystem.Api.GraphQL.Types
             descriptor.Field(m => m.CreatedAt).Type<DateTimeType>();
             descriptor.Field(m => m.UpdatedAt).Type<DateTimeType>();
             descriptor.Field(m => m.ChildMenus).Type<ListType<MenuType>>();
-            descriptor.Field("permissions")
-                .Type<ListType<PermissionType>>()
-                .Resolve(async context =>
-                {
-                    var menu = context.Parent<MenuDto>();
-                    var permissionDataLoader = context.Service<PermissionDataLoader>();
-                    return await permissionDataLoader.LoadAsync(menu.Id, context.RequestAborted);
-                });
         }
     }
 }

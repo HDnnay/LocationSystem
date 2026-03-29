@@ -55,7 +55,7 @@ namespace LocationSystem.Api.GraphQL
         }
 
         [GraphQLDescription("获取用户列表")]
-        [GraphQLType(typeof(ListType<UserType>))]
+        [GraphQLType(typeof(ListType<LocationSystem.Api.GraphQL.Types.UserType>))]
         public async Task<List<Dtos.UserDto>> GetUsers()
         {
             var users = await _userRepository.GetAll();
@@ -63,7 +63,7 @@ namespace LocationSystem.Api.GraphQL
         }
 
         [GraphQLDescription("获取用户详情")]
-        [GraphQLType(typeof(UserType))]
+        [GraphQLType(typeof(LocationSystem.Api.GraphQL.Types.UserType))]
         public async Task<Dtos.UserDto> GetUser(
             [GraphQLDescription("用户ID")] Guid id)
         {
@@ -76,7 +76,7 @@ namespace LocationSystem.Api.GraphQL
         }
 
         [GraphQLDescription("获取角色列表")]
-        [GraphQLType(typeof(ListType<RoleType>))]
+        [GraphQLType(typeof(ListType<LocationSystem.Api.GraphQL.Types.RoleType>))]
         public async Task<List<Dtos.RoleDto>> GetRoles()
         {
             var roles = await _roleRepository.GetRolesWithPermissionsAsync();
@@ -84,7 +84,7 @@ namespace LocationSystem.Api.GraphQL
         }
 
         [GraphQLDescription("获取角色详情")]
-        [GraphQLType(typeof(RoleType))]
+        [GraphQLType(typeof(LocationSystem.Api.GraphQL.Types.RoleType))]
         public async Task<Dtos.RoleDto> GetRole(
             [GraphQLDescription("角色ID")] Guid id)
         {
@@ -97,7 +97,7 @@ namespace LocationSystem.Api.GraphQL
         }
 
         [GraphQLDescription("获取权限列表")]
-        [GraphQLType(typeof(ListType<PermissionType>))]
+        [GraphQLType(typeof(ListType<LocationSystem.Api.GraphQL.Types.PermissionType>))]
         public async Task<List<Dtos.PermissionDto>> GetPermissions()
         {
             var permissions = await _permissionRepository.GetPermissionTreeAsync();
