@@ -25,6 +25,11 @@ namespace LocationSystem.Api.Extensions
               services.AddScoped<PermissionDataLoader>();
               services.AddScoped<UserRolesDataLoader>();
               services.AddScoped<RolePermissionsDataLoader>();
+              // 文章相关 DataLoader
+              services.AddScoped<ArticleDataLoader>();
+              services.AddScoped<ArticleTagsDataLoader>();
+              services.AddScoped<ArticleCommentsDataLoader>();
+              services.AddScoped<ArticleCreateUserDataLoader>();
             
             // 配置 GraphQL 服务器
               services

@@ -1,4 +1,4 @@
-﻿using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
@@ -64,7 +64,7 @@ namespace LocationSystem.Infrastructure
 
         public DbSet<Article> Articles { get; set; }
         public DbSet<Tag> Tags { get; set; }
-        public DbSet<ArticleComment> Comments { get; set; }
+        public DbSet<ArticleComment> ArticleComments { get; set; }
         public DbSet<ArticleLog> ArticleLogs { get; set; }
         public DbSet<ArticleSection> ArticleSections { get; set; }
     }

@@ -1,5 +1,13 @@
 using HotChocolate.Types;
 using LocationSystem.Application.Dtos;
+using LocationSystem.Api.GraphQL.DataLoaders;
+using LocationSystem.Domain.Entities.Articles;
+using LocationSystem.Domain.Entities.UserRolePermissions;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LocationSystem.Api.GraphQL.Types
 {
@@ -16,9 +24,63 @@ namespace LocationSystem.Api.GraphQL.Types
             descriptor.Field(a => a.IsVisiable).Type<BooleanType>();
             descriptor.Field(a => a.UserId).Type<IdType>();
             descriptor.Field(a => a.Topic).Type<StringType>();
-            descriptor.Field(a => a.Tags).Type<ListType<TagType>>();
-            descriptor.Field(a => a.Comments).Type<ListType<ArticleCommentType>>();
-            descriptor.Field(a => a.CreateUser).Type<LocationSystem.Api.GraphQL.Types.UserType>();
+            
+            // 使用 DataLoader 加载标签
+            descriptor.Field(a => a.Tags)
+                .Type<ListType<TagType>>()
+                .ResolveWith<Resolvers>(r => r.GetTags(default!, default!));
+            
+            // 使用 DataLoader 加载评论
+            descriptor.Field(a => a.Comments)
+                .Type<ListType<ArticleCommentType>>()
+                .ResolveWith<Resolvers>(r => r.GetComments(default!, default!));
+            
+            // 使用 DataLoader 加载创建者
+            descriptor.Field(a => a.CreateUser)
+                .Type<LocationSystem.Api.GraphQL.Types.UserType>()
+                .ResolveWith<Resolvers>(r => r.GetCreateUser(default!, default!));
+        }
+        
+        private class Resolvers
+        {
+            public async Task<IEnumerable<TagDto>> GetTags(
+                ArticleDto article,
+                ArticleTagsDataLoader dataLoader)
+            {
+                var tags = await dataLoader.LoadAsync(article.Id);
+                // 转换为 TagDto
+                return tags.Select(t => new TagDto { Id = t.Id, Name = t.Name });
+            }
+            
+            public async Task<IEnumerable<ArticleCommentDto>> GetComments(
+                ArticleDto article,
+                ArticleCommentsDataLoader dataLoader)
+            {
+                var comments = await dataLoader.LoadAsync(article.Id);
+                // 转换为 ArticleCommentDto
+                return comments.Select(c => new ArticleCommentDto {
+                    Id = c.Id,
+                    UserId = c.UserId,
+                    Comment = c.Comment,
+                    IsVisiable = c.IsVisiable,
+                    CreateTiem = c.CreateTiem
+                });
+            }
+            
+            public async Task<UserDto> GetCreateUser(
+                ArticleDto article,
+                ArticleCreateUserDataLoader dataLoader)
+            {
+                var user = await dataLoader.LoadAsync(article.UserId);
+                if (user == null) return null;
+                // 转换为 UserDto
+                return new UserDto {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email?.ToString() ?? string.Empty,
+                    UserType = user.UserType.ToString()
+                };
+            }
         }
     }
 

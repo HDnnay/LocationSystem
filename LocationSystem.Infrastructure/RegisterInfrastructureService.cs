@@ -29,6 +29,7 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<IPermissionMenuRepository, PermissionMenuRepository>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
             return services;
         }
