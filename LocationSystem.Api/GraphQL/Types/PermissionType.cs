@@ -1,7 +1,7 @@
 using HotChocolate.Types;
 using LocationSystem.Application.Dtos;
 
-namespace LocationSystem.Api.GraphQL
+namespace LocationSystem.Api.GraphQL.Types
 {
     public class PermissionType : ObjectType<PermissionDto>
     {

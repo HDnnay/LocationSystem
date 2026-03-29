@@ -1,22 +1,19 @@
-using HotChocolate;
-using HotChocolate.Types;
-using Dtos = LocationSystem.Application.Dtos;
-using MenuModels = LocationSystem.Application.Features.Menus.Models;
-using UserModels = LocationSystem.Application.Features.Users.Models;
+using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Features.Menus.Commands.AssignPermissionsToMenu;
 using LocationSystem.Application.Features.Menus.Commands.CreateMenu;
 using LocationSystem.Application.Features.Menus.Commands.DeleteMenu;
 using LocationSystem.Application.Features.Menus.Commands.UpdateMenu;
+using LocationSystem.Application.Features.Roles.Commands.CreateRole;
+using LocationSystem.Application.Features.Roles.Commands.DeleteRole;
+using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Features.Users.Commands.AssignRoles;
 using LocationSystem.Application.Features.Users.Commands.CreateUser;
 using LocationSystem.Application.Features.Users.Commands.DeleteUser;
 using LocationSystem.Application.Features.Users.Commands.UpdateUser;
-using LocationSystem.Application.Features.Roles.Commands.CreateRole;
-using LocationSystem.Application.Features.Roles.Commands.DeleteRole;
-using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Utilities;
-using System;
-using System.Collections.Generic;
+using Dtos = LocationSystem.Application.Dtos;
+using MenuModels = LocationSystem.Application.Features.Menus.Models;
+using UserModels = LocationSystem.Application.Features.Users.Models;
 
 namespace LocationSystem.Api.GraphQL
 {

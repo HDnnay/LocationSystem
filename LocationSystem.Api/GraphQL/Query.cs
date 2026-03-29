@@ -5,6 +5,7 @@ using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using Dtos = LocationSystem.Application.Dtos;
 using MenuModels = LocationSystem.Application.Features.Menus.Models;
+using LocationSystem.Api.GraphQL.Types;
 
 namespace LocationSystem.Api.GraphQL
 {

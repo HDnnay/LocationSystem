@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LocationSystem.Api.GraphQL
+namespace LocationSystem.Api.GraphQL.Types
 {
     public class UserType : ObjectType<UserDto>
     {

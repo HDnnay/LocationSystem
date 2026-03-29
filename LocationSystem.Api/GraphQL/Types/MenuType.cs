@@ -1,10 +1,7 @@
-using HotChocolate.Types;
-using LocationSystem.Application.Features.Menus.Models;
 using LocationSystem.Api.GraphQL.DataLoaders;
-using System.Threading;
-using System.Threading.Tasks;
+using LocationSystem.Application.Features.Menus.Models;
 
-namespace LocationSystem.Api.GraphQL
+namespace LocationSystem.Api.GraphQL.Types
 {
     public class MenuType : ObjectType<MenuDto>
     {
@@ -21,7 +18,7 @@ namespace LocationSystem.Api.GraphQL
             descriptor.Field(m => m.ChildMenus).Type<ListType<MenuType>>();
             descriptor.Field("permissions")
                 .Type<ListType<PermissionType>>()
-                .Resolve(async context => 
+                .Resolve(async context =>
                 {
                     var menu = context.Parent<MenuDto>();
                     var permissionDataLoader = context.Service<PermissionDataLoader>();
