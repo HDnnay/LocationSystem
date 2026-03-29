@@ -1,11 +1,15 @@
 using AutoMapper;
+using HotChocolate.Data;
+using LocationSystem.Application.Contrats;
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using Dtos = LocationSystem.Application.Dtos;
 using MenuModels = LocationSystem.Application.Features.Menus.Models;
 using LocationSystem.Api.GraphQL.Types;
+using LocationSystem.Application.Features.Articles.Models;
 
 namespace LocationSystem.Api.GraphQL
 {
@@ -15,15 +19,17 @@ namespace LocationSystem.Api.GraphQL
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
+        private readonly IArticleRepository _articleRepository;
         private readonly MenuDataLoader _menuDataLoader;
         private readonly IMapper _mapper;
 
-        public Query(IMenuRepository menuRepository, IUserRepository userRepository, IRoleRepository roleRepository, IPermissionRepository permissionRepository, MenuDataLoader menuDataLoader, IMapper mapper)
+        public Query(IMenuRepository menuRepository, IUserRepository userRepository, IRoleRepository roleRepository, IPermissionRepository permissionRepository, IArticleRepository articleRepository, MenuDataLoader menuDataLoader, IMapper mapper)
         {
             _menuRepository = menuRepository;
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
+            _articleRepository = articleRepository;
             _menuDataLoader = menuDataLoader;
             _mapper = mapper;
         }
@@ -102,6 +108,28 @@ namespace LocationSystem.Api.GraphQL
         {
             var permissions = await _permissionRepository.GetPermissionTreeAsync();
             return _mapper.Map<List<Dtos.PermissionDto>>(permissions);
+        }
+
+        [UsePaging(IncludeTotalCount = true)] // 启用分页并包含总记录数
+        [UseSorting] // 启用排序
+        [UseFiltering] // 启用过滤
+        [GraphQLDescription("获取文章列表")]
+        public IQueryable<Domain.Entities.Articles.Article> GetArticles()
+        {
+            return _articleRepository.GetAllQueryable();
+        }
+
+        [GraphQLDescription("获取文章详情")]
+        [GraphQLType(typeof(ArticleType))]
+        public async Task<Application.Features.Articles.Models.ArticleDto> GetArticle(
+            [GraphQLDescription("文章ID")] Guid id)
+        {
+            var article = await _articleRepository.GetByIdAsync(id, true);
+            if (article == null)
+            {
+                throw new Exception($"文章不存在，ID: {id}");
+            }
+            return _mapper.Map<Application.Features.Articles.Models.ArticleDto>(article);
         }
     }
 

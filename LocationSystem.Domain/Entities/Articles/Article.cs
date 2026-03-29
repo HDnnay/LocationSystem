@@ -1,4 +1,4 @@
-﻿using LocationSystem.Domain.Entities.Interfacies;
+using LocationSystem.Domain.Entities.Interfacies;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using System.ComponentModel;
 
@@ -41,5 +41,21 @@ namespace LocationSystem.Domain.Entities.Articles
         [Description("创建者")]
 
         public virtual User? CreateUser { get; set; }
+
+        // 添加更新方法
+        public void Update(string title, string content, bool isVisiable, string? topic, string? subtitle)
+        {
+            Title = title;
+            Content = content;
+            IsVisiable = isVisiable;
+            Topic = topic;
+            Subtitle = subtitle;
+        }
+
+        // 添加更新标签方法
+        public void UpdateTags(ICollection<Tag> tags)
+        {
+            Tags = tags;
+        }
     }
 }
