@@ -2,7 +2,7 @@
 {
     public interface IEntity
     {
-        Guid Id { get; set; }
-        DateTime CreateTiem { get; set; }
+        Guid Id { get; }
+        DateTime CreateTiem { get; }
     }
 }
