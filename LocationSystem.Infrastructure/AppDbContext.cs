@@ -1,4 +1,6 @@
 ﻿﻿using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Menus;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

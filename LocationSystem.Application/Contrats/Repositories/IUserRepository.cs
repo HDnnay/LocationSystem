@@ -1,5 +1,5 @@
 using LocationSystem.Application.Features.Users.Queries;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Application.Contrats.Repositories
 {

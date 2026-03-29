@@ -1,5 +1,5 @@
 using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Menus;
 
 namespace LocationSystem.Application.Contrats.Repositories
 {

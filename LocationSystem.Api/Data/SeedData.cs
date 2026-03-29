@@ -1,4 +1,5 @@
 using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
 using LocationSystem.Infrastructure;
 using Microsoft.EntityFrameworkCore;

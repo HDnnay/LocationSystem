@@ -1,6 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
 
 namespace LocationSystem.Application.Features.Auth.Register.Commands

@@ -1,4 +1,4 @@
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

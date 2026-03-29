@@ -3,7 +3,7 @@ using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Application.Features.Auth.Login.Commands
 {

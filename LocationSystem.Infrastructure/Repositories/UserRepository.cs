@@ -1,6 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Users.Queries;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 

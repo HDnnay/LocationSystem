@@ -1,10 +1,10 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿using LocationSystem.Domain.Exceptions;
+﻿using LocationSystem.Domain.Exceptions;
 using LocationSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LocationSystem.Domain.Entities
+namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
     public abstract class User
     {

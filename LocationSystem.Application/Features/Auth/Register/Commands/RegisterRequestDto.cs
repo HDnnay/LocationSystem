@@ -1,4 +1,4 @@
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Application.Features.Auth.Register.Commands
 {

@@ -1,4 +1,4 @@
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
 
 namespace LocationSystem.Domain.Strategies

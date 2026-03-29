@@ -2,7 +2,7 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Features.Users.Models;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
 
 namespace LocationSystem.Application.Features.Users.Commands.UpdateUser

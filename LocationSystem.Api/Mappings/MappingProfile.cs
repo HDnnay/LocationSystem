@@ -1,7 +1,8 @@
 using AutoMapper;
 using LocationSystem.Application.Features.Menus.Models;
 using LocationSystem.Application.Features.Permissions.Models;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Menus;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Api.Mappings
 {

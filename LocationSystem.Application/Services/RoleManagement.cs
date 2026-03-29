@@ -1,5 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

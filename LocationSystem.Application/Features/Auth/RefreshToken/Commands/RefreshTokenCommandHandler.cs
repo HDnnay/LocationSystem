@@ -3,7 +3,7 @@ using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Features.Auth.Login.Commands;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;

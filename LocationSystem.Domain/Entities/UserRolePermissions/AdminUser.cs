@@ -1,8 +1,7 @@
-using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.ValueObjects;
 using System;
 
-namespace LocationSystem.Domain.Entities
+namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
     public class AdminUser : User
     {

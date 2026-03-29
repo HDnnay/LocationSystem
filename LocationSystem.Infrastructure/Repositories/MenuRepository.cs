@@ -1,6 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
 

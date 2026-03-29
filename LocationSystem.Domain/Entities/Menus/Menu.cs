@@ -1,9 +1,10 @@
+using LocationSystem.Domain.Entities.Interfacies;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace LocationSystem.Domain.Entities
+namespace LocationSystem.Domain.Entities.Menus
 {
-    public class Menu
+    public class Menu : IEntityVisiable
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; }
@@ -18,6 +19,7 @@ namespace LocationSystem.Domain.Entities
         public DateTime? UpdatedAt { get; private set; }
         [Timestamp]
         public byte[] Version { get; private set; }
+        public bool IsVisiable { get; set; }
 
         public Menu(string name, string path, string icon, int order, Guid? parentId = null)
         {

@@ -1,4 +1,4 @@
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
 using System;
 using System.Collections.Generic;

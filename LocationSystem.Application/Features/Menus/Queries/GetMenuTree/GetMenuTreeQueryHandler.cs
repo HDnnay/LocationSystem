@@ -2,7 +2,7 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Menus.Models;
 using LocationSystem.Application.Features.Menus.Queries.GetMenuTree;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Menus;
 
 namespace LocationSystem.Application.Features.Menus.Queries.GetMenuTree
 {

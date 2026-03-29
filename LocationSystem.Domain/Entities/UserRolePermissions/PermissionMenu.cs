@@ -1,4 +1,6 @@
-namespace LocationSystem.Domain.Entities
+using LocationSystem.Domain.Entities.Menus;
+
+namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
     public class PermissionMenu
     {

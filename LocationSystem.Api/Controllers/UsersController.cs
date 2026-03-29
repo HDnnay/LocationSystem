@@ -6,7 +6,7 @@ using LocationSystem.Application.Features.Users.Commands.EnableUser;
 using LocationSystem.Application.Features.Users.Commands.UpdateUser;
 using LocationSystem.Application.Features.Users.Queries;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;

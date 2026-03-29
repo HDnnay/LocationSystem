@@ -1,14 +1,15 @@
+using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LocationSystem.Domain.Entities
+namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
     /// <summary>
-    /// 角色实体
+    /// 权限实体
     /// </summary>
-    public class Role
+    public class Permission
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; } = null!;
@@ -16,15 +17,23 @@ namespace LocationSystem.Domain.Entities
         public string? Description { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
-        public bool IsDisabled { get; private set; } = false;
-        public bool IsSuperAdmin { get;private set; }
+
         // 导航属性
-        public ICollection<Permission> Permissions { get; private set; } = new List<Permission>();
-        public ICollection<User> Users { get; private set; } = new List<User>();
+        public ICollection<Role> Roles { get; private set; } = new List<Role>();
+        
+        // 父权限ID
+        public Guid? ParentId { get; private set; }
+        // 父权限导航属性
+        public Permission? Parent { get; private set; }
+        // 子权限导航属性
+        public ICollection<Permission> ChildPermissions { get; private set; } = new List<Permission>();
 
-        private Role() { }
+        // 权限菜单关联
+        public ICollection<PermissionMenu> PermissionMenus { get; private set; } = new List<PermissionMenu>();
 
-        public Role(string name, string code, string? description = null)
+        private Permission() { }
+
+        public Permission(string name, string code, string? description = null, Guid? parentId = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -40,14 +49,11 @@ namespace LocationSystem.Domain.Entities
             Name = name;
             Code = code;
             Description = description;
+            ParentId = parentId;
             CreatedAt = DateTime.UtcNow;
         }
-        public Role(string name,string code,bool isSuperAdmin,string? description=null):this(name,code,description)
-        {
-            IsSuperAdmin = isSuperAdmin;
-        }
 
-        public void Update(string name, string code, string? description = null)
+        public void Update(string name, string code, string? description = null, Guid? parentId = null)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -62,37 +68,14 @@ namespace LocationSystem.Domain.Entities
             Name = name;
             Code = code;
             Description = description;
+            ParentId = parentId;
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void AddPermission(Permission permission)
+        public void AddMenu(Menu menu)
         {
-            if (!Permissions.Contains(permission))
-            {
-                Permissions.Add(permission);
-            }
-        }
-
-        public void RemovePermission(Permission permission)
-        {
-            Permissions.Remove(permission);
-        }
-
-        public void ClearPermissions()
-        {
-            Permissions.Clear();
-        }
-
-        public void Disable()
-        {
-            IsDisabled = true;
-            UpdatedAt = DateTime.UtcNow;
-        }
-
-        public void Enable()
-        {
-            IsDisabled = false;
-            UpdatedAt = DateTime.UtcNow;
+            var permissionMenu = new PermissionMenu(this, menu);
+            PermissionMenus.Add(permissionMenu);
         }
     }
 }

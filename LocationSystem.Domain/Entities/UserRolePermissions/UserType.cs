@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace LocationSystem.Domain.Entities
+namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
     public enum UserType
     {

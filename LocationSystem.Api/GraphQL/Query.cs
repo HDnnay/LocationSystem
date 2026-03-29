@@ -1,6 +1,7 @@
 using AutoMapper;
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.Menus;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using Dtos = LocationSystem.Application.Dtos;
 using MenuModels = LocationSystem.Application.Features.Menus.Models;
 

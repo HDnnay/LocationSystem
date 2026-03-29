@@ -2,7 +2,7 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Features.Users.Models;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.Factories;
 
 namespace LocationSystem.Application.Features.Users.Commands.CreateUser
@@ -31,7 +31,7 @@ namespace LocationSystem.Application.Features.Users.Commands.CreateUser
                 await _unitOfWork.BeginTransactionAsync();
 
                 // 创建用户实体
-                if (!Enum.TryParse<LocationSystem.Domain.Entities.UserType>(command.UserType, true, out var userType))
+                if (!Enum.TryParse<UserType>(command.UserType, true, out var userType))
                 {
                     throw new ArgumentException($"无效的用户类型: {command.UserType}");
                 }
