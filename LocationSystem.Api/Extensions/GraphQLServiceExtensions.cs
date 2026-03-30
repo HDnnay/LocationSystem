@@ -22,7 +22,9 @@ namespace LocationSystem.Api.Extensions
               services.AddScoped<Mutation>();
               services.AddScoped<MenuDataLoader>();
               services.AddScoped<PermissionDataLoader>();
+              services.AddScoped<UserDataLoader>();
               services.AddScoped<UserRolesDataLoader>();
+              services.AddScoped<RoleDataLoader>();
               services.AddScoped<RolePermissionsDataLoader>();
               // 文章相关 DataLoader
               services.AddScoped<ArticleDataLoader>();

@@ -1,4 +1,5 @@
 using AutoMapper;
+using HotChocolate;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats.Repositories;
@@ -59,23 +60,34 @@ namespace LocationSystem.Api.GraphQL
 
         [GraphQLDescription("获取用户列表")]
         [GraphQLType(typeof(ListType<LocationSystem.Api.GraphQL.Types.UserType>))]
-        public async Task<List<Dtos.UserDto>> GetUsers()
+        public async Task<IEnumerable<Dtos.UserDto>> GetUsers(
+            [Service] UserDataLoader userDataLoader,
+            [Service] IMapper mapper)
         {
-            var users = await _userRepository.GetAll();
-            return _mapper.Map<List<Dtos.UserDto>>(users);
+            // 首先获取所有用户ID
+            var userIds = (await _userRepository.GetAll()).Select(u => u.Id).ToList();
+            
+            // 使用 UserDataLoader 批量加载用户数据
+            var userTasks = userIds.Select(id => userDataLoader.LoadAsync(id));
+            var users = await Task.WhenAll(userTasks);
+            
+            // 过滤掉 null 值并映射为 UserDto
+            return users.Where(u => u != null).Select(u => mapper.Map<Dtos.UserDto>(u));
         }
 
         [GraphQLDescription("获取用户详情")]
         [GraphQLType(typeof(LocationSystem.Api.GraphQL.Types.UserType))]
         public async Task<Dtos.UserDto> GetUser(
-            [GraphQLDescription("用户ID")] Guid id)
+            [GraphQLDescription("用户ID")] Guid id,
+            [Service] UserDataLoader userDataLoader,
+            [Service] IMapper mapper)
         {
-            var user = await _userRepository.GetByIdAsync(id);
+            var user = await userDataLoader.LoadAsync(id);
             if (user == null)
             {
                 throw new Exception($"用户不存在，ID: {id}");
             }
-            return _mapper.Map<Dtos.UserDto>(user);
+            return mapper.Map<Dtos.UserDto>(user);
         }
 
         [GraphQLDescription("获取角色列表")]
