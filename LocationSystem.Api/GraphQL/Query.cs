@@ -1,5 +1,6 @@
 using AutoMapper;
 using HotChocolate;
+using HotChocolate.Data;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats.Repositories;
@@ -58,21 +59,15 @@ namespace LocationSystem.Api.GraphQL
             return _mapper.Map<List<Dtos.MenuDto>>(menus);
         }
 
+        [UsePaging(IncludeTotalCount = true)]
+        [UseSorting]
+        [UseFiltering]
         [GraphQLDescription("获取用户列表")]
-        [GraphQLType(typeof(ListType<LocationSystem.Api.GraphQL.Types.UserType>))]
-        public async Task<IEnumerable<Dtos.UserDto>> GetUsers(
-            [Service] UserDataLoader userDataLoader,
+        public async Task<IQueryable<Dtos.UserDto>> GetUsers(
             [Service] IMapper mapper)
         {
-            // 首先获取所有用户ID
-            var userIds = (await _userRepository.GetAll()).Select(u => u.Id).ToList();
-            
-            // 使用 UserDataLoader 批量加载用户数据
-            var userTasks = userIds.Select(id => userDataLoader.LoadAsync(id));
-            var users = await Task.WhenAll(userTasks);
-            
-            // 过滤掉 null 值并映射为 UserDto
-            return users.Where(u => u != null).Select(u => mapper.Map<Dtos.UserDto>(u));
+            var users = await _userRepository.GetAll();
+            return users.Select(u => mapper.Map<Dtos.UserDto>(u)).AsQueryable();
         }
 
         [GraphQLDescription("获取用户详情")]
