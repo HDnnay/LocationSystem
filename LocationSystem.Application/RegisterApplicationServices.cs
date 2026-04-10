@@ -1,14 +1,10 @@
 using FluentValidation;
 using LocationSystem.Application.Extentions;
-using LocationSystem.Application.Features.Auth.Register.Commands;
 using LocationSystem.Application.Services;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace LocationSystem.Application
 {
@@ -17,24 +13,25 @@ namespace LocationSystem.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IMediator, SimpleMediator>();
-            
+
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.Scan(s => s.FromAssembliesOf(typeof(RegisterApplicationServices))
             .AddClasses(c => c.AssignableTo(typeof(IRequestHandler<>))).AsImplementedInterfaces().WithScopedLifetime()
-            .AddClasses(c=>c.AssignableToAny(typeof(IRequestHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
-            .AddClasses(c=>c.AssignableToAny(typeof(ICacheService))).AsImplementedInterfaces().WithScopedLifetime()
-            .AddClasses(c=>c.AssignableToAny(typeof(IJwtService))).AsImplementedInterfaces().WithSingletonLifetime()
+            .AddClasses(c => c.AssignableToAny(typeof(IRequestHandler<,>))).AsImplementedInterfaces().WithScopedLifetime()
+            .AddClasses(c => c.AssignableToAny(typeof(ICacheService))).AsImplementedInterfaces().WithScopedLifetime()
+            .AddClasses(c => c.AssignableToAny(typeof(IJwtService))).AsImplementedInterfaces().WithSingletonLifetime()
             );
-            
+
             // 注册事件总线和缓存服务
             services.AddEventBusAndCacheServices();
-            
+
             // 注册RoleManagement
-            services.AddTransient<LocationSystem.Application.Services.RoleManagement>();
-            
+            services.AddTransient<RoleManagement>();
+
             // 注册PermissionManagement
-            services.AddTransient<LocationSystem.Application.Services.PermissionManagement>();
-            
+            services.AddTransient<PermissionManagement>();
+            // 注册 AutoMapper
+            services.AddAutoMapper(typeof(RegisterApplicationServices));
             return services;
         }
     }

@@ -1,25 +1,16 @@
-using AspNetCoreRateLimit;
-using BCrypt.Net;
 using LocationSystem.Api.BackgroudServices;
-using LocationSystem.Api.Hubs;
-using LocationSystem.Api.GraphQL;
 using LocationSystem.Api.Extensions;
+using LocationSystem.Api.Hubs;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
-using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Utilities.Jwt;
-using LocationSystem.Application.Utilities.RabbitMQs;
 using LocationSystem.Infrastructure;
 using LocationSystem.ServiceDefaults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 using Serilog;
 using Serilog.Events;
@@ -111,8 +102,7 @@ try
     // 配置 GraphQL 服务
     builder.Services.AddGraphQLServices();
 
-    // 注册 AutoMapper
-    builder.Services.AddAutoMapper(typeof(Program));
+
 
 
     var app = builder.Build();

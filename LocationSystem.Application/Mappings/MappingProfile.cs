@@ -4,7 +4,7 @@ using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 
-namespace LocationSystem.Api.Mappings
+namespace LocationSystem.Application.Mappings
 {
     public class MappingProfile : Profile
     {
