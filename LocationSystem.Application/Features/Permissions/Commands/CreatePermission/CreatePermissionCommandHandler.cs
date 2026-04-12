@@ -4,7 +4,7 @@ using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Events;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.UserRolePermissions;
-using AutoMapper;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermission
 {
@@ -13,14 +13,12 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEventBus _eventBus;
-        private readonly IMapper _mapper;
 
-        public CreatePermissionCommandHandler(IPermissionRepository permissionRepository, IUnitOfWork unitOfWork, IEventBus eventBus, IMapper mapper)
+        public CreatePermissionCommandHandler(IPermissionRepository permissionRepository, IUnitOfWork unitOfWork, IEventBus eventBus)
         {
             _permissionRepository = permissionRepository;
             _unitOfWork = unitOfWork;
             _eventBus = eventBus;
-            _mapper = mapper;
         }
 
         public async Task<PermissionDto> Handle(CreatePermissionCommand request)
@@ -64,7 +62,7 @@ namespace LocationSystem.Application.Features.Permissions.Commands.CreatePermiss
             }
 
             // 返回DTO
-            return _mapper.Map<PermissionDto>(permission);
+            return permission.Adapt<PermissionDto>();
         }
     }
 }

@@ -3,7 +3,7 @@ using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Articles;
-using AutoMapper;
+using Mapster;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +16,12 @@ namespace LocationSystem.Application.Features.Articles.Commands.CreateArticle
         private readonly IArticleRepository _articleRepository;
         private readonly ITagRepository _tagRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public CreateArticleCommandHandler(IArticleRepository articleRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public CreateArticleCommandHandler(IArticleRepository articleRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork)
         {
             _articleRepository = articleRepository;
             _tagRepository = tagRepository;
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<ArticleDto> Handle(CreateArticleCommand command)
@@ -55,7 +53,7 @@ namespace LocationSystem.Application.Features.Articles.Commands.CreateArticle
                 throw;
             }
 
-            return _mapper.Map<ArticleDto>(article);
+            return article.Adapt<ArticleDto>();
         }
     }
 }

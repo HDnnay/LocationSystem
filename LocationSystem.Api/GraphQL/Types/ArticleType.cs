@@ -4,7 +4,7 @@ using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.EntityFrameworkCore;
-using AutoMapper;
+using Mapster;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,8 +34,7 @@ namespace LocationSystem.Api.GraphQL.Types
                     var dataLoader = ctx.Service<ArticleTagsDataLoader>();
                     var tags = await dataLoader.LoadAsync(article.Id);
                     if (tags == null) return null;
-                    var mapper = ctx.Service<IMapper>();
-                    return mapper.Map<IEnumerable<TagDto>>(tags);
+                    return tags.Adapt<IEnumerable<TagDto>>();
                 });
             
             // 使用 DataLoader 加载评论
@@ -46,8 +45,7 @@ namespace LocationSystem.Api.GraphQL.Types
                     var dataLoader = ctx.Service<ArticleCommentsDataLoader>();
                     var comments = await dataLoader.LoadAsync(article.Id);
                     if (comments == null) return null;
-                    var mapper = ctx.Service<IMapper>();
-                    return mapper.Map<IEnumerable<ArticleCommentDto>>(comments);
+                    return comments.Adapt<IEnumerable<ArticleCommentDto>>();
                 });
             
             // 使用 DataLoader 加载创建者
@@ -58,8 +56,7 @@ namespace LocationSystem.Api.GraphQL.Types
                     var dataLoader = ctx.Service<ArticleCreateUserDataLoader>();
                     var user = await dataLoader.LoadAsync(article.UserId);
                     if (user == null) return null;
-                    var mapper = ctx.Service<IMapper>();
-                    return mapper.Map<UserDto>(user);
+                    return user.Adapt<UserDto>();
                 });
         }
         

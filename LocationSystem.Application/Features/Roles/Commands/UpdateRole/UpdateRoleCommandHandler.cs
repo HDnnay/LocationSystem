@@ -5,7 +5,7 @@ using LocationSystem.Application.Events;
 using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
-using AutoMapper;
+using Mapster;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,16 +19,12 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IEventBus _eventBus;
-        private readonly IMapper _mapper;
 
-        public UpdateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork, IEventBus eventBus, IMapper mapper)
+        public UpdateRoleCommandHandler(IRoleRepository roleRepository, IPermissionRepository permissionRepository, IUnitOfWork unitOfWork)
         {
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
             _unitOfWork = unitOfWork;
-            _eventBus = eventBus;
-            _mapper = mapper;
         }
 
         public async Task<RoleDto> Handle(UpdateRoleCommand request)
@@ -77,9 +73,6 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
             {
                 await _roleRepository.UpdateAsync(role);
                 await _unitOfWork.CommitAsync();
-                
-                // 发布角色权限变更事件，更新缓存
-                await _eventBus.PublishAsync(new RolePermissionsChangedEvent { RoleId = role.Id });
             }
             catch (Exception)
             {
@@ -88,7 +81,7 @@ namespace LocationSystem.Application.Features.Roles.Commands.UpdateRole
             }
 
             // 返回更新后的角色
-            return _mapper.Map<RoleDto>(role);
+            return role.Adapt<RoleDto>();
         }
     }
 }

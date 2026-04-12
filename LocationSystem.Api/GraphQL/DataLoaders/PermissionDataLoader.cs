@@ -1,5 +1,5 @@
 using HotChocolate;
-using AutoMapper;
+using Mapster;
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos;
 using System;
@@ -28,7 +28,7 @@ namespace LocationSystem.Api.GraphQL.DataLoaders
             using (var scope = _serviceProvider.CreateScope())
             {
                 var menuRepository = scope.ServiceProvider.GetRequiredService<IMenuRepository>();
-                var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
+                var mapper = scope.ServiceProvider.GetRequiredService<MapsterMapper.IMapper>();
 
                 var menus = await menuRepository.GetByIdsWithPermissionsAsync(menuIds.ToList());
                 var result = new Dictionary<Guid, List<PermissionDto>>();
@@ -36,7 +36,7 @@ namespace LocationSystem.Api.GraphQL.DataLoaders
                 foreach (var menu in menus)
                 {
                     var permissions = menu.PermissionMenus.Select(pm => pm.Permission).ToList();
-                    result[menu.Id] = mapper.Map<List<PermissionDto>>(permissions);
+                    result[menu.Id] = permissions.Adapt<List<PermissionDto>>();
                 }
 
                 // 确保所有请求的菜单都有结果

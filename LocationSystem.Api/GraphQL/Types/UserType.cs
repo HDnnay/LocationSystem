@@ -31,9 +31,8 @@ namespace LocationSystem.Api.GraphQL.Types
             //    //// 过滤掉 null 值
             //    //var validRoles = loadedRoles.Where(r => r != null);
 
-            //    //// 使用 AutoMapper 映射为 RoleDto
-            //    //var mapper = c.Service<IMapper>();
-            //    //return validRoles.Select(role => mapper.Map<RoleDto>(role));
+            //    //// 使用 Mapster 映射为 RoleDto
+            //return validRoles.Select(role => role.Adapt<RoleDto>());
             //});
         }
     }

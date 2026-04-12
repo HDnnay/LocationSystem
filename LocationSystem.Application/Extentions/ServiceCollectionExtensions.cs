@@ -2,10 +2,10 @@ using LocationSystem.Application.Contrats.Services;
 using LocationSystem.Application.Events;
 using LocationSystem.Application.Events.Handlers;
 using LocationSystem.Application.Services;
+using Mapster;
+using MapsterMapper;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Reflection;
 
 namespace LocationSystem.Application.Extentions
 {
@@ -35,6 +35,18 @@ namespace LocationSystem.Application.Extentions
             return services;
         }
         
+        public static IServiceCollection AddMapsterServices(this IServiceCollection services)
+        {
+            // 注册 Mapster
+            var config = TypeAdapterConfig.GlobalSettings;
+            config.Scan(Assembly.GetExecutingAssembly());
+            
+            services.AddSingleton(config);
+            services.AddScoped<IMapper, ServiceMapper>();
+            
+            return services;
+        }
+        
         public static IServiceCollection AddEventBusAndCacheServices(this IServiceCollection services)
         {
             // 注册事件总线服务
@@ -45,6 +57,9 @@ namespace LocationSystem.Application.Extentions
             
             // 注册事件处理程序
             services.AddEventHandlers();
+            
+            // 注册 Mapster
+            services.AddMapsterServices();
             
             return services;
         }

@@ -30,8 +30,8 @@ namespace LocationSystem.Application
 
             // 注册PermissionManagement
             services.AddTransient<PermissionManagement>();
-            // 注册 AutoMapper
-            services.AddAutoMapper(typeof(RegisterApplicationServices));
+            // 注册 Mapster
+            services.AddMapsterServices();
             return services;
         }
     }

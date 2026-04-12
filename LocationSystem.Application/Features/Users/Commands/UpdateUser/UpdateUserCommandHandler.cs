@@ -4,7 +4,7 @@ using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
-using AutoMapper;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Users.Commands.UpdateUser
 {
@@ -12,13 +12,11 @@ namespace LocationSystem.Application.Features.Users.Commands.UpdateUser
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
 
-        public UpdateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public UpdateUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
         }
 
         public async Task<UserDto> Handle(UpdateUserCommand command)
@@ -46,7 +44,7 @@ namespace LocationSystem.Application.Features.Users.Commands.UpdateUser
                 // 提交事务
                 await _unitOfWork.CommitAsync();
 
-                return _mapper.Map<UserDto>(user);
+                return user.Adapt<UserDto>();
             }
             catch (Exception)
             {

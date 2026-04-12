@@ -1,4 +1,4 @@
-using AutoMapper;
+using Mapster;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats.Repositories;
@@ -17,10 +17,10 @@ namespace LocationSystem.Api.GraphQL
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
         private readonly MenuDataLoader _menuDataLoader;
-        private readonly IMapper _mapper;
+        private readonly MapsterMapper.IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public Query(IMenuRepository menuRepository, IUserRepository userRepository, IRoleRepository roleRepository, IPermissionRepository permissionRepository, MenuDataLoader menuDataLoader, IMapper mapper, IMediator mediator)
+        public Query(IMenuRepository menuRepository, IUserRepository userRepository, IRoleRepository roleRepository, IPermissionRepository permissionRepository, MenuDataLoader menuDataLoader, MapsterMapper.IMapper mapper, IMediator mediator)
         {
             _menuRepository = menuRepository;
             _userRepository = userRepository;
@@ -62,7 +62,7 @@ namespace LocationSystem.Api.GraphQL
         [UseFiltering]
         [GraphQLDescription("获取用户列表")]
         public async Task<IQueryable<Dtos.UserDto>> GetUsers(
-            [Service] IMapper mapper)
+            [Service] MapsterMapper.IMapper mapper)
         {
             var users = await _userRepository.GetAll();
             var data = users.Select(u => mapper.Map<Dtos.UserDto>(u)).AsQueryable();
@@ -74,7 +74,7 @@ namespace LocationSystem.Api.GraphQL
         public async Task<Dtos.UserDto> GetUser(
             [GraphQLDescription("用户ID")] Guid id,
             [Service] UserDataLoader userDataLoader,
-            [Service] IMapper mapper)
+            [Service] MapsterMapper.IMapper mapper)
         {
             var user = await userDataLoader.LoadAsync(id);
             if (user == null)
