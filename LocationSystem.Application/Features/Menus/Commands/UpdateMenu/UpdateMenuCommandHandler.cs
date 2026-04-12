@@ -30,6 +30,7 @@ namespace LocationSystem.Application.Features.Menus.Commands.UpdateMenu
                 command.Path,
                 command.Icon,
                 command.Order,
+                command.Level,
                 command.ParentId
             );
 

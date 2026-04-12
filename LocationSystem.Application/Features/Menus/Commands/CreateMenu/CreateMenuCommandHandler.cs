@@ -27,6 +27,7 @@ namespace LocationSystem.Application.Features.Menus.Commands.CreateMenu
                 command.Path,
                 command.Icon,
                 command.Order,
+                command.Level,
                 command.ParentId
             );
             await _unitOfWork.BeginTransactionAsync();

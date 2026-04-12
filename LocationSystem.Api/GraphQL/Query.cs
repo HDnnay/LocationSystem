@@ -1,6 +1,4 @@
 using AutoMapper;
-using HotChocolate;
-using HotChocolate.Data;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats.Repositories;
@@ -67,7 +65,8 @@ namespace LocationSystem.Api.GraphQL
             [Service] IMapper mapper)
         {
             var users = await _userRepository.GetAll();
-            return users.Select(u => mapper.Map<Dtos.UserDto>(u)).AsQueryable();
+            var data = users.Select(u => mapper.Map<Dtos.UserDto>(u)).AsQueryable();
+            return data;
         }
 
         [GraphQLDescription("获取用户详情")]

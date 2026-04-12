@@ -29,6 +29,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetMenuTree
                 Path = menu.Path,
                 Icon = menu.Icon,
                 Order = menu.Order,
+                Level = menu.Level,
                 ParentId = menu.ParentId,
                 CreatedAt = menu.CreateTiem,
                 UpdatedAt = menu.UpdatedAt,

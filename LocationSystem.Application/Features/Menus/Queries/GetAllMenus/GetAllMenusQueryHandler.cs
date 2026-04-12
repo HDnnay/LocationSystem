@@ -27,6 +27,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetAllMenus
                     Path = menu.Path,
                     Icon = menu.Icon,
                     Order = menu.Order,
+                    Level = menu.Level,
                     ParentId = menu.ParentId
                 }).ToList(),
                 Total = total,
