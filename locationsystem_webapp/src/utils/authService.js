@@ -2,6 +2,7 @@
 
 import api from '../api'
 import authStorage from './authStorage'
+import router from '../router'
 
 class AuthService {
   constructor() {
@@ -54,7 +55,7 @@ class AuthService {
       console.error('刷新token失败:', error)
       // 刷新失败，清除认证信息并跳转到登录页
       authStorage.clearAuthData()
-      window.location.href = '/login'
+      router.push('/login')
       throw error
     } finally {
       this.isRefreshing = false

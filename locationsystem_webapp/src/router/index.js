@@ -156,6 +156,24 @@ const router = createRouter({
     routes
 })
 
+// 获取用户权限
+async function getUserPermissions() {
+    try {
+        // 从后端获取权限
+        const permissions = await apiGetUserPermissions()
+
+        // 存储到localStorage
+        localStorage.setItem('userPermissions', JSON.stringify(permissions))
+
+        return permissions
+    } catch (error) {
+        console.error('获取用户权限失败:', error)
+        // 错误时返回空数组，不使用默认权限
+        localStorage.setItem('userPermissions', JSON.stringify([]))
+        return []
+    }
+}
+
 // 路由前置守卫
 router.beforeEach(async (to, from, next) => {
     document.title = to.meta.title ? `${to.meta.title} - 内容管理系统` : '内容管理系统'
@@ -194,23 +212,5 @@ router.beforeEach(async (to, from, next) => {
         next()
     }
 })
-
-// 获取用户权限
-async function getUserPermissions() {
-    try {
-        // 从后端获取权限
-        const permissions = await apiGetUserPermissions()
-
-        // 存储到localStorage
-        localStorage.setItem('userPermissions', JSON.stringify(permissions))
-
-        return permissions
-    } catch (error) {
-        console.error('获取用户权限失败:', error)
-        // 错误时返回空数组，不使用默认权限
-        localStorage.setItem('userPermissions', JSON.stringify([]))
-        return []
-    }
-}
 
 export default router
