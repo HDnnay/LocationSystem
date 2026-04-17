@@ -198,6 +198,23 @@ app.Run();
 ### 5.5 问题：文件被锁定，无法复制
 **解决方案**：使用 `taskkill` 命令终止占用文件的进程，然后重新启动项目。
 
+### 5.6 问题：Aspire 无法接入 LocationSystem.Api 项目
+**解决方案**：将 LocationSystem.Api 及其依赖项目添加到 LocationSystem.Aspire.sln 解决方案中。
+
+```bash
+# 添加 API 项目到解决方案
+dotnet sln LocationSystem.Aspire.sln add LocationSystem.Api/LocationSystem.Api.csproj
+
+# 重新构建解决方案
+dotnet build LocationSystem.Aspire.sln
+
+# 重新启动 Aspire
+cd LocationSystem.Aspire.AppHost
+dotnet run
+```
+
+**原因**：Aspire 在构建时需要扫描解决方案中的所有项目，当 LocationSystem.Api 不在解决方案中时，Aspire 无法生成对应的 Projects.LocationSystem_Api 类型，导致配置无法生效。
+
 ## 6. 最终项目结构
 
 ```
