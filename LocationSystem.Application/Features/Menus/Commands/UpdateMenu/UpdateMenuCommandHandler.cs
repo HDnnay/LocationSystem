@@ -29,7 +29,8 @@ namespace LocationSystem.Application.Features.Menus.Commands.UpdateMenu
                 command.Icon,
                 command.Order,
                 command.Level,
-                command.ParentId
+                command.ParentId,
+                command.IsBackEnd
             );
 
             await _menuRepository.UpdateAsync(menu);

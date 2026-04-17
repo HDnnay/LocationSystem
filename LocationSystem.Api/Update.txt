@@ -1,2 +1,2 @@
- Add-Migration update_menulevel -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
- Update-Database -Project LocationSystem.Infrastructure -StartupProject LocationSystem.Api
+ Add-Migration update_ArticleFiled -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
+ Update-Database -Project LocationSystem.Infrastructure -StartuProject LocationSystem.Api

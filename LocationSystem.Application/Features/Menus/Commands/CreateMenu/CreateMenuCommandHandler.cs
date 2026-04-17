@@ -26,7 +26,8 @@ namespace LocationSystem.Application.Features.Menus.Commands.CreateMenu
                 command.Icon,
                 command.Order,
                 command.Level,
-                command.ParentId
+                command.ParentId,
+                command.IsBackEnd
             );
             await _unitOfWork.BeginTransactionAsync();
             var createdMenu = await _menuRepository.AddAsync(menu);

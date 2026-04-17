@@ -13,6 +13,7 @@ namespace LocationSystem.Api.GraphQL.Commands
             descriptor.Field(c => c.Icon).Type<StringType>();
             descriptor.Field(c => c.Order).Type<IntType>();
             descriptor.Field(c => c.Level).Type<IntType>();
+            descriptor.Field(c => c.IsBackEnd).Type<BooleanType>();
             descriptor.Field(c => c.ParentId).Type<IdType>();
         }
     }
@@ -26,6 +27,7 @@ namespace LocationSystem.Api.GraphQL.Commands
             descriptor.Field(c => c.Icon).Type<StringType>();
             descriptor.Field(c => c.Order).Type<IntType>();
             descriptor.Field(c => c.Level).Type<IntType>();
+            descriptor.Field(c => c.IsBackEnd).Type<BooleanType>();
             descriptor.Field(c => c.ParentId).Type<IdType>();
         }
     }

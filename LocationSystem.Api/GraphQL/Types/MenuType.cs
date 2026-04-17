@@ -14,6 +14,7 @@ namespace LocationSystem.Api.GraphQL.Types
             descriptor.Field(m => m.Icon).Type<StringType>();
             descriptor.Field(m => m.Order).Type<IntType>();
             descriptor.Field(m => m.Level).Type<IntType>();
+            descriptor.Field(m => m.IsBackEnd).Type<BooleanType>();
             descriptor.Field(m => m.ParentId).Type<IdType>();
             descriptor.Field(m => m.CreatedAt).Type<DateTimeType>();
             descriptor.Field(m => m.UpdatedAt).Type<DateTimeType>();

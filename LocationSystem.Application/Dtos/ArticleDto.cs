@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LocationSystem.Domain.Entities.Articles;
 
 namespace LocationSystem.Application.Dtos
 {
@@ -16,6 +17,9 @@ namespace LocationSystem.Application.Dtos
         public List<TagDto>? Tags { get; set; }
         public List<ArticleCommentDto>? Comments { get; set; }
         public UserDto? CreateUser { get; set; }
+        public ArticleLevel Level { get; set; }
+        public DateTime? VisibleStartTime { get; set; }
+        public DateTime? VisibleEndTime { get; set; }
     }
 
     public class TagDto

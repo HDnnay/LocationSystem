@@ -12,6 +12,7 @@ namespace LocationSystem.Domain.Entities.Menus
         public string Icon { get; private set; }
         public int Order { get; private set; }
         public int Level { get; private set; }
+        public bool IsBackEnd { get; private set; }
         public Guid? ParentId { get; private set; }
         public Menu? Parent { get; private set; }
         public List<Menu> Children { get; private set; }
@@ -23,7 +24,7 @@ namespace LocationSystem.Domain.Entities.Menus
 
         public DateTime CreateTiem { get; private set; }
 
-        public Menu(string name, string path, string icon, int order, int level, Guid? parentId = null)
+        public Menu(string name, string path, string icon, int order, int level, Guid? parentId = null, bool isBackEnd = false)
         {
             Id = Guid.NewGuid();
             Name = name;
@@ -32,12 +33,13 @@ namespace LocationSystem.Domain.Entities.Menus
             Order = order;
             Level = level;
             ParentId = parentId;
+            IsBackEnd = isBackEnd;
             Children = new List<Menu>();
             PermissionMenus = new List<PermissionMenu>();
             CreateTiem = DateTime.Now;
         }
 
-        public void Update(string name, string path, string icon, int order, int level, Guid? parentId = null)
+        public void Update(string name, string path, string icon, int order, int level, Guid? parentId = null, bool isBackEnd = false)
         {
             Name = name;
             Path = path;
@@ -45,6 +47,7 @@ namespace LocationSystem.Domain.Entities.Menus
             Order = order;
             Level = level;
             ParentId = parentId;
+            IsBackEnd = isBackEnd;
             UpdatedAt = DateTime.UtcNow;
         }
 

@@ -61,9 +61,9 @@ namespace LocationSystem.Api.Data
             await dbContext.SaveChangesAsync();
 
             // 创建顶级菜单 (Level = 1)
-            var rolePermissionMenu = new Menu("角色权限管理", "/role-permissions", "Lock", 1, 1);
-            var companyMenu = new Menu("公司管理", "/company", "OfficeBuilding", 2, 1);
-            var rentMenu = new Menu("租房管理", "/rent", "House", 3, 1);
+            var rolePermissionMenu = new Menu("角色权限管理", "/role-permissions", "Lock", 1, 1, null, true); // 后端菜单
+            var companyMenu = new Menu("公司管理", "/company", "OfficeBuilding", 2, 1, null, true); // 后端菜单
+            var rentMenu = new Menu("租房管理", "/rent", "House", 3, 1, null, true); // 后端菜单
 
             // 添加顶级菜单到数据库
             await dbContext.Menus.AddAsync(rolePermissionMenu);
@@ -72,14 +72,14 @@ namespace LocationSystem.Api.Data
             await dbContext.SaveChangesAsync();
 
             // 创建子菜单 (Level = 2)
-            var roleMenu = new Menu("角色管理", "/roles", "SetUp", 1, 2, rolePermissionMenu.Id);
-            var permissionManagementMenu = new Menu("权限管理", "/permissions", "Key", 2, 2, rolePermissionMenu.Id);
-            var userManagementMenu = new Menu("用户管理", "/users", "User", 3, 2, rolePermissionMenu.Id);
-            var menuManagementMenu = new Menu("菜单管理", "/menus", "List", 4, 2, rolePermissionMenu.Id);
-            var companyListMenu = new Menu("公司列表", "/company/list", "List", 1, 2, companyMenu.Id);
-            var companyStatisticsMenu = new Menu("统计管理", "/company/statistics", "List", 2, 2, companyMenu.Id);
-            var rentListMenu = new Menu("租房列表", "/rent/list", "List", 1, 2, rentMenu.Id);
-            var rentCreateMenu = new Menu("租房创建", "/rent/create", "Document", 2, 2, rentMenu.Id);
+            var roleMenu = new Menu("角色管理", "/roles", "SetUp", 1, 2, rolePermissionMenu.Id, true); // 后端菜单
+            var permissionManagementMenu = new Menu("权限管理", "/permissions", "Key", 2, 2, rolePermissionMenu.Id, true); // 后端菜单
+            var userManagementMenu = new Menu("用户管理", "/users", "User", 3, 2, rolePermissionMenu.Id, true); // 后端菜单
+            var menuManagementMenu = new Menu("菜单管理", "/menus", "List", 4, 2, rolePermissionMenu.Id, true); // 后端菜单
+            var companyListMenu = new Menu("公司列表", "/company/list", "List", 1, 2, companyMenu.Id, true); // 后端菜单
+            var companyStatisticsMenu = new Menu("统计管理", "/company/statistics", "List", 2, 2, companyMenu.Id, true); // 后端菜单
+            var rentListMenu = new Menu("租房列表", "/rent/list", "List", 1, 2, rentMenu.Id, true); // 后端菜单
+            var rentCreateMenu = new Menu("租房创建", "/rent/create", "Document", 2, 2, rentMenu.Id, true); // 后端菜单
 
             // 添加子菜单到数据库
             await dbContext.Menus.AddAsync(roleMenu);

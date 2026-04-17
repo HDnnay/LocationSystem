@@ -34,6 +34,9 @@ namespace LocationSystem.Application.Features.Articles.Commands.CreateArticle
                 command.Topic,
                 command.Subtitle
             );
+            
+            article.Level = command.Level;
+            article.SetVisibleTimeRange(command.VisibleStartTime, command.VisibleEndTime);
 
             if (command.TagIds != null && command.TagIds.Any())
             {

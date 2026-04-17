@@ -42,6 +42,31 @@ namespace LocationSystem.Domain.Entities.Articles
 
         public virtual User? CreateUser { get; set; }
 
+        [Description("文章等级")]
+        public ArticleLevel Level { get; set; } = ArticleLevel.Public;
+        [Description("限时可见开始时间")]
+        public DateTime? VisibleStartTime { get; private set; }
+        [Description("限时可见结束时间")]
+        public DateTime? VisibleEndTime { get; private set; }
+        
+        public bool IsCurrentlyVisible()
+        {
+            if (Level != ArticleLevel.Temporal)
+            {
+                return true;
+            }
+            
+            var now = DateTime.Now;
+            if (VisibleStartTime.HasValue && now < VisibleStartTime.Value)
+            {
+                return false;
+            }
+            if (VisibleEndTime.HasValue && now > VisibleEndTime.Value)
+            {
+                return false;
+            }
+            return true;
+        }
         // 添加更新方法
         public void Update(string title, string content, bool isVisiable, string? topic, string? subtitle)
         {
@@ -52,10 +77,26 @@ namespace LocationSystem.Domain.Entities.Articles
             Subtitle = subtitle;
         }
 
+        public void SetVisibleTimeRange(DateTime? startTime, DateTime? endTime)
+        {
+            VisibleStartTime = startTime;
+            VisibleEndTime = endTime;
+        }
+
         // 添加更新标签方法
         public void UpdateTags(List<ArticleTag> tags)
         {
             Tags = tags;
         }
+    }
+
+    public enum ArticleLevel : byte
+    {
+        [Description("公开")]
+        Public = 0,
+        [Description("私有")]
+        Private = 1,
+        [Description("限时可见")]
+        Temporal = 3,   
     }
 }

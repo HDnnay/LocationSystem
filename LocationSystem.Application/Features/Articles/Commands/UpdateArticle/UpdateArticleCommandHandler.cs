@@ -31,7 +31,6 @@ namespace LocationSystem.Application.Features.Articles.Commands.UpdateArticle
                 throw new Exception($"文章不存在，ID: {command.Id}");
             }
 
-            // 使用 Article 实体的 Update 方法更新属性
             article.Update(
                 command.Title,
                 command.Content,
@@ -39,6 +38,13 @@ namespace LocationSystem.Application.Features.Articles.Commands.UpdateArticle
                 command.Topic,
                 command.Subtitle
             );
+            
+            article.Level = command.Level;
+            
+            if (command.Level == ArticleLevel.Temporal)
+            {
+                article.SetVisibleTimeRange(command.VisibleStartTime, command.VisibleEndTime);
+            }
 
             if (command.TagIds != null)
             {
