@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getUserMenus, getUserPermissions as apiGetUserPermissions } from '../api/permissions'
+import { getUserPermissions as apiGetUserPermissions } from '../api/permissions'
 import authStorage from '../utils/authStorage'
 
 // 懒加载页面组件
