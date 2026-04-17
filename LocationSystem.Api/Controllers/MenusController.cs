@@ -21,7 +21,7 @@ namespace LocationSystem.Api.Controllers
         private readonly IHubContext<MenuHub> _hubContext;
         private readonly IEventBus _eventBus;
 
-        public MenusController(IMediator mediator, IHubContext<MenuHub> hubContext,IEventBus eventBus)
+        public MenusController(IMediator mediator, IHubContext<MenuHub> hubContext, IEventBus eventBus)
         {
             _mediator = mediator;
             _hubContext = hubContext;
@@ -30,7 +30,7 @@ namespace LocationSystem.Api.Controllers
 
         // GET: api/Menus
         [HttpGet]
-        public async Task<IActionResult> GetMenus([FromQuery]GetAllMenusQuery query)
+        public async Task<IActionResult> GetMenus([FromQuery] GetAllMenusQuery query)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace LocationSystem.Api.Controllers
                 var createdMenu = await _mediator.Send(command);
                 // 通知前端菜单已更新
                 await _hubContext.Clients.All.SendAsync("MenuUpdated");
-                
+
                 return Ok(createdMenu);
             }
             catch (Exception ex)
@@ -89,10 +89,10 @@ namespace LocationSystem.Api.Controllers
             {
                 command.Id = id;
                 var updatedMenu = await _mediator.Send(command);
-                
+
                 // 通知前端菜单已更新
                 await _hubContext.Clients.All.SendAsync("MenuUpdated");
-                
+
                 return Ok(updatedMenu);
             }
             catch (Exception ex)
@@ -113,7 +113,7 @@ namespace LocationSystem.Api.Controllers
 
                 // 通知前端菜单已更新
                 await _hubContext.Clients.All.SendAsync("MenuUpdated");
-                
+
                 return Ok(new { success = true });
             }
             catch (Exception ex)
