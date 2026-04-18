@@ -31,6 +31,8 @@ namespace LocationSystem.Api.BackgroudServices
                 {
                     var eventBus = scope.ServiceProvider.GetRequiredService<IEventBus>();
                     var cacheClearHandler = scope.ServiceProvider.GetRequiredService<CacheClearHandler>();
+                    var entityDeletedHandler = scope.ServiceProvider.GetRequiredService<EntityDeletedEventHandler>();
+
                     // 订阅角色权限变更事件
                     eventBus.Subscribe<RolePermissionsChangedEvent>(cacheClearHandler.Handle);
                     Console.WriteLine("已订阅角色权限变更事件");
@@ -40,6 +42,9 @@ namespace LocationSystem.Api.BackgroudServices
                     // 订阅权限变更事件
                     eventBus.Subscribe<PermissionsChangedEvent>(cacheClearHandler.Handle);
                     Console.WriteLine("已订阅权限变更事件");
+                    // 订阅实体删除事件
+                    eventBus.Subscribe<EntityDeletedEvent>(entityDeletedHandler.Handle);
+                    Console.WriteLine("已订阅实体删除事件");
                 }
 
                 Console.WriteLine("事件订阅完成");

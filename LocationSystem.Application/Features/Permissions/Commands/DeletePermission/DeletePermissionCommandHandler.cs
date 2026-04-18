@@ -3,9 +3,11 @@ using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Events;
 using LocationSystem.Application.Features.Permissions.Commands.DeletePermission;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Permissions.Commands.DeletePermission
@@ -39,7 +41,16 @@ namespace LocationSystem.Application.Features.Permissions.Commands.DeletePermiss
             {
                 await _permissionRepository.DeleteAsync(permission);
                 await _unitOfWork.CommitAsync();
-                
+
+                // 发布实体删除事件，创建快照
+                await _eventBus.PublishAsync(new EntityDeletedEvent
+                {
+                    EntityType = nameof(Permission),
+                    EntityId = permission.Id,
+                    EntityJson = JsonSerializer.Serialize(permission),
+                    DeletedAt = DateTime.UtcNow
+                });
+
                 // 发布权限变更事件，更新缓存
                 await _eventBus.PublishAsync(new PermissionsChangedEvent());
             }

@@ -1,7 +1,10 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
+using LocationSystem.Application.Events;
 using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Domain.Entities.UserRolePermissions;
+using System.Text.Json;
 
 namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
 {
@@ -9,11 +12,13 @@ namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IEventBus _eventBus;
 
-        public DeleteUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork)
+        public DeleteUserCommandHandler(IUserRepository userRepository, IUnitOfWork unitOfWork, IEventBus eventBus)
         {
             _userRepository = userRepository;
             _unitOfWork = unitOfWork;
+            _eventBus = eventBus;
         }
 
         public async Task<bool> Handle(DeleteUserCommand command)
@@ -44,6 +49,15 @@ namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
 
                 // 提交事务
                 await _unitOfWork.CommitAsync();
+
+                // 发布实体删除事件，创建快照
+                await _eventBus.PublishAsync(new EntityDeletedEvent
+                {
+                    EntityType = nameof(User),
+                    EntityId = user.Id,
+                    EntityJson = JsonSerializer.Serialize(user),
+                    DeletedAt = DateTime.UtcNow
+                });
 
                 return true;
             }
