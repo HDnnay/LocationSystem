@@ -367,3 +367,4 @@ FodyWeavers.xsd
 /LocationSystem.Infrastructure/Migrations/20260201071612_update_renthouse.cs
 /LocationSystem.Api/wwwroot/uploads
 /LocationSystem.Frontend
+locationsystem_webapp/locationsystem_webapp.code-workspace
