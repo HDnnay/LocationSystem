@@ -2,6 +2,6 @@
 {
     public interface IEntityVisiable : IEntity
     {
-        bool IsVisiable { get; set; }
+        bool IsDisabled { get; set; }
     }
 }

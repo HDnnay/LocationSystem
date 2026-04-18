@@ -36,7 +36,7 @@ namespace LocationSystem.Application.Features.Auth.Login.Commands
                 }
 
                 // 检查用户是否被禁用
-                if (user.IsDisabled)
+                if (!user.IsDisabled)
                 {
                     throw new ApplicationCustomException("账号已被禁用", 403);
                 }

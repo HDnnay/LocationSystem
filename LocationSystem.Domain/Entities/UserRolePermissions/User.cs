@@ -1,9 +1,10 @@
-﻿using LocationSystem.Domain.Exceptions;
+﻿using LocationSystem.Domain.Entities.Interfacies;
+using LocationSystem.Domain.Exceptions;
 using LocationSystem.Domain.ValueObjects;
 
 namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
-    public abstract class User
+    public abstract class User : ISoftDeleteEntity
     {
         public Guid Id { get; private set; }
         public string Name { get; private set; } = null!;
@@ -14,9 +15,14 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
         public UserType UserType { get; protected set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
-        public bool IsDisabled { get; private set; } = false;
         // 导航属性
         public ICollection<Role> Roles { get; private set; } = new List<Role>();
+        public bool IsDelete { get; set; }
+        public Guid DeleteUserId { get; set; }
+        public DateTime DeleteTime { get; set; }
+        public bool IsDisabled { get; set; }
+
+        public DateTime CreateTime => throw new NotImplementedException();
 
         protected User() { }
         public User(string name, Email email, bool isSuperAdmin = false)

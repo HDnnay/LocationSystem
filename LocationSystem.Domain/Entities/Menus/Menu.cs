@@ -20,7 +20,7 @@ namespace LocationSystem.Domain.Entities.Menus
         public DateTime? UpdatedAt { get; private set; }
         [Timestamp]
         public byte[] Version { get; private set; }
-        public bool IsVisiable { get; set; }
+        public bool IsDisabled { get; set; }
 
         public DateTime CreateTime { get; private set; }
 
