@@ -123,7 +123,7 @@
           </div>
           <div class="detail-item">
             <span class="detail-label">描述:</span>
-            <span class="detail-value">{{ currentDetail.description || '无描述' }}</span>
+            <span class="detail-value">{{ currentDetail?.description || '无描述' }}</span>
           </div>
           <div class="detail-item">
             <span class="detail-label">类型:</span>
@@ -502,9 +502,9 @@
           console.log('API响应结果:', result)
 
           // 根据你的响应结构，result.data是数组，result.total和result.currentPage是直接属性
-          this.rent_houses = result.data.data || []
-          this.total = result.data.total || 0
-          this.currentPage = result.data.currentPage || 1
+          this.rent_houses = result.data || []
+          this.total = result.total || 0
+          this.currentPage = result.currentPage || 1
 
         } catch (error) {
           console.error('获取数据失败:', error)

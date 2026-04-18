@@ -1,13 +1,9 @@
 using LocationSystem.Api.Filters;
 using LocationSystem.Application.Features.RentHousies.Command.CreateRentHose;
 using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseDetail;
-using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList;
 using LocationSystem.Application.Features.RentHousies.Queries.QueryRentHouseList;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Application.Utilities.Common;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using IO = System.IO;
 
 namespace LocationSystem.Api.Controllers
@@ -30,7 +26,7 @@ namespace LocationSystem.Api.Controllers
             return Ok("测试成功");
         }
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]GetRentHouseListFilter request)
+        public async Task<IActionResult> Get([FromQuery] GetRentHouseListFilter request)
         {
             try
             {
@@ -43,16 +39,16 @@ namespace LocationSystem.Api.Controllers
                 var data = await _mediator.Send(query);
                 return Ok(data);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
-           
+
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            if(id==Guid.Empty)
+            if (id==Guid.Empty)
                 return BadRequest("Id不能为默认值");
             var query = new GetRentHouseDetailQuery { Id= id };
             var model = await _mediator.Send(query);
@@ -71,7 +67,7 @@ namespace LocationSystem.Api.Controllers
         [RequestSizeLimit(5 * 1024 * 1024)]  // 限制整个请求最大5MB
         [RequestFormLimits(MultipartBodyLengthLimit = 5 * 1024 * 1024)]  // 限制multipart表单数据最大5MB
         [FileCountLimit(5)]
-        public async Task<IActionResult> UploadMultipleFiles([FromForm]List<IFormFile> files)
+        public async Task<IActionResult> UploadMultipleFiles([FromForm] List<IFormFile> files)
         {
             // 处理文件上传和描述
             if (files == null || files.Count == 0)
@@ -89,7 +85,7 @@ namespace LocationSystem.Api.Controllers
                     // 计算文件哈希值用于重复检测
                     var fileHash = await CalculateFileHash(file.OpenReadStream());
                     var extension = IO.Path.GetExtension(file.FileName);
-                    
+
                     // 检查是否已存在相同哈希值的文件
                     var existingFile = FindExistingFile(uploadsFolder, fileHash);
                     if (existingFile != null)
@@ -206,6 +202,14 @@ namespace LocationSystem.Api.Controllers
                 default:
                     return "application/octet-stream";
             }
+        }
+        public IActionResult Delete(Guid? id)
+        {
+            if (id.HasValue)
+            {
+
+            }
+            return NotFound($"未发现id为{id.Value}的租房信息记录");
         }
     }
 }
