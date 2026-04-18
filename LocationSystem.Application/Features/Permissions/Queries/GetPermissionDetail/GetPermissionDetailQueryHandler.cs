@@ -2,6 +2,7 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Permissions;
 using LocationSystem.Application.Dtos.Roles;
 using LocationSystem.Application.Utilities;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionDetail
 {
@@ -33,36 +34,8 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionD
                 ParentId = permission.ParentId,
                 CreatedAt = permission.CreatedAt,
                 UpdatedAt = permission.UpdatedAt,
-                Roles = permission.Roles.Select(role => new RoleDto
-                {
-                    Id = role.Id,
-                    Name = role.Name,
-                    Code = role.Code,
-                    Description = role.Description,
-                    CreatedAt = role.CreatedAt,
-                    UpdatedAt = role.UpdatedAt
-                }).ToList(),
-                ChildPermissions = permission.ChildPermissions.Select(cp => new PermissionDto
-                {
-                    Id = cp.Id,
-                    Name = cp.Name,
-                    Code = cp.Code,
-                    Description = cp.Description,
-                    ParentId = cp.ParentId,
-                    CreatedAt = cp.CreatedAt,
-                    UpdatedAt = cp.UpdatedAt,
-                    ChildPermissions = cp.ChildPermissions.Select(ccp => new PermissionDto
-                    {
-                        Id = ccp.Id,
-                        Name = ccp.Name,
-                        Code = ccp.Code,
-                        Description = ccp.Description,
-                        ParentId = ccp.ParentId,
-                        CreatedAt = ccp.CreatedAt,
-                        UpdatedAt = ccp.UpdatedAt,
-                        ChildPermissions = new List<PermissionDto>()
-                    }).ToList()
-                }).ToList()
+                Roles = permission.Roles.Select(role => role.Adapt<RoleDto>()).ToList(),
+                ChildPermissions = permission.ChildPermissions.Select(cp => cp.Adapt<PermissionDto>()).ToList()
             };
         }
     }

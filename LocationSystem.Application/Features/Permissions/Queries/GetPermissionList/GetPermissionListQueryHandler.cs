@@ -3,6 +3,7 @@ using LocationSystem.Application.Dtos.Permissions;
 using LocationSystem.Application.Dtos.Roles;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionList
 {
@@ -39,26 +40,8 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionL
                     ParentId = permission.ParentId,
                     CreatedAt = permission.CreatedAt,
                     UpdatedAt = permission.UpdatedAt,
-                    Roles = permission.Roles.Select(role => new RoleDto
-                    {
-                        Id = role.Id,
-                        Name = role.Name,
-                        Code = role.Code,
-                        Description = role.Description,
-                        CreatedAt = role.CreatedAt,
-                        UpdatedAt = role.UpdatedAt
-                    }).ToList(),
-                    ChildPermissions = permission.ChildPermissions.Select(cp => new PermissionDto
-                    {
-                        Id = cp.Id,
-                        Name = cp.Name,
-                        Code = cp.Code,
-                        Description = cp.Description,
-                        ParentId = cp.ParentId,
-                        CreatedAt = cp.CreatedAt,
-                        UpdatedAt = cp.UpdatedAt,
-                        ChildPermissions = new List<PermissionDto>()
-                    }).ToList()
+                    Roles = permission.Roles.Select(t => t.Adapt<RoleDto>()).ToList(),
+                    ChildPermissions = permission.ChildPermissions.Select(t => t.Adapt<PermissionDto>()).ToList()
                 }).ToList();
                 return new PageResult<PermissionDto>() { CurrentPage=request.Page, Total= total, Data=model };
             }, 600); // 缓存30分钟（1800秒）

@@ -1,6 +1,7 @@
 using LocationSystem.Application.Dtos.Roles;
 using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Utilities;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Users.Queries
 {
@@ -28,13 +29,7 @@ namespace LocationSystem.Application.Features.Users.Queries
                 Email = user.Email.Value,
                 UserType = user.UserType.ToString(),
                 IsDisabled = user.IsDisabled,
-                Roles = user.Roles.Select(role => new RoleDto
-                {
-                    Id = role.Id,
-                    Name = role.Name,
-                    Code = role.Code,
-                    IsDisabled = role.IsDisabled
-                }).ToList()
+                Roles = user.Roles.Select(role => role.Adapt<RoleDto>()).ToList()
             };
         }
     }
