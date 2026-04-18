@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace LocationSystem.Application.Dtos
 {
     public class MenuDto
@@ -31,7 +28,7 @@ namespace LocationSystem.Application.Dtos
         public int Order { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public List<PermissionDto> Permissions { get; set; }
-        public List<PermissionMenuDto> Children { get; set; }
+        public List<PermissionDto> Permissions { get; set; } = new List<PermissionDto>();
+        public List<PermissionMenuDto> Children { get; set; } = new List<PermissionMenuDto>();
     }
 }

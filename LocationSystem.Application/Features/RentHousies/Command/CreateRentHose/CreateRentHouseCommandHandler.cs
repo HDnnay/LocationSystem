@@ -2,9 +2,6 @@
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Application.Features.RentHousies.Command.CreateRentHose
 {
@@ -12,7 +9,7 @@ namespace LocationSystem.Application.Features.RentHousies.Command.CreateRentHose
     {
         private readonly IRentHouseRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
-        public CreateRentHouseCommandHandler(IRentHouseRepository repository,IUnitOfWork unitOfWork) 
+        public CreateRentHouseCommandHandler(IRentHouseRepository repository, IUnitOfWork unitOfWork)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
@@ -23,14 +20,14 @@ namespace LocationSystem.Application.Features.RentHousies.Command.CreateRentHose
             {
                 var model = request.Model;
                 await _unitOfWork.BeginTransactionAsync();
-                var result = await _repository.AddAsync(new RentHouse(model.Title, model.Address, model.Description, model.MonthlyRent, model.Deposit, model.Type, Guid.NewGuid(), model.Phone) { ImageSrc=model.ImageSrc});
+                var result = await _repository.AddAsync(new RentHouse(model.Title, model.Address, model.Description, model.MonthlyRent, model.Deposit, model.Type, Guid.NewGuid(), model.Phone) { ImageSrc=model.ImageSrc });
                 await _unitOfWork.CommitAsync();
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 throw;
             }
-            
+
         }
     }
 }
