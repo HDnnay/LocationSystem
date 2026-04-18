@@ -28,7 +28,6 @@ namespace LocationSystem.Application.Features.RentHousies.Command.DelelteRentHos
                     var rentHose = await _houseRepository.GetByIdAsync(request.Id.Value);
                     if (rentHose==null)
                         throw new NotFoundException("未发现租房记录");
-
                     await _houseRepository.DeleteAsync(rentHose);
                     await _unitOfWork.CommitAsync();
                 }
