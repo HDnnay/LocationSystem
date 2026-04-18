@@ -20,7 +20,7 @@ namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseLi
             var pageResult = new PageResult<RentHouseListDto>();
             pageResult.Total = total;
             pageResult.CurrentPage = request.Page;
-            pageResult.Data = result.Any() ? result.Select(t => t.Adapt<RentHouseListDto>()).ToList() : [];
+            pageResult.Items = result.Any() ? result.Select(t => t.Adapt<RentHouseListDto>()).ToList() : [];
             return pageResult;
         }
     }

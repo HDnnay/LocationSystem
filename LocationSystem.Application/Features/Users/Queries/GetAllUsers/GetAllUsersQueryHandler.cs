@@ -22,7 +22,7 @@ namespace LocationSystem.Application.Features.Users.Queries
             pageResult.CurrentPage = query.Page;
             pageResult.Total = users.Item1;
 
-            pageResult.Data= users.Item2.Select(user => new UserDto
+            pageResult.Items= users.Item2.Select(user => new UserDto
             {
                 Id = user.Id,
                 Name = user.Name,

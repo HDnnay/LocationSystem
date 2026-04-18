@@ -1,6 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Permissions;
-using LocationSystem.Application.Dtos.Roles;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
 using Mapster;
@@ -24,26 +23,15 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionL
             var cacheKey = CacheKeys.PermissionWithPage(request);
 
             // 从缓存中获取权限列表或创建缓存
-            var permissionDtos = await _cacheService.GetOrCreateAsync<PageResult<PermissionDto>>(cacheKey, async (options) =>
+            var permissionDtos = await _cacheService.GetOrCreateAsync(cacheKey, async (options) =>
             {
                 // 获取所有权限及其角色
                 var dics = await _permissionRepository.GetPermissionsPage(request);
                 var permissionsDic = dics.FirstOrDefault();
                 var total = permissionsDic.Key;
                 // 转换为DTO
-                var model = permissionsDic.Value.Select(permission => new PermissionDto
-                {
-                    Id = permission.Id,
-                    Name = permission.Name,
-                    Code = permission.Code,
-                    Description = permission.Description,
-                    ParentId = permission.ParentId,
-                    CreatedAt = permission.CreatedAt,
-                    UpdatedAt = permission.UpdatedAt,
-                    Roles = permission.Roles.Select(t => t.Adapt<RoleDto>()).ToList(),
-                    ChildPermissions = permission.ChildPermissions.Select(t => t.Adapt<PermissionDto>()).ToList()
-                }).ToList();
-                return new PageResult<PermissionDto>() { CurrentPage=request.Page, Total= total, Data=model };
+                var model = permissionsDic.Value.Select(permission => permission.Adapt<PermissionDto>()).ToList();
+                return new PageResult<PermissionDto>() { CurrentPage=request.Page, Total= total, Items=model };
             }, 600); // 缓存30分钟（1800秒）
 
             return permissionDtos!;

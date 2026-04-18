@@ -20,7 +20,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetAllMenus
             var total = await _menuRepository.GetTotalCount();
             var pageResult = new PageResult<MenuDto>
             {
-                Data = menus.Select(menu => new MenuDto
+                Items = menus.Select(menu => new MenuDto
                 {
                     Id = menu.Id,
                     Name = menu.Name,
