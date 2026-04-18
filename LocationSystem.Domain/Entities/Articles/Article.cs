@@ -1,5 +1,6 @@
 using LocationSystem.Domain.Entities.Interfacies;
 using LocationSystem.Domain.Entities.UserRolePermissions;
+using LocationSystem.Domain.Enums;
 using System.ComponentModel;
 
 namespace LocationSystem.Domain.Entities.Articles
@@ -48,14 +49,14 @@ namespace LocationSystem.Domain.Entities.Articles
         public DateTime? VisibleStartTime { get; private set; }
         [Description("限时可见结束时间")]
         public DateTime? VisibleEndTime { get; private set; }
-        
+
         public bool IsCurrentlyVisible()
         {
             if (Level != ArticleLevel.Temporal)
             {
                 return true;
             }
-            
+
             var now = DateTime.Now;
             if (VisibleStartTime.HasValue && now < VisibleStartTime.Value)
             {
@@ -90,13 +91,5 @@ namespace LocationSystem.Domain.Entities.Articles
         }
     }
 
-    public enum ArticleLevel : byte
-    {
-        [Description("公开")]
-        Public = 0,
-        [Description("私有")]
-        Private = 1,
-        [Description("限时可见")]
-        Temporal = 3,   
-    }
+
 }

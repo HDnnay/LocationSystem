@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using LocationSystem.Domain.Entities.Articles;
+using LocationSystem.Domain.Enums;
 
 namespace LocationSystem.Application.Dtos
 {

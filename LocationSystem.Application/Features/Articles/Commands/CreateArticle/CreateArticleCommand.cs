@@ -1,8 +1,6 @@
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities.Articles;
-using System;
-using System.Collections.Generic;
+using LocationSystem.Domain.Enums;
 
 namespace LocationSystem.Application.Features.Articles.Commands.CreateArticle
 {
