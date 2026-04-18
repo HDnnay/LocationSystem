@@ -31,7 +31,7 @@ namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
                 }
 
                 // 检查是否是超级管理员
-             
+
 
                 // 检查是否是删除自己
                 if (command.UserId == command.CurrentUserId)
@@ -40,7 +40,7 @@ namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
                 }
 
                 // 删除用户
-                await _userRepository.DeleteAsync(user);
+                await _userRepository.DeleteUserAsync(user.Id);
 
                 // 提交事务
                 await _unitOfWork.CommitAsync();

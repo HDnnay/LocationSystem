@@ -1,4 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Exceptions;
+using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.Users.Queries;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Infrastructure.Utilities;
@@ -23,11 +25,11 @@ namespace LocationSystem.Infrastructure.Repositories
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email.Value == email);
         }
 
-        public async Task<(int,IEnumerable<User>)> GetUserPage(GetAllUsersQuery query)
+        public async Task<(int, IEnumerable<User>)> GetUserPage(GetAllUsersQuery query)
         {
             var querable = _context.Users.AsQueryable().AsNoTracking();
-           
-            return (await querable.CountAsync(),await querable.Include(u => u.Roles)
+
+            return (await querable.CountAsync(), await querable.Include(u => u.Roles).WhereNotDeleted()
                 .OrderBy(t => t.Name)
                 .Paginate(query.Page, query.PageSize)
                 .ToListAsync());
@@ -38,7 +40,7 @@ namespace LocationSystem.Infrastructure.Repositories
             var user = await _context.Users.FirstOrDefaultAsync(t => t.Id==id);
             if (user==null)
                 throw new ArgumentException("用户不存在");
-            user.SetRefreshToken(refreshToken,DateTime.Now.AddDays(7));
+            user.SetRefreshToken(refreshToken, DateTime.Now.AddDays(7));
             _context.Users.Update(user);
         }
 
@@ -69,6 +71,16 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(u => u.Roles)
                 .Where(u => userIds.Contains(u.Id))
                 .ToListAsync();
+        }
+
+        public async Task<User?> DeleteUserAsync(Guid userId)
+        {
+            var user = await GetByIdAsync(userId);
+            if (user==null)
+                throw new NotFoundException("删除的用户不存在！");
+            user.IsDelete = true;
+            _context.Update(user);
+            return user;
         }
     }
 }

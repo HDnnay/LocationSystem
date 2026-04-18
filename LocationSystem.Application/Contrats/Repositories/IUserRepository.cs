@@ -11,5 +11,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<User?> GetUserByRefreshTokenAsync(string refreshToken);
         Task<User?> GetByIdWithRolesAsync(Guid userId);
         Task<List<User>> GetByIdsWithRolesAsync(List<Guid> userIds);
+        Task<User?> DeleteUserAsync(Guid UserId);
     }
 }
