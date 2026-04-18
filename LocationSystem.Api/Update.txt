@@ -1,2 +1,2 @@
-Add-Migration update_Entity_IsDisabled_Filed -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
+Add-Migration update_User_CreateTime_Filed -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
 Update-Database -Project LocationSystem.Infrastructure -StartupProject LocationSystem.Api

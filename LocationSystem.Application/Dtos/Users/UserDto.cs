@@ -1,7 +1,4 @@
 using LocationSystem.Application.Dtos.Roles;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Application.Dtos.Users
 {
@@ -12,6 +9,9 @@ namespace LocationSystem.Application.Dtos.Users
         public string Email { get; set; }
         public string UserType { get; set; }
         public bool IsDisabled { get; set; }
+        public DateTime CreateTime { get; set; }
+        public DateTime? DeleteTime { get; set; }
+        public bool IsDelete { get; set; }
         public List<RoleDto> Roles { get; set; }
     }
 }

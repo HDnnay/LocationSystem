@@ -1,9 +1,11 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.Users.Queries;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Infrastructure.Utilities;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocationSystem.Infrastructure.Repositories
@@ -25,14 +27,27 @@ namespace LocationSystem.Infrastructure.Repositories
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email.Value == email);
         }
 
-        public async Task<(int, IEnumerable<User>)> GetUserPage(GetAllUsersQuery query)
+        public async Task<(int, IEnumerable<UserDto>)> GetUserPage(GetAllUsersQuery query)
         {
             var querable = _context.Users.AsQueryable().AsNoTracking();
+            if (query.FilterDelete.HasValue)
+            {
+                querable = querable.Where(t => t.IsDelete == true);
+            }
+            else
+            {
+                querable = querable.Include(u => u.Roles).WhereNotDeleted();
+            }
 
-            return (await querable.CountAsync(), await querable.Include(u => u.Roles).WhereNotDeleted()
-                .OrderBy(t => t.Name)
+            var total = await querable.CountAsync();
+            var users = await querable
+                .OrderBy(t => t.CreateTime)
                 .Paginate(query.Page, query.PageSize)
-                .ToListAsync());
+                .ToListAsync();
+
+            var userDtos = users.Select(u => u.Adapt<UserDto>()).ToList();
+
+            return (total, userDtos);
         }
 
         public async Task SaveRefreshToken(Guid id, string refreshToken)
@@ -82,5 +97,7 @@ namespace LocationSystem.Infrastructure.Repositories
             _context.Update(user);
             return user;
         }
+
+
     }
 }

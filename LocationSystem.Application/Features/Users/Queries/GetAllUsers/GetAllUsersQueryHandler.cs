@@ -2,7 +2,6 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
-using Mapster;
 
 namespace LocationSystem.Application.Features.Users.Queries
 {
@@ -22,7 +21,7 @@ namespace LocationSystem.Application.Features.Users.Queries
             pageResult.CurrentPage = query.Page;
             pageResult.Total = users.Item1;
 
-            pageResult.Items= users.Item2.Select(user => user.Adapt<UserDto>()).ToList();
+            pageResult.Items= users.Item2.ToList();
             return pageResult;
         }
     }

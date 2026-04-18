@@ -39,3 +39,13 @@ export const removeRoles = (id) => {
 export const getUserTypes = () => {
   return request.get('/api/users/types')
 }
+
+// 获取已删除用户
+export const getDeletedUsers = () => {
+  return request.get('/api/users?filterDelete=true')
+}
+
+// 恢复用户
+export const restoreUser = (id) => {
+  return request.post(`/api/users/${id}/restore`)
+}

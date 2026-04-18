@@ -22,7 +22,7 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
         public DateTime DeleteTime { get; set; }
         public bool IsDisabled { get; set; }
 
-        public DateTime CreateTime => throw new NotImplementedException();
+        public DateTime CreateTime { get; set; }
 
         protected User() { }
         public User(string name, Email email, bool isSuperAdmin = false)
