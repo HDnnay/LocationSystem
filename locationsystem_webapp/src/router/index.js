@@ -160,12 +160,20 @@ const router = createRouter({
 async function getUserPermissions() {
     try {
         // 从后端获取权限
-        const permissions = await apiGetUserPermissions()
-
-        // 存储到localStorage
-        localStorage.setItem('userPermissions', JSON.stringify(permissions))
-
-        return permissions
+        const response = await apiGetUserPermissions();
+        console.log("用户权限响应", response)
+        
+        // 检查响应状态码
+        if (response.status === 200) {
+            const permissions = response.data
+            // 存储到localStorage
+            localStorage.setItem('userPermissions', JSON.stringify(permissions))
+            return permissions || []
+        } else {
+            console.error(`获取用户权限失败，状态码: ${response.status}`)
+            localStorage.setItem('userPermissions', JSON.stringify([]))
+            return []
+        }
     } catch (error) {
         console.error('获取用户权限失败:', error)
         // 错误时返回空数组，不使用默认权限
@@ -193,7 +201,6 @@ router.beforeEach(async (to, from, next) => {
             try {
                 // 获取用户权限
                 const userPermissions = await getUserPermissions()
-
                 // 检查权限
                 if (userPermissions.includes(to.meta.permission)) {
                     next()

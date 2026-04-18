@@ -32,25 +32,32 @@ class AuthService {
         throw new Error('缺少refreshToken或userType')
       }
 
-      const res = await api.auth.refreshToken({
+      const response = await api.auth.refreshToken({
         RefreshToken: refreshToken
       })
 
-      if (!res.accessToken) {
-        throw new Error('刷新token失败，未返回accessToken')
+      // 检查响应状态码
+      if (response.status === 200) {
+        const res = response.data
+
+        if (!res.accessToken) {
+          throw new Error('刷新token失败，未返回accessToken')
+        }
+
+        // 保存新的token信息
+        authStorage.saveAuthData({
+          accessToken: res.accessToken,
+          refreshToken: res.refreshToken,
+          userInfo: res.userInfo
+        })
+
+        // 通知所有订阅者
+        this.notifySubscribers(res.accessToken)
+
+        return res.accessToken
+      } else {
+        throw new Error(`刷新token失败，状态码: ${response.status}`)
       }
-
-      // 保存新的token信息
-      authStorage.saveAuthData({
-        accessToken: res.accessToken,
-        refreshToken: res.refreshToken,
-        userInfo: res.userInfo
-      })
-
-      // 通知所有订阅者
-      this.notifySubscribers(res.accessToken)
-
-      return res.accessToken
     } catch (error) {
       console.error('刷新token失败:', error)
       // 刷新失败，清除认证信息并跳转到登录页
