@@ -61,23 +61,26 @@ export default {
 
                 this.loading = true
                 try {
-                    const data = await this.$api.auth.login(this.loginForm)
-                    console.log('登录响应数据:', data)
+                    await this.$api.auth.login(this.loginForm).then((res)=>{
+                        if(res.status === 200){
+                          let data = res.data
+                          authStorage.saveAuthData({
+                              accessToken: data.accessToken,
+                              refreshToken: data.refreshToken,
+                              userInfo: data.userInfo
+                          })
+                          this.$root.$data.isLoggedIn = true
+                          this.$router.push('/dashboard')
 
-                    // 保存token和用户信息
-                    authStorage.saveAuthData({
-                        accessToken: data.accessToken,
-                        refreshToken: data.refreshToken,
-                        userInfo: data.userInfo
+                      }else {
+                            throw new Error(res.data.message || '登录失败')
+                        }
+
+
+                    }).catch((error)=>{
+                         this.$message.error('登录失败：' + (error.response?.data?.message || error.message))
                     })
 
-                    // 更新App.vue中的登录状态
-                    this.$root.$data.isLoggedIn = true
-
-                    // 跳转到首页
-                    this.$router.push('/dashboard')
-                } catch (error) {
-                    this.$message.error('登录失败：' + (error.response?.data?.message || error.message))
                 } finally {
                     this.loading = false
                 }

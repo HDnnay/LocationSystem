@@ -138,6 +138,7 @@
 import api from '../../api'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import '@wangeditor/editor/dist/css/style.css'
+import { el } from 'date-fns/locale';
 
 export default {
   components: {
@@ -258,18 +259,22 @@ export default {
             (progressEvent.loaded * 100) / progressEvent.total
           )
           console.log(`上传进度: ${percentCompleted}%`)
-        })
-        console.log('上传成功:', response)
-        // 处理后端返回的数据
-          const data = response;
-          if (files.length > 0) {
-            // 拼接所有fileUrl为一个字符串，用逗号分隔
-            const fileUrls = data.files.map(file => file.fileUrl).join(',')
-            this.form.imageSrc = fileUrls
-            this.$message.success(`成功上传 ${data.count} 个文件`)
-          } else {
-            this.$message.success(`成功上传 ${this.selectedFiles.length} 个文件`)
+        }).then(res => {
+          if(res.status===200){
+              if (res.data.files.length > 0) {
+              // 拼接所有fileUrl为一个字符串，用逗号分隔
+              const fileUrls = res.data.files.map(file => file.fileUrl).join(',')
+              this.form.imageSrc = fileUrls
+              this.$message.success(`成功上传 ${res.data.count} 个文件`)
+          }else {
+            this.$message.error('上传失败: ' + (res.data.message || '未知错误'))
           }
+         }
+        })
+        .catch(error => {
+          console.error('上传失败:', error)
+          throw error
+        })
 
         // 延迟清空文件列表，避免触发组件状态异常
         setTimeout(() => {
@@ -303,14 +308,20 @@ export default {
               ...this.form,
               type: parseInt(this.form.type) // 将type转换为数字，匹配后端的枚举类型
             }
-            const response = await api.rent.createRentHouse(requestData)
-            if (response.status === 200) {
-              this.$message.success('创建成功')
-              // 重置表单
-              this.resetForm()
-              // 跳转到列表页面
-              this.$router.push('/rent')
-            }
+           await api.rent.createRentHouse(requestData).then(res => {
+              console.log('创建成功:', res)
+              if(res.status === 200){
+                this.$message.success('创建成功')
+                this.resetForm()
+                this.$router.push('/rent')
+              } else {
+                this.$message.error('创建失败: ' + (res.data || '未知错误'))
+                }
+            }).catch(error => {
+              console.error('创建失败:', error)
+              throw error
+            })
+
           } catch (error) {
             console.error('创建失败:', error)
             this.$message.error('创建失败: ' + (error.response?.data || error.message))

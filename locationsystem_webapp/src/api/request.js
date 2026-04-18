@@ -36,7 +36,7 @@ service.interceptors.response.use(
         // 对响应数据做一些处理
         const res = response.data;
         if (response.status === 200) {
-            return response.data;
+            return response;
         }
         else {
             return Promise.reject(new Error(res.message || 'Error'));
