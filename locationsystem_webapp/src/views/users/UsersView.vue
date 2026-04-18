@@ -148,8 +148,13 @@ export default {
     const loadUsers = async () => {
       try {
         const response = await api.users.getAllUsers()
-        users.value = response.data || []
-        total.value = response.total
+        if (response.status === 200) {
+          users.value = response.data || []
+          total.value = response.data.total || 0
+        } else {
+          console.error(`加载用户列表失败，状态码: ${response.status}`)
+          ElMessage.error('加载用户列表失败')
+        }
       } catch (error) {
         console.error('加载用户列表失败:', error)
         ElMessage.error('加载用户列表失败')
@@ -173,18 +178,25 @@ export default {
         console.log('获取到的角色数据:', response)
         console.log('response类型:', typeof response)
         console.log('response是否为数组:', Array.isArray(response))
-        
-        // 检查响应数据结构
-        if (response === undefined || response === null) {
-          console.error('角色数据为undefined或null:', response)
-          roles.value = []
-        } else if (Array.isArray(response)) {
-          roles.value = response
-        } else if (response && Array.isArray(response.data)) {
-          roles.value = response.data
+
+        // 检查响应状态码
+        if (response.status === 200) {
+          // 检查响应数据结构
+          if (response === undefined || response === null) {
+            console.error('角色数据为undefined或null:', response)
+            roles.value = []
+          } else if (Array.isArray(response)) {
+            roles.value = response
+          } else if (response && Array.isArray(response.data)) {
+            roles.value = response.data
+          } else {
+            roles.value = []
+            console.error('角色数据格式错误:', response)
+          }
         } else {
+          console.error(`加载角色列表失败，状态码: ${response.status}`)
+          ElMessage.error('加载角色列表失败')
           roles.value = []
-          console.error('角色数据格式错误:', response)
         }
       } catch (error) {
         console.error('加载角色列表失败:', error)
@@ -251,8 +263,13 @@ export default {
             Email: form.value.email,
             UserType: form.value.userType // 保持为字符串，如'Dentist'或'Patient'
           }
-          await api.users.updateUser(form.value.id, userData)
-          ElMessage.success('更新用户成功')
+          const response = await api.users.updateUser(form.value.id, userData)
+          if (response.status === 200) {
+            ElMessage.success('更新用户成功')
+          } else {
+            console.error(`更新用户失败，状态码: ${response.status}`)
+            ElMessage.error('更新用户失败')
+          }
         } else {
           // 新增用户
           // 后端期望的格式：{ "Name": "lisi", "Email": "lisi@qq.com", "UserType": "Dentist" }
@@ -261,9 +278,13 @@ export default {
             Email: form.value.email,
             UserType: form.value.userType // 保持为字符串，如'Dentist'或'Patient'
           }
-          await api.users.createUser(userData).then(res => {
+          const response = await api.users.createUser(userData)
+          if (response.status === 200) {
             ElMessage.success('新增用户成功')
-          })
+          } else {
+            console.error(`新增用户失败，状态码: ${response.status}`)
+            ElMessage.error('新增用户失败')
+          }
         }
         dialogVisible.value = false
         loadUsers()
@@ -282,9 +303,14 @@ export default {
           type: 'warning'
         })
 
-        await api.users.deleteUser(id)
-        ElMessage.success('删除用户成功')
-        loadUsers()
+        const response = await api.users.deleteUser(id)
+        if (response.status === 200) {
+          ElMessage.success('删除用户成功')
+          loadUsers()
+        } else {
+          console.error(`删除用户失败，状态码: ${response.status}`)
+          ElMessage.error('删除用户失败')
+        }
       } catch (error) {
         if (error !== 'cancel') {
           console.error('删除用户失败:', error)
@@ -305,10 +331,15 @@ export default {
     // 处理保存角色
     const handleSaveRoles = async () => {
       try {
-        await api.users.assignRoles(currentUser.value.id, selectedRoles.value)
-        ElMessage.success('分配角色成功')
-        roleDialogVisible.value = false
-        loadUsers()
+        const response = await api.users.assignRoles(currentUser.value.id, selectedRoles.value)
+        if (response.status === 200) {
+          ElMessage.success('分配角色成功')
+          roleDialogVisible.value = false
+          loadUsers()
+        } else {
+          console.error(`分配角色失败，状态码: ${response.status}`)
+          ElMessage.error('分配角色失败')
+        }
       } catch (error) {
         console.error('分配角色失败:', error)
         ElMessage.error('分配角色失败')

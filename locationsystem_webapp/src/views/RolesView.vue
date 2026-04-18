@@ -208,16 +208,23 @@ import * as permissionApi from '../api/permissions.js'
                 this.loading = true;
                 try {
                     const response = await api.getAllRoles();
-                    this.roles = response.map(role => ({
-                        id: role.id,
-                        roleName: role.name,
-                        roleDescription: role.description,
-                        roleCode: role.code,
-                        status: !role.isDisabled, // 使用后端返回的isDisabled字段
-                        isDisabled: role.isDisabled, // 保存原始的isDisabled字段
-                        createDate: role.createdAt
-                    }));
-                    this.total = this.roles.length;
+                    if (response.status === 200) {
+                        this.roles = response.data.map(role => ({
+                            id: role.id,
+                            roleName: role.name,
+                            roleDescription: role.description,
+                            roleCode: role.code,
+                            status: !role.isDisabled, // 使用后端返回的isDisabled字段
+                            isDisabled: role.isDisabled, // 保存原始的isDisabled字段
+                            createDate: role.createdAt
+                        }));
+                        this.total = this.roles.length;
+                    } else {
+                        console.error(`获取角色列表失败，状态码: ${response.status}`);
+                        ElMessage.error('获取角色列表失败');
+                        this.roles = [];
+                        this.total = 0;
+                    }
                 } catch (error) {
                     ElMessage.error('获取角色列表失败');
                     console.error('获取角色列表失败:', error);
@@ -285,8 +292,13 @@ import * as permissionApi from '../api/permissions.js'
                             description: this.formData.roleDescription,
                             permissionIds: [] // 暂时为空，后续在权限管理中设置
                         }
-                        await api.updateRole(this.editingRole.id, updateRoleDto);
-                        ElMessage.success('角色更新成功');
+                        const updateResponse = await api.updateRole(this.editingRole.id, updateRoleDto);
+                        if (updateResponse.status === 200) {
+                            ElMessage.success('角色更新成功');
+                        } else {
+                            console.error(`角色更新失败，状态码: ${updateResponse.status}`);
+                            ElMessage.error('角色更新失败');
+                        }
                     } else {
                         // 创建新角色
                         const createRoleDto = {
@@ -295,8 +307,13 @@ import * as permissionApi from '../api/permissions.js'
                             description: this.formData.roleDescription,
                             permissionIds: [] // 暂时为空，后续在权限管理中设置
                         }
-                        await api.createRole(createRoleDto);
-                        ElMessage.success('角色创建成功');
+                        const createResponse = await api.createRole(createRoleDto);
+                        if (createResponse.status === 200) {
+                            ElMessage.success('角色创建成功');
+                        } else {
+                            console.error(`角色创建失败，状态码: ${createResponse.status}`);
+                            ElMessage.error('角色创建失败');
+                        }
                     }
                     this.closeRoleModal();
                     this.getRoles();

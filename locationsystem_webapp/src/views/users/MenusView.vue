@@ -156,7 +156,12 @@
           // 调用后端新提供的获取菜单树形结构的API
           const response = await api.default.menus.getMenuTree()
           console.log('获取菜单树形结构响应:', response)
-          return response || []
+          if (response.status === 200) {
+            return response || []
+          } else {
+            console.error(`获取菜单树形结构失败，状态码: ${response.status}`)
+            return []
+          }
         } catch (error) {
           console.error('加载所有菜单失败:', error)
           return []
@@ -174,9 +179,16 @@
           const api = await import('@/api')
           const response = await api.default.menus.getAllMenus(currentPage.value, pageSize.value)
           console.log(response)
-          // 直接使用response作为菜单列表，因为后端直接返回了菜单列表
-          menus.value = response.data
-          total.value = response.total
+          // 检查响应状态码
+          if (response.status === 200) {
+            // 直接使用response作为菜单列表，因为后端直接返回了菜单列表
+            menus.value = response.data
+            total.value = response.data.total || 0
+          } else {
+            console.error(`获取菜单列表失败，状态码: ${response.status}`)
+            menus.value = []
+            total.value = 0
+          }
           // 直接使用后端返回的分页数据
           menuList.value = response.data
           // 加载所有菜单并构建树形结构的菜单选项

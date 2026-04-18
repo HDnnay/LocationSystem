@@ -108,11 +108,16 @@ export default {
 
       this.loading = true
       try {
-        await this.$api.auth.register(this.registerForm)
-
-        // 注册成功后跳转到登录页面
-        this.$message.success('注册成功，请登录')
-        this.$router.push('/login')
+        const response = await this.$api.auth.register(this.registerForm)
+        
+        if (response.status === 200) {
+          // 注册成功后跳转到登录页面
+          this.$message.success('注册成功，请登录')
+          this.$router.push('/login')
+        } else {
+          console.error(`注册失败，状态码: ${response.status}`)
+          this.$message.error('注册失败')
+        }
       } catch (error) {
         this.$message.error('注册失败：' + (error.response?.data?.message || error.message))
       } finally {

@@ -501,10 +501,17 @@
 
           console.log('API响应结果:', result)
 
-          // 根据你的响应结构，result.data是数组，result.total和result.currentPage是直接属性
-          this.rent_houses = result.data || []
-          this.total = result.total || 0
-          this.currentPage = result.currentPage || 1
+          // 检查响应状态码
+          if (result.status === 200) {
+            // 根据你的响应结构，result.data是数组，result.total和result.currentPage是直接属性
+            this.rent_houses = result.data || []
+            this.total = result.total || 0
+            this.currentPage = result.currentPage || 1
+          } else {
+            console.error(`获取租房数据失败，状态码: ${result.status}`)
+            this.rent_houses = []
+            this.total = 0
+          }
 
         } catch (error) {
           console.error('获取数据失败:', error)

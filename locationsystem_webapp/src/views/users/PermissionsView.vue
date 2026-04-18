@@ -226,35 +226,13 @@
 
           const response = await api.permissions.getPermissions(params);
           console.log(response);
-          // 检查响应数据结构
-          if (response && typeof response === 'object') {
-            // 处理后端返回的PageResult<PermissionDto>数据结构
-            if (response.data && Array.isArray(response.data)) {
-              const permissions = response.data;
-              // 构建权限ID到名称的映射
-              const permissionMap = new Map();
-              permissions.forEach(permission => {
-                permissionMap.set(permission.id, permission.name);
-              });
-
-              // 为每个权限添加父级权限名称
-              this.permissions = permissions.map(permission => ({
-                ...permission,
-                parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
-              }));
-              console.log("权限列表数据员：this.permissions");
-              console.log(this.permissions);
-              this.allPermissions = permissions;
-              // 构建树形结构的权限选项
-              this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
-
-              // 更新分页信息
-              this.total = response.total || 0;
-              this.currentPage = response.currentPage || 1;
-            } else {
-              // 兼容旧的数据结构（如果后端返回的是直接的数组）
-              const permissions = response;
-              if (Array.isArray(permissions)) {
+          // 检查响应状态码
+          if (response.status === 200) {
+            // 检查响应数据结构
+            if (response && typeof response === 'object') {
+              // 处理后端返回的PageResult<PermissionDto>数据结构
+              if (response.data && Array.isArray(response.data)) {
+                const permissions = response.data;
                 // 构建权限ID到名称的映射
                 const permissionMap = new Map();
                 permissions.forEach(permission => {
@@ -266,15 +244,45 @@
                   ...permission,
                   parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
                 }));
-
+                console.log("权限列表数据员：this.permissions");
+                console.log(this.permissions);
                 this.allPermissions = permissions;
                 // 构建树形结构的权限选项
                 this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
 
                 // 更新分页信息
-                this.total = permissions.length;
+                this.total = response.total || 0;
+                this.currentPage = response.currentPage || 1;
+              } else {
+                // 兼容旧的数据结构（如果后端返回的是直接的数组）
+                const permissions = response;
+                if (Array.isArray(permissions)) {
+                  // 构建权限ID到名称的映射
+                  const permissionMap = new Map();
+                  permissions.forEach(permission => {
+                    permissionMap.set(permission.id, permission.name);
+                  });
+
+                  // 为每个权限添加父级权限名称
+                  this.permissions = permissions.map(permission => ({
+                    ...permission,
+                    parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
+                  }));
+
+                  this.allPermissions = permissions;
+                  // 构建树形结构的权限选项
+                  this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
+
+                  // 更新分页信息
+                  this.total = permissions.length;
+                }
               }
             }
+          } else {
+            console.error(`获取权限列表失败，状态码: ${response.status}`);
+            ElMessage.error('获取权限列表失败');
+            this.permissions = [];
+            this.total = 0;
           }
         } catch (error) {
           console.error('获取权限列表失败:', error);
@@ -324,7 +332,14 @@
         this.treeError = null;
         try {
           const response = await api.permissions.getPermissionTree();
-          this.permissionTree = response;
+          if (response.status === 200) {
+            this.permissionTree = response;
+          } else {
+            console.error(`获取权限树形结构失败，状态码: ${response.status}`);
+            this.treeError = '获取权限树形结构失败';
+            ElMessage.error('获取权限树形结构失败');
+            this.permissionTree = [];
+          }
         } catch (error) {
           this.treeError = '获取权限树形结构失败';
           ElMessage.error('获取权限树形结构失败');

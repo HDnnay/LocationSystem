@@ -163,10 +163,17 @@
             keyWord: this.searchQuery
           });
           console.log(result)
-          // result 现在有完整的类型提示
-          this.companies = result.data;
-          this.total = result.total;
-          this.currentPage = result.currentPage;
+          // 检查响应状态码
+          if (result.status === 200) {
+            // result 现在有完整的类型提示
+            this.companies = result.data;
+            this.total = result.total;
+            this.currentPage = result.currentPage;
+          } else {
+            console.error(`获取公司数据失败，状态码: ${result.status}`)
+            this.companies = []
+            this.total = 0
+          }
         } catch (error) {
           console.log(error)
         }

@@ -106,9 +106,9 @@
     },
     deactivated() {
     },
-    beforeDestroy() {
+    beforeUnmount() {
     },
-    destroyed() {
+    unmounted() {
     },
     methods: {
       async getData() {

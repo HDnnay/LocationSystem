@@ -93,8 +93,8 @@ class MenuManager {
       console.log('获取菜单成功:', menus);
 
       // 确保返回的是数组
-      if (Array.isArray(menus)) {
-        return menus;
+      if (Array.isArray(menus.data)) {
+        return menus.data;
       } else {
         console.error('后端返回的菜单数据不是数组:', menus);
         return [];
