@@ -18,6 +18,30 @@
       <el-table-column prop="name" label="用户名" />
       <el-table-column prop="email" label="邮箱" />
       <el-table-column prop="userType" label="用户类型" />
+      <el-table-column prop="createTime" label="创建时间">
+            <template #default="scope">
+              {{ new Date(scope.row.createTime).toLocaleString() }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="deleteTime" label="删除时间" v-if="isDeletedTable">
+            <template #default="scope">
+              {{ new Date(scope.row.deleteTime).toLocaleString() }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="isDelete" label="已删除" v-if="isDeletedTable">
+                    <template #default="scope">
+                      <el-tag :type="scope.row.isDelete ? 'danger' : 'success'">
+                        {{ scope.row.isDelete ? '是' : '否' }}
+                      </el-tag>
+                    </template>
+          </el-table-column>
+          <el-table-column prop="isDisabled" label="禁用" v-if="!isDeletedTable">
+            <template #default="scope">
+                        <el-tag :type="scope.row.isDisabled ? 'danger' : 'success'">
+                           {{ scope.row.isDisabled ? '是' : '否' }}
+                        </el-tag>
+                    </template>
+          </el-table-column>
       <el-table-column label="角色" width="200">
         <template #default="scope">
           <el-tag v-for="role in scope.row.roles" :key="role.id" size="small" style="margin-right: 5px">
@@ -28,17 +52,21 @@
       </el-table-column>
       <el-table-column label="操作" width="300">
         <template #default="scope">
-          <el-button size="small" type="primary" @click="handleEdit(scope.row)" style="margin-right: 5px">
+          <el-button size="small" type="primary" @click="handleEdit(scope.row)" style="margin-right: 5px" v-if="!isDeletedTable">
             <el-icon><Edit /></el-icon>
             编辑
           </el-button>
-          <el-button size="small" type="danger" @click="handleDelete(scope.row.id)" style="margin-right: 5px">
+          <el-button size="small" type="danger" @click="handleDelete(scope.row.id)" style="margin-right: 5px" v-if="!isDeletedTable">
             <el-icon><Delete /></el-icon>
             删除
           </el-button>
-          <el-button size="small" type="warning" @click="handleAssignRoles(scope.row)">
+          <el-button size="small" type="warning" @click="handleAssignRoles(scope.row)" v-if="!isDeletedTable">
             <el-icon><SetUp /></el-icon>
             分配角色
+          </el-button>
+          <el-button size="small" type="success" @click="handleRestore(scope.row.id)" v-if="isDeletedTable">
+            <el-icon><RefreshRight /></el-icon>
+            恢复
           </el-button>
         </template>
       </el-table-column>
@@ -102,8 +130,8 @@
 </template>
 
 <script>
-import { ref, watch, onMounted } from 'vue'
-import { Plus, Edit, Delete, SetUp } from '@element-plus/icons-vue'
+import { ref, watch, onMounted, computed } from 'vue'
+import { Plus, Edit, Delete, SetUp, RefreshRight } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import api from '@/api'
 import { getUserTypes } from '@/api/users'
@@ -114,7 +142,8 @@ export default {
     Plus,
     Edit,
     Delete,
-    SetUp
+    SetUp,
+    RefreshRight
   },
   props: {
     tableData: {
@@ -132,6 +161,10 @@ export default {
     pageSize: {
       type: Number,
       default: 10
+    },
+    type: {
+      type: String,
+      default: 'normal'
     },
     createButtonText: {
       type: String,
@@ -162,6 +195,8 @@ export default {
     watch(() => props.pageSize, (val) => {
       pageSize.value = val
     })
+
+    const isDeletedTable = computed(() => props.type === 'deleted')
 
     const loadUserTypes = async () => {
       try {
@@ -264,6 +299,29 @@ export default {
       }
     }
 
+    const handleRestore = async (id) => {
+      try {
+        await ElMessageBox.confirm('确定要恢复这个用户吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+
+        const response = await api.users.restoreUser(id)
+        if (response.status === 200) {
+          ElMessage.success('恢复用户成功')
+          emit('refresh')
+        } else {
+          ElMessage.error('恢复用户失败')
+        }
+      } catch (error) {
+        if (error !== 'cancel') {
+          console.error('恢复用户失败:', error)
+          ElMessage.error('恢复用户失败')
+        }
+      }
+    }
+
     const handleAssignRoles = (user) => {
       currentUser.value = user
       selectedRoles.value = user.roles?.map(role => role.id) || []
@@ -312,10 +370,12 @@ export default {
       roles,
       userTypes,
       selectedRoles,
+      isDeletedTable,
       handleCreate,
       handleEdit,
       handleSave,
       handleDelete,
+      handleRestore,
       handleAssignRoles,
       handleSaveRoles,
       handleSizeChange,
@@ -344,3 +404,4 @@ export default {
   color: #909399;
 }
 </style>
+
