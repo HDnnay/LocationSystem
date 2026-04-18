@@ -15,7 +15,6 @@
       <el-table-column prop="name" label="菜单名称" />
       <el-table-column prop="path" label="菜单路径" />
       <el-table-column prop="icon" label="菜单图标" />
-      <el-table-column prop="order" label="排序" />
       <el-table-column class="" label="父菜单">
         <template #default="scope">
           {{ scope.row.parentMenu?.name || '——' }}

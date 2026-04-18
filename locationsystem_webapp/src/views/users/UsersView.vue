@@ -72,7 +72,8 @@
         <el-form-item label="邮箱">
           <el-input v-model="form.email" />
         </el-form-item>
-        <el-form-item label="用户类型">
+
+        <el-form-item v-if="form.id==null || form.id==undefined" label="用户类型">
           <el-select v-model="form.userType">
             <el-option v-for="type in userTypes" :key="type.value" :label="type.name" :value="type.value" />
           </el-select>
