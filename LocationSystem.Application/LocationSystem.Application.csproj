@@ -28,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\RentHousies\Queries\ShareDtos\" />
     <Folder Include="IServices\" />
   </ItemGroup>
 

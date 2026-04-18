@@ -18,7 +18,9 @@ namespace LocationSystem.Application.Mappings
         {
             // 菜单映射
             config.NewConfig<Menu, MenuDto>()
-                .Map(dest => dest.ChildMenus, src => src.Children);
+                .Map(dest => dest.ChildMenus, src => src.Children)
+                .Map(dest => dest.ParentMenu, src => src.Parent)
+                .PreserveReference(true);
 
             // 权限映射
             config.NewConfig<Permission, PermissionDto>()

@@ -2,6 +2,7 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Menus;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Menus.Queries.GetAllMenus
 {
@@ -20,16 +21,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetAllMenus
             var total = await _menuRepository.GetTotalCount();
             var pageResult = new PageResult<MenuDto>
             {
-                Items = menus.Select(menu => new MenuDto
-                {
-                    Id = menu.Id,
-                    Name = menu.Name,
-                    Path = menu.Path,
-                    Icon = menu.Icon,
-                    Order = menu.Order,
-                    Level = menu.Level,
-                    ParentId = menu.ParentId
-                }).ToList(),
+                Items = menus.Select(menu => menu.Adapt<MenuDto>()).ToList(),
                 Total = total,
                 CurrentPage = query.Page
             };
