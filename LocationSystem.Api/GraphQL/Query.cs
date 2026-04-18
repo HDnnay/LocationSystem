@@ -1,9 +1,10 @@
-using Mapster;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Articles.Queries.GetArticle;
 using LocationSystem.Application.Features.Articles.Queries.GetArticles;
+using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Menus;
 using Dtos = LocationSystem.Application.Dtos;
@@ -36,7 +37,7 @@ namespace LocationSystem.Api.GraphQL
             [GraphQLDescription("页码")] int page = 1,
             [GraphQLDescription("每页数量")] int pageSize = 10)
         {
-            var query = new LocationSystem.Application.Features.Menus.Queries.GetAllMenus.GetAllMenusQuery { Page = page, PageSize = pageSize };
+            var query = new GetAllMenusQuery { Page = page, PageSize = pageSize };
             return await _menuRepository.GetMenuPage(query);
         }
 
@@ -107,10 +108,10 @@ namespace LocationSystem.Api.GraphQL
 
         [GraphQLDescription("获取权限列表")]
         [GraphQLType(typeof(ListType<LocationSystem.Api.GraphQL.Types.PermissionType>))]
-        public async Task<List<Dtos.PermissionDto>> GetPermissions()
+        public async Task<List<PermissionDto>> GetPermissions()
         {
             var permissions = await _permissionRepository.GetPermissionTreeAsync();
-            return _mapper.Map<List<Dtos.PermissionDto>>(permissions);
+            return _mapper.Map<List<PermissionDto>>(permissions);
         }
 
         [UsePaging(IncludeTotalCount = true)]
