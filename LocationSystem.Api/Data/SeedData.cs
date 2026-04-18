@@ -61,9 +61,9 @@ namespace LocationSystem.Api.Data
             await dbContext.SaveChangesAsync();
 
             // 创建顶级菜单 (Level = 1)
-            var rolePermissionMenu = new Menu("角色权限管理", "/role-permissions", "Lock", 1, 1, null, true); // 后端菜单
-            var companyMenu = new Menu("公司管理", "/company", "OfficeBuilding", 2, 1, null, true); // 后端菜单
-            var rentMenu = new Menu("租房管理", "/rent", "House", 3, 1, null, true); // 后端菜单
+            var rolePermissionMenu = new Menu("角色权限管理", "/admin/role-permissions", "Lock", 1, 1, null, true); // 后端菜单
+            var companyMenu = new Menu("公司管理", "/admin/company", "OfficeBuilding", 2, 1, null, true); // 后端菜单
+            var rentMenu = new Menu("租房管理", "/admin/rent", "House", 3, 1, null, true); // 后端菜单
 
             // 添加顶级菜单到数据库
             await dbContext.Menus.AddAsync(rolePermissionMenu);
@@ -72,14 +72,14 @@ namespace LocationSystem.Api.Data
             await dbContext.SaveChangesAsync();
 
             // 创建子菜单 (Level = 2)
-            var roleMenu = new Menu("角色管理", "/roles", "SetUp", 1, 2, rolePermissionMenu.Id, true); // 后端菜单
-            var permissionManagementMenu = new Menu("权限管理", "/permissions", "Key", 2, 2, rolePermissionMenu.Id, true); // 后端菜单
-            var userManagementMenu = new Menu("用户管理", "/users", "User", 3, 2, rolePermissionMenu.Id, true); // 后端菜单
-            var menuManagementMenu = new Menu("菜单管理", "/menus", "List", 4, 2, rolePermissionMenu.Id, true); // 后端菜单
-            var companyListMenu = new Menu("公司列表", "/company/list", "List", 1, 2, companyMenu.Id, true); // 后端菜单
-            var companyStatisticsMenu = new Menu("统计管理", "/company/statistics", "List", 2, 2, companyMenu.Id, true); // 后端菜单
-            var rentListMenu = new Menu("租房列表", "/rent/list", "List", 1, 2, rentMenu.Id, true); // 后端菜单
-            var rentCreateMenu = new Menu("租房创建", "/rent/create", "Document", 2, 2, rentMenu.Id, true); // 后端菜单
+            var roleMenu = new Menu("角色管理", "/admin/roles", "SetUp", 1, 2, rolePermissionMenu.Id, true); // 后端菜单
+            var permissionManagementMenu = new Menu("权限管理", "/admin/permissions", "Key", 2, 2, rolePermissionMenu.Id, true); // 后端菜单
+            var userManagementMenu = new Menu("用户管理", "/admin/users", "User", 3, 2, rolePermissionMenu.Id, true); // 后端菜单
+            var menuManagementMenu = new Menu("菜单管理", "/admin/menus", "List", 4, 2, rolePermissionMenu.Id, true); // 后端菜单
+            var companyListMenu = new Menu("公司列表", "/admin/company/list", "List", 1, 2, companyMenu.Id, true); // 后端菜单
+            var companyStatisticsMenu = new Menu("统计管理", "/admin/company/statistics", "List", 2, 2, companyMenu.Id, true); // 后端菜单
+            var rentListMenu = new Menu("租房列表", "/admin/rent/list", "List", 1, 2, rentMenu.Id, true); // 后端菜单
+            var rentCreateMenu = new Menu("租房创建", "/admin/rent/create", "Document", 2, 2, rentMenu.Id, true); // 后端菜单
 
             // 添加子菜单到数据库
             await dbContext.Menus.AddAsync(roleMenu);
@@ -95,17 +95,17 @@ namespace LocationSystem.Api.Data
             // 3. 建立权限和菜单的关联关系
             var permissionMenuMappings = new List<(string PermissionCode, string MenuPath)>
             {
-                ("role:view", "/roles"),
-                ("permission:view", "/permissions"),
-                ("user:view", "/users"),
-                ("menu:view", "/menus"),
-                ("company:view", "/company/list"),
-                ("company:list", "/company/list"),
-                ("company:statistics:view", "/company/statistics"),
-                ("rent:view", "/rent/list"),
-                ("rent:list", "/rent/list"),
-                ("permission:view", "/role-permissions"),
-                ("rent:create", "/rent/create")
+                ("role:view", "/admin/roles"),
+                ("permission:view", "/admin/permissions"),
+                ("user:view", "/admin/users"),
+                ("menu:view", "/admin/menus"),
+                ("company:view", "/admin/company/list"),
+                ("company:list", "/admin/company/list"),
+                ("company:statistics:view", "/admin/company/statistics"),
+                ("rent:view", "/admin/rent/list"),
+                ("rent:list", "/admin/rent/list"),
+                ("permission:view", "/admin/role-permissions"),
+                ("rent:create", "/admin/rent/create")
             };
 
             foreach (var (permissionCode, menuPath) in permissionMenuMappings)

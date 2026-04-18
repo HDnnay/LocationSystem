@@ -1,8 +1,5 @@
 ﻿using LocationSystem.Domain.Exceptions;
 using LocationSystem.Domain.ValueObjects;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
@@ -12,13 +9,15 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
         public string Name { get; private set; } = null!;
         public Email Email { get; private set; } = null!;
         public string PasswordHash { get; set; }
+        //- 实体鉴别器 ：Entity Framework Core 使用鉴别器列来区分继承层次结构中的不同实体类型
+        // 只读特性 ：一旦实体被保存到数据库，鉴别器属性就变成只读的，因为它决定了实体在数据库中的类型
         public UserType UserType { get; protected set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public bool IsDisabled { get; private set; } = false;
         // 导航属性
         public ICollection<Role> Roles { get; private set; } = new List<Role>();
-        
+
         protected User() { }
         public User(string name, Email email, bool isSuperAdmin = false)
         {
@@ -56,10 +55,6 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
             RefreshToken = null;
             RefreshTokenExpiryTime = null;
         }
-        public virtual void UpdataUserType(UserType userType)
-        {
-            UserType = userType;
-        }
         public void AddRole(Role role)
         {
             if (!Roles.Contains(role))
@@ -67,12 +62,12 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
                 Roles.Add(role);
             }
         }
-        
+
         public void RemoveRole(Role role)
         {
             Roles.Remove(role);
         }
-        
+
         public void ClearRoles()
         {
             Roles.Clear();

@@ -2,7 +2,6 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.ValueObjects;
 using Mapster;
 
@@ -36,7 +35,15 @@ namespace LocationSystem.Application.Features.Users.Commands.UpdateUser
                 // 更新用户属性
                 user.UpdateName(command.Name);
                 user.UpdateEmail(new Email(command.Email));
-                user.UpdataUserType(Enum.Parse<UserType>(command.UserType));
+
+                // 检查用户类型是否需要更新
+                //var newUserType = Enum.Parse<UserType>(command.UserType);
+                //if (user.UserType != newUserType)
+                //{
+                //    // 注意：UserType 是实体鉴别器，一旦保存就不能修改
+                //    // 这里我们不尝试修改 UserType，只更新其他属性
+                //    // 如果需要改变用户类型，需要创建新用户并迁移数据
+                //}
 
                 // 更新用户
                 await _userRepository.UpdateAsync(user);
