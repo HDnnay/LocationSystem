@@ -25,10 +25,30 @@
           <el-table-column prop="name" label="用户名" />
           <el-table-column prop="email" label="邮箱" />
           <el-table-column prop="userType" label="用户类型" />
-          <el-table-column prop="createTime" label="创建时间" />
-          <el-table-column prop="deleteTime" label="删除时间" />
-          <el-table-column prop="isDelete" label="已删除" />
-          <el-table-column prop="isDisabled" label="禁用" />
+          <el-table-column prop="createTime" label="创建时间">
+            <template #default="scope">
+              {{ new Date(scope.row.createTime).toLocaleString() }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="deleteTime" label="删除时间">
+            <template #default="scope">
+              {{ new Date(scope.row.deleteTime).toLocaleString() }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="isDelete" label="已删除">
+                    <template #default="scope">
+                      <el-tag :type="scope.row.isDelete ? 'danger' : 'success'">
+                        {{ scope.row.isDelete ? '是' : '否' }}
+                      </el-tag>
+                    </template>
+          </el-table-column>
+          <el-table-column prop="isDisabled" label="禁用">
+            <template #default="scope">
+                        <el-tag :type="scope.row.isDisabled ? 'danger' : 'success'">
+                           {{ scope.row.isDisabled ? '是' : '否' }}
+                        </el-tag>
+                    </template>
+          </el-table-column>
           <el-table-column label="操作" width="150">
             <template #default="scope">
               <el-button size="small" type="success" @click="handleRestoreUser(scope.row.id)">
