@@ -27,8 +27,4 @@
     <ProjectReference Include="..\LocationSystem.Domain\LocationSystem.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Specifications\" />
-  </ItemGroup>
-
 </Project>

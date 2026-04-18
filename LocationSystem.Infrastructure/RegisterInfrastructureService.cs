@@ -1,14 +1,9 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
-using LocationSystem.Application.Features.Auth.Login;
 using LocationSystem.Infrastructure.Repositories;
 using LocationSystem.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Infrastructure
 {
@@ -32,6 +27,7 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IDeletedSnapshotRepository, DeletedSnapshotRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
+            // 注册其他服务
             return services;
         }
     }

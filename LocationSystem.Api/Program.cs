@@ -4,6 +4,7 @@ using LocationSystem.Api.Hubs;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Application.Utilities.Jwt;
+using LocationSystem.Application.Utils;
 using LocationSystem.Infrastructure;
 using LocationSystem.ServiceDefaults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -54,6 +55,11 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddInfrastructureServices();
     builder.Services.AddApplicationServices();
+    
+    // 注册 HTTP 上下文访问器
+    builder.Services.AddHttpContextAccessor();
+    // 注册当前用户服务
+    builder.Services.AddScoped<LocationSystem.Application.IServices.ICurrentUserService, LocationSystem.Api.Services.CurrentUserService>();
     #region open api
     builder.Services.AddOpenApi();
     #endregion
@@ -106,6 +112,8 @@ try
 
 
     var app = builder.Build();
+    // 初始化 CurrentUser
+    CurrentUser.Initialize(app.Services);
     app.UseSerilogRequestLogging(options =>
     {
         // Customize the message template

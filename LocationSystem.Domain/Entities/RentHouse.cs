@@ -93,6 +93,23 @@ namespace LocationSystem.Domain.Entities
             if (newValue==Deposit) return;
             Deposit = newValue;
         }
+        public void SetOrUpdateLeveType(LevelType levelType, DateTime? start = null, DateTime? end = null)
+        {
+            LevelType  = levelType;
+            if (levelType==LevelType.Temporal&&start.HasValue&&end.HasValue)
+            {
+                StartTime = start.Value;
+                EndTime = end.Value;
+            }
+        }
+        public void SetOrUpdateIsVisable(bool isVisable)
+        {
+            IsVisiable = isVisable;
+        }
+        public void SetOrUpdateDelete(bool isDelete)
+        {
+            IsDelete = isDelete;
+        }
     }
     public enum HouserType
     {
