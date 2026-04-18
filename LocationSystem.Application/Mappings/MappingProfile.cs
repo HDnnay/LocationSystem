@@ -22,7 +22,8 @@ namespace LocationSystem.Application.Mappings
 
             // 权限映射
             config.NewConfig<Permission, PermissionDto>()
-                .Map(dest => dest.ChildPermissions, src => src.ChildPermissions);
+                .Map(dest => dest.ChildPermissions, src => src.ChildPermissions)
+                .PreserveReference(true); // 启用循环引用检测
 
             // 用户映射
             config.NewConfig<User, UserDto>()
@@ -30,7 +31,8 @@ namespace LocationSystem.Application.Mappings
                 .Map(dest => dest.Email, src => src.Email.Value);
 
             // 角色映射
-            config.NewConfig<Role, RoleDto>();
+            config.NewConfig<Role, RoleDto>()
+                .PreserveReference(true); // 启用循环引用检测
 
             // 文章映射
             config.NewConfig<Article, ArticleDto>();

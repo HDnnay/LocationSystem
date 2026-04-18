@@ -55,40 +55,37 @@ export default {
     this.loginForm.password = '';
   },
   methods: {
-            async handleLogin() {
-                const valid = await this.$refs.loginFormRef.validate()
-                if (!valid) return
+    async handleLogin() {
+      const valid = await this.$refs.loginFormRef.validate()
+      if (!valid) return
 
-                this.loading = true
-                try {
-                    await this.$api.auth.login(this.loginForm).then((res)=>{
-                        if(res.status === 200){
-                          let data = res.data
-                          authStorage.saveAuthData({
-                              accessToken: data.accessToken,
-                              refreshToken: data.refreshToken,
-                              userInfo: data.userInfo
-                          })
-                          this.$root.$data.isLoggedIn = true
-                          this.$router.push('/dashboard')
-
-                      }else {
-                            throw new Error(res.data.message || '登录失败')
-                        }
-
-
-                    }).catch((error)=>{
-                         this.$message.error('登录失败：' + (error.response?.data?.message || error.message))
-                    })
-
-                } finally {
-                    this.loading = false
-                }
-            },
-            goToRegister() {
-                this.$router.push('/register')
-            }
+      this.loading = true
+      try {
+        const res = await this.$api.auth.login(this.loginForm)
+        if (res.status === 200) {
+          let data = res.data
+          authStorage.saveAuthData({
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+            userInfo: data.userInfo
+          })
+          this.$root.$data.isLoggedIn = true
+          // 清除本地权限缓存，确保下次获取最新权限
+          localStorage.removeItem('userPermissions')
+          this.$router.push('/dashboard')
+        } else {
+          this.$message.error('登录失败：' + (res.data?.message || '未知错误'))
         }
+      } catch (error) {
+        this.$message.error('登录失败：' + (error.response?.data?.message || error.message || '网络错误'))
+      } finally {
+        this.loading = false
+      }
+    },
+    goToRegister() {
+      this.$router.push('/register')
+    }
+  }
 }
 </script>
 

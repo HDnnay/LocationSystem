@@ -14,8 +14,8 @@ service.interceptors.request.use(
     config => {
         // 在发送请求之前做一些处理，比如添加token
         const token = authStorage.getAccessToken();
-        // 当请求的是 /api/auth/refresh-token 接口时，不添加 Authorization 头
-        if (token && !config.url.includes('/api/auth/refresh-token')) {
+        // 当请求的是认证相关接口时，不添加 Authorization 头
+        if (token && !config.url.includes('/api/auth/')) {
             config.headers['Authorization'] = "Bearer "+token;
         }
         // 只有在不是文件上传时才设置Content-Type为application/json

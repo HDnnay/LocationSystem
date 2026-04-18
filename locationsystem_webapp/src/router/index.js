@@ -104,7 +104,7 @@ const routes = [
   {
     path: '/roles',
     name: 'Roles',
-    component: () => import('../views/RolesView.vue'),
+    component: () => import('../views/roles/RolesView.vue'),
     meta: {
       title: '角色管理',
       requiresAuth: true,
@@ -162,7 +162,7 @@ async function getUserPermissions() {
         // 从后端获取权限
         const response = await apiGetUserPermissions();
         console.log("用户权限响应", response)
-        
+
         // 检查响应状态码
         if (response.status === 200) {
             const permissions = response.data
@@ -187,20 +187,27 @@ router.beforeEach(async (to, from, next) => {
     document.title = to.meta.title ? `${to.meta.title} - 内容管理系统` : '内容管理系统'
 
     // 检查是否需要认证
-        if (to.meta.requiresAuth !== false) {
-            // 获取token
-            const token = authStorage.getAccessToken()
-            if (!token) {
-                // 没有token，跳转到登录页
-                next({ path: '/login' })
-                return
-            }
+    if (to.meta.requiresAuth !== false) {
+        // 获取token
+        const token = authStorage.getAccessToken()
+        if (!token) {
+            // 没有token，跳转到登录页
+            next({ path: '/login' })
+            return
+        }
 
         // 检查是否需要权限
         if (to.meta.permission) {
             try {
-                // 获取用户权限
-                const userPermissions = await getUserPermissions()
+                // 先从本地存储获取权限，避免频繁调用API
+                let userPermissions = JSON.parse(localStorage.getItem('userPermissions') || '[]')
+                
+                // 如果本地没有权限数据，才从API获取
+                if (!userPermissions || userPermissions.length === 0) {
+                    console.log('本地无权限数据，从API获取...')
+                    userPermissions = await getUserPermissions()
+                }
+
                 // 检查权限
                 if (userPermissions.includes(to.meta.permission)) {
                     next()

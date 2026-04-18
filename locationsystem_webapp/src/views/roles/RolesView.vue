@@ -152,9 +152,9 @@
     import {
         Plus, Edit, Delete, Lock, Unlock, Setting, Search, Check, Close, Refresh, User
     } from '@element-plus/icons-vue'
-    import PermissionTree from '../components/PermissionTree.vue'
-    import * as api from '../api/roles.js'
-import * as permissionApi from '../api/permissions.js'
+    import PermissionTree from '../../components/PermissionTree.vue'
+    import * as api from '../../api/roles.js'
+import * as permissionApi from '../../api/permissions.js'
     export default {
         name: 'Roles',
         components: {
@@ -225,9 +225,6 @@ import * as permissionApi from '../api/permissions.js'
                         this.roles = [];
                         this.total = 0;
                     }
-                } catch (error) {
-                    ElMessage.error('获取角色列表失败');
-                    console.error('获取角色列表失败:', error);
                 } finally {
                     this.loading = false;
                 }

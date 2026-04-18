@@ -175,26 +175,23 @@ export default {
 
         console.log('开始调用api.roles.getAllRoles()')
         const response = await api.roles.getAllRoles()
-        console.log('获取到的角色数据:', response)
+        console.log('获取到的角色数据响应:', response)
         console.log('response类型:', typeof response)
-        console.log('response是否为数组:', Array.isArray(response))
+        console.log('response状态码:', response.status)
 
         // 检查响应状态码
         if (response.status === 200) {
-          // 检查响应数据结构
-          if (response === undefined || response === null) {
-            console.error('角色数据为undefined或null:', response)
-            roles.value = []
-          } else if (Array.isArray(response)) {
-            roles.value = response
-          } else if (response && Array.isArray(response.data)) {
+          // 正确的数据层级：response.data 包含角色数据
+          if (response.data && Array.isArray(response.data)) {
             roles.value = response.data
+            console.log('成功获取角色数据:', response.data.length, '个角色')
           } else {
+            console.error('角色数据格式错误，期望数组但得到:', response.data)
             roles.value = []
-            console.error('角色数据格式错误:', response)
           }
         } else {
           console.error(`加载角色列表失败，状态码: ${response.status}`)
+          console.error('响应详情:', response)
           ElMessage.error('加载角色列表失败')
           roles.value = []
         }
