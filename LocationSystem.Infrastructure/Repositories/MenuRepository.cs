@@ -23,7 +23,7 @@ namespace LocationSystem.Infrastructure.Repositories
             {
                 querable = querable.Where(t => t.Name.Contains(query.keyWord) || t.Path.Contains(query.keyWord));
             }
-            return await querable.OrderBy(t => t.Order)
+            return await querable.Include(t => t.Parent).OrderBy(t => t.Order)
                 .Paginate(query.Page, query.PageSize)
                 .ToListAsync();
         }

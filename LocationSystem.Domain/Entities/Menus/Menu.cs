@@ -14,7 +14,7 @@ namespace LocationSystem.Domain.Entities.Menus
         public int Level { get; private set; }
         public bool IsBackEnd { get; private set; }
         public Guid? ParentId { get; private set; }
-        public Menu? Parent { get; private set; }
+        public virtual Menu? Parent { get; private set; }
         public List<Menu> Children { get; private set; }
         public List<PermissionMenu> PermissionMenus { get; private set; }
         public DateTime? UpdatedAt { get; private set; }

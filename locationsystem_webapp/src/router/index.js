@@ -6,7 +6,7 @@ import authStorage from '../utils/authStorage'
 const routes = [
     {
         path: '/',
-        redirect: '/dashboard',
+        redirect: '/admin/dashboard',
         meta: {
             requiresAuth: true
         }
@@ -30,7 +30,7 @@ const routes = [
         }
     },
     {
-        path: '/dashboard',
+        path: '/admin/dashboard',
         name: 'Dashboard',
         component: () => import('../views/DashboardView.vue'),
         meta: {
@@ -39,7 +39,7 @@ const routes = [
         }
     },
   {
-    path: '/role-permissions',
+    path: '/admin/role-permissions',
     name: 'RolePermissions',
     component: () => import('../views/SystemView.vue'),
     meta: {
@@ -48,7 +48,7 @@ const routes = [
     }
   },
   {
-    path: '/company',
+    path: '/admin/company',
     name: 'company',
     component: () => import('../views/company/CompanyView.vue'),
     meta: {
@@ -57,7 +57,7 @@ const routes = [
     }
   },
   {
-    path: '/company/list',
+    path: '/admin/company/list',
     name: 'company_list',
     component: () => import('../views/company/CompanyView.vue'),
     meta: {
@@ -66,7 +66,7 @@ const routes = [
     }
   },
   {
-    path: '/company/statistics',
+    path: '/admin/company/statistics',
     name: 'company_statistics',
     component: () => import('../views/company/CompanyProviceView.vue'),
     meta: {
@@ -75,7 +75,7 @@ const routes = [
     }
   },
   {
-    path: '/rent',
+    path: '/admin/rent',
     name: 'rent',
     component: () => import('../views/renthouse/RentHouseView.vue'),
     meta: {
@@ -84,7 +84,7 @@ const routes = [
     }
   },
   {
-    path: '/rent/list',
+    path: '/admin/rent/list',
     name: 'rent_list',
     component: () => import('../views/renthouse/RentHouseView.vue'),
     meta: {
@@ -93,7 +93,7 @@ const routes = [
     }
   },
   {
-    path: '/rent/create',
+    path: '/admin/rent/create',
     name: 'create-rent',
     component: () => import('../views/renthouse/CreateRentHouseView.vue'),
     meta: {
@@ -102,7 +102,7 @@ const routes = [
     }
   },
   {
-    path: '/roles',
+    path: '/admin/roles',
     name: 'Roles',
     component: () => import('../views/roles/RolesView.vue'),
     meta: {
@@ -112,9 +112,9 @@ const routes = [
     }
   },
   {
-    path: '/permissions',
+    path: '/admin/permissions',
     name: 'Permissions',
-    component: () => import('../views/users/PermissionsView.vue'),
+    component: () => import('../views/permissions/PermissionsView.vue'),
     meta: {
       title: '权限管理',
       requiresAuth: true,
@@ -122,7 +122,7 @@ const routes = [
     }
   },
   {
-    path: '/users',
+    path: '/admin/users',
     name: 'Users',
     component: () => import('../views/users/UsersView.vue'),
     meta: {
@@ -131,9 +131,9 @@ const routes = [
     }
   },
   {
-    path: '/menus',
+    path: '/admin/menus',
     name: 'Menus',
-    component: () => import('../views/users/MenusView.vue'),
+    component: () => import('../views/menus/MenusView.vue'),
     meta: {
       title: '菜单管理',
       requiresAuth: true
@@ -201,7 +201,7 @@ router.beforeEach(async (to, from, next) => {
             try {
                 // 先从本地存储获取权限，避免频繁调用API
                 let userPermissions = JSON.parse(localStorage.getItem('userPermissions') || '[]')
-                
+
                 // 如果本地没有权限数据，才从API获取
                 if (!userPermissions || userPermissions.length === 0) {
                     console.log('本地无权限数据，从API获取...')

@@ -11,12 +11,15 @@
     </div>
 
     <!-- 菜单列表 -->
-    <el-table :data="menuList" style="width: 100%" border>
+    <el-table :data="menuList" style="width: 100%; margin-top: 20px" border :cell-style="{ textAlign: 'center' }" :header-cell-style="{ textAlign: 'center' }">
       <el-table-column prop="name" label="菜单名称" />
       <el-table-column prop="path" label="菜单路径" />
       <el-table-column prop="icon" label="菜单图标" />
-      <el-table-column prop="order" label="排序" />
-      <el-table-column label="父菜单" />
+      <el-table-column class="" label="父菜单">
+        <template #default="scope">
+          {{ scope.row.parentMenu?.name || '——' }}
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="200">
         <template #default="scope">
           <el-button size="small" type="primary" @click="handleEditMenu(scope.row)" style="margin-bottom: 5px">
@@ -155,7 +158,7 @@
           const api = await import('@/api')
           // 调用后端新提供的获取菜单树形结构的API
           const response = await api.default.menus.getMenuTree()
-          console.log('获取菜单树形结构响应:', response)
+          console.log('菜单管理页获取菜单树形结构响应:', response)
           if (response.status === 200) {
             return response.data.items || response.data || []
           } else {
@@ -178,13 +181,14 @@
           // 从后端获取菜单列表（带分页）
           const api = await import('@/api')
           const response = await api.default.menus.getAllMenus(currentPage.value, pageSize.value)
-          console.log(response)
+          console.log("加载所有菜单列表",response)
           // 检查响应状态码
           if (response.status === 200) {
             // 直接使用response作为菜单列表，因为后端直接返回了菜单列表
-            const menusData = response.items || response.data
+            const menusData = response.data.items || response.data
             menus.value = menusData
-            total.value = response.total || 0
+            total.value = response.data.total || 0
+            currentPage.value = response.data.currentPage
           } else {
             console.error(`获取菜单列表失败，状态码: ${response.status}`)
             menus.value = []
