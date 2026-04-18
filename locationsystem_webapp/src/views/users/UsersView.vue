@@ -149,7 +149,7 @@ export default {
       try {
         const response = await api.users.getAllUsers()
         if (response.status === 200) {
-          users.value = response.data || []
+          users.value = response.data.items || response.data || []
           total.value = response.data.total || 0
         } else {
           console.error(`加载用户列表失败，状态码: ${response.status}`)
@@ -164,11 +164,9 @@ export default {
     // 加载角色列表
     const loadRoles = async () => {
       try {
-        // 调试：检查api.roles对象
         console.log('api.roles:', api.roles)
         console.log('api.roles.getAllRoles:', api.roles.getAllRoles)
 
-        // 确保getAllRoles是一个函数
         if (typeof api.roles.getAllRoles !== 'function') {
           throw new Error('api.roles.getAllRoles不是一个函数')
         }
@@ -179,14 +177,13 @@ export default {
         console.log('response类型:', typeof response)
         console.log('response状态码:', response.status)
 
-        // 检查响应状态码
         if (response.status === 200) {
-          // 正确的数据层级：response.data 包含角色数据
-          if (response.data && Array.isArray(response.data)) {
-            roles.value = response.data
-            console.log('成功获取角色数据:', response.data.length, '个角色')
+          const rolesData = response.items || response.data
+          if (rolesData && Array.isArray(rolesData)) {
+            roles.value = rolesData
+            console.log('成功获取角色数据:', rolesData.length, '个角色')
           } else {
-            console.error('角色数据格式错误，期望数组但得到:', response.data)
+            console.error('角色数据格式错误，期望数组但得到:', rolesData)
             roles.value = []
           }
         } else {
@@ -199,10 +196,8 @@ export default {
         console.error('加载角色列表失败:', error)
         console.error('错误详情:', error.response)
         console.error('错误消息:', error.message)
-        // 显示具体的错误信息
         const errorMessage = error.response?.data?.message || error.message || '加载角色列表失败'
         ElMessage.error(errorMessage)
-        // 如果是403错误，可能是权限不足
         if (error.response?.status === 403) {
           ElMessage.warning('您没有查看角色的权限')
         }
@@ -215,11 +210,10 @@ export default {
       try {
         const response = await getUserTypes()
         console.log('用户类型数据:', response)
-        userTypes.value = Array.isArray(response) ? response : (response.data || [])
+        userTypes.value = Array.isArray(response) ? response : (response.data || response.items || [])
       } catch (error) {
         console.error('加载用户类型列表失败:', error)
         ElMessage.error('加载用户类型列表失败')
-        // 如果获取失败，使用默认值
         userTypes.value = [
           { value: 0, name: '默认用户' },
           { value: 1, name: '管理员' },
@@ -253,12 +247,10 @@ export default {
     const handleSaveUser = async () => {
       try {
         if (form.value.id) {
-          // 更新用户
-          // 后端期望的格式：{ "Name": "lisi", "Email": "lisi@qq.com", "UserType": "Dentist" }
           const userData = {
             Name: form.value.name,
             Email: form.value.email,
-            UserType: form.value.userType // 保持为字符串，如'Dentist'或'Patient'
+            UserType: form.value.userType
           }
           const response = await api.users.updateUser(form.value.id, userData)
           if (response.status === 200) {
@@ -268,12 +260,10 @@ export default {
             ElMessage.error('更新用户失败')
           }
         } else {
-          // 新增用户
-          // 后端期望的格式：{ "Name": "lisi", "Email": "lisi@qq.com", "UserType": "Dentist" }
           const userData = {
             Name: form.value.name,
             Email: form.value.email,
-            UserType: form.value.userType // 保持为字符串，如'Dentist'或'Patient'
+            UserType: form.value.userType
           }
           const response = await api.users.createUser(userData)
           if (response.status === 200) {
@@ -319,7 +309,6 @@ export default {
     // 处理分配角色
     const handleAssignRoles = (user) => {
       currentUser.value = user
-      // 初始化选中的角色
       selectedRoles.value = user.roles.map(role => role.id)
       loadRoles()
       roleDialogVisible.value = true

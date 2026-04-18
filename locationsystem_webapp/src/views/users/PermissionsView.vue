@@ -193,7 +193,6 @@
             { pattern: /^[a-zA-Z0-9_:]+$/, message: '权限代码只能包含字母、数字、下划线和冒号', trigger: 'blur' }
           ]
         },
-        // 分页相关
         currentPage: 1,
         pageSize: 10,
         total: 0
@@ -217,7 +216,6 @@
       async getPermissions() {
         this.loading = true;
         try {
-          // 构建请求参数
           const params = {
             page: this.currentPage,
             pageSize: this.pageSize,
@@ -226,20 +224,16 @@
 
           const response = await api.permissions.getPermissions(params);
           console.log(response);
-          // 检查响应状态码
           if (response.status === 200) {
-            // 检查响应数据结构
             if (response && typeof response === 'object') {
-              // 处理后端返回的PageResult<PermissionDto>数据结构
-              if (response.data && Array.isArray(response.data)) {
-                const permissions = response.data;
-                // 构建权限ID到名称的映射
+              const permissionsData = response.data.items || response.data;
+              if (permissionsData && Array.isArray(permissionsData)) {
+                const permissions = permissionsData;
                 const permissionMap = new Map();
                 permissions.forEach(permission => {
                   permissionMap.set(permission.id, permission.name);
                 });
 
-                // 为每个权限添加父级权限名称
                 this.permissions = permissions.map(permission => ({
                   ...permission,
                   parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
@@ -247,35 +241,29 @@
                 console.log("权限列表数据员：this.permissions");
                 console.log(this.permissions);
                 this.allPermissions = permissions;
-                // 构建树形结构的权限选项
                 this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
 
-                // 更新分页信息
                 this.total = response.total || 0;
                 this.currentPage = response.currentPage || 1;
-              } else {
-                // 兼容旧的数据结构（如果后端返回的是直接的数组）
+              } else if (Array.isArray(response)) {
                 const permissions = response;
-                if (Array.isArray(permissions)) {
-                  // 构建权限ID到名称的映射
-                  const permissionMap = new Map();
-                  permissions.forEach(permission => {
-                    permissionMap.set(permission.id, permission.name);
-                  });
+                const permissionMap = new Map();
+                permissions.forEach(permission => {
+                  permissionMap.set(permission.id, permission.name);
+                });
 
-                  // 为每个权限添加父级权限名称
-                  this.permissions = permissions.map(permission => ({
-                    ...permission,
-                    parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
-                  }));
+                this.permissions = permissions.map(permission => ({
+                  ...permission,
+                  parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
+                }));
 
-                  this.allPermissions = permissions;
-                  // 构建树形结构的权限选项
-                  this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
+                this.allPermissions = permissions;
+                this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
 
-                  // 更新分页信息
-                  this.total = permissions.length;
-                }
+                this.total = permissions.length;
+              } else {
+                this.permissions = [];
+                this.total = 0;
               }
             }
           } else {
@@ -291,12 +279,10 @@
           this.loading = false;
         }
       },
-      // 构建树形结构的权限选项
       buildPermissionTreeOptions(permissions) {
         const permissionMap = new Map();
         const rootPermissions = [];
 
-        // 首先创建所有权限节点的映射
         permissions.forEach(permission => {
           permissionMap.set(permission.id, {
             id: permission.id,
@@ -307,20 +293,16 @@
           });
         });
 
-        // 然后构建树形结构
         permissions.forEach(permission => {
           const permissionNode = permissionMap.get(permission.id);
           if (permission.parentId) {
-            // 如果有父权限，添加到父权限的子节点中
             const parentNode = permissionMap.get(permission.parentId);
             if (parentNode) {
               parentNode.children.push(permissionNode);
             } else {
-              // 如果父权限不存在，作为根节点处理
               rootPermissions.push(permissionNode);
             }
           } else {
-            // 没有父权限的作为根节点
             rootPermissions.push(permissionNode);
           }
         });
@@ -333,7 +315,7 @@
         try {
           const response = await api.permissions.getPermissionTree();
           if (response.status === 200) {
-            this.permissionTree = response;
+            this.permissionTree = response.items || response.data || response;
           } else {
             console.error(`获取权限树形结构失败，状态码: ${response.status}`);
             this.treeError = '获取权限树形结构失败';
@@ -366,11 +348,9 @@
           description: permission.description,
           parentId: permission.parentId || null
         }
-        // 初始化级联选择器的值
         this.cascaderValue = permission.parentId ? [permission.parentId] : [];
         this.showPermissionModal = true
       },
-      // 处理级联选择器变化
       handleCascaderChange(value) {
         if (value && value.length > 0) {
           this.formData.parentId = value[value.length - 1];
@@ -381,7 +361,6 @@
       closePermissionModal() {
         this.showPermissionModal = false
         this.editingPermission = null
-        // 重置表单验证状态
         if (this.$refs.permissionFormRef) {
           this.$refs.permissionFormRef.resetFields()
         }
@@ -389,7 +368,6 @@
       async savePermission() {
         try {
           if (this.editingPermission) {
-            // 更新权限
             var updatePermissionDto = {
               name: this.formData.name,
               code: this.formData.code,
@@ -399,7 +377,6 @@
             await request.put(`/api/permissions/${this.editingPermission.id}`, updatePermissionDto);
             ElMessage.success('权限更新成功');
           } else {
-            // 创建新权限
             const createPermissionDto = {
               name: this.formData.name,
               code: this.formData.code,
@@ -446,18 +423,15 @@
         this.getPermissionTree();
       },
       handlePermissionChange(checkedKeys) {
-        // 处理权限选择变化
         console.log('Selected permissions:', checkedKeys);
       },
       handleExpandChange(expandedKeys) {
-        // 处理节点展开/收起变化
         console.log('Expanded keys:', expandedKeys);
       },
 
-      // 分页相关方法
       handleSizeChange(size) {
         this.pageSize = size;
-        this.currentPage = 1; // 重置为第一页
+        this.currentPage = 1;
         this.getPermissions();
       },
 

@@ -184,8 +184,8 @@ import * as permissionApi from '../../api/permissions.js'
                 permissionTree: [],
                 permissionLoading: false,
                 permissionError: null,
-                selectedPermissions: [], // 默认选中的权限ID列表
-                expandedPermissions: [], // 默认展开的权限ID列表
+                selectedPermissions: [],
+                expandedPermissions: [],
                 openPermissionGroups: [],
                 showDeleteConfirm: false,
                 deleteRole: null
@@ -196,7 +196,6 @@ import * as permissionApi from '../../api/permissions.js'
             this.permissionTree = this.getMockPermissionTree()
         },
         computed: {
-            // 使用Element Plus的el-table和el-pagination，无需手动过滤和分页
         },
         methods: {
             formatDate(dateString) {
@@ -208,14 +207,15 @@ import * as permissionApi from '../../api/permissions.js'
                 this.loading = true;
                 try {
                     const response = await api.getAllRoles();
-                    if (response.status === 200) {
-                        this.roles = response.data.map(role => ({
+                  if (response.status === 200) {
+                    const rolesData = response.data.items || response.data;
+                        this.roles = (rolesData || []).map(role => ({
                             id: role.id,
                             roleName: role.name,
                             roleDescription: role.description,
                             roleCode: role.code,
-                            status: !role.isDisabled, // 使用后端返回的isDisabled字段
-                            isDisabled: role.isDisabled, // 保存原始的isDisabled字段
+                            status: !role.isDisabled,
+                            isDisabled: role.isDisabled,
                             createDate: role.createdAt
                         }));
                         this.total = this.roles.length;
@@ -238,7 +238,7 @@ import * as permissionApi from '../../api/permissions.js'
                 this.currentPage = val;
                 this.getRoles();
             },
-            formatDate(dateString) {
+            formatDate2(dateString) {
                 const date = new Date(dateString)
                 return date.toLocaleDateString('zh-CN', {
                     year: 'numeric',
@@ -274,7 +274,6 @@ import * as permissionApi from '../../api/permissions.js'
             closeRoleModal() {
                 this.showRoleModal = false
                 this.editingRole = null
-                // 重置表单验证状态
                 if (this.$refs.roleFormRef) {
                     this.$refs.roleFormRef.resetFields()
                 }
@@ -282,12 +281,11 @@ import * as permissionApi from '../../api/permissions.js'
             async saveRole() {
                 try {
                     if (this.editingRole) {
-                        // 更新角色
                         var updateRoleDto = {
                             name: this.formData.roleName,
                             code: this.formData.roleCode || this.editingRole.roleCode,
                             description: this.formData.roleDescription,
-                            permissionIds: [] // 暂时为空，后续在权限管理中设置
+                            permissionIds: []
                         }
                         const updateResponse = await api.updateRole(this.editingRole.id, updateRoleDto);
                         if (updateResponse.status === 200) {
@@ -297,12 +295,11 @@ import * as permissionApi from '../../api/permissions.js'
                             ElMessage.error('角色更新失败');
                         }
                     } else {
-                        // 创建新角色
                         const createRoleDto = {
                             name: this.formData.roleName,
                             code: this.formData.roleCode,
                             description: this.formData.roleDescription,
-                            permissionIds: [] // 暂时为空，后续在权限管理中设置
+                            permissionIds: []
                         }
                         const createResponse = await api.createRole(createRoleDto);
                         if (createResponse.status === 200) {
@@ -327,20 +324,17 @@ import * as permissionApi from '../../api/permissions.js'
                 this.permissionError = null
 
                 try {
-                    // 从API接口获取带选中状态的权限树数据
                     const permissionsResponse = await permissionApi.getPermissionTreeWithCheckStatus(role.id);
 
-                    // 构建权限树并处理选中状态
                     if (permissionsResponse && Array.isArray(permissionsResponse)) {
-                        // 处理权限树数据，提取选中的权限ID
                         this.permissionTree = permissionsResponse;
-                        // 递归提取选中的权限ID
                         this.selectedPermissions = this.extractSelectedPermissionsFromTree(permissionsResponse);
                     } else if (permissionsResponse && Array.isArray(permissionsResponse.data)) {
-                        // 处理权限树数据，提取选中的权限ID
                         this.permissionTree = permissionsResponse.data;
-                        // 递归提取选中的权限ID
                         this.selectedPermissions = this.extractSelectedPermissionsFromTree(permissionsResponse.data);
+                    } else if (permissionsResponse && Array.isArray(permissionsResponse.items)) {
+                        this.permissionTree = permissionsResponse.items;
+                        this.selectedPermissions = this.extractSelectedPermissionsFromTree(permissionsResponse.items);
                     } else {
                         this.permissionTree = [];
                         this.permissionError = '权限数据格式错误';
@@ -353,25 +347,22 @@ import * as permissionApi from '../../api/permissions.js'
                     }
 
                 } catch (error) {
-                    // 详细的错误处理
                     if (error.response) {
-                        // 服务器返回了错误状态码
                         this.permissionError = `服务器错误: ${error.response.status} - ${error.response.data.message || '未知错误'}`;
                     } else if (error.request) {
-                        // 请求已发出，但没有收到响应
                         this.permissionError = '网络错误，请检查网络连接';
                     } else {
-                        // 其他错误
                         this.permissionError = `请求错误: ${error.message}`;
                     }
 
-                    this.expandedPermissions = this.permissionTree.map(p => p.id);
+                    if (this.permissionTree.length > 0) {
+                        this.expandedPermissions = this.permissionTree.map(p => p.id);
+                    }
                 } finally {
                     this.permissionLoading = false;
                 }
             },
 
-            // 从权限树中提取选中的权限ID
             extractSelectedPermissionsFromTree(permissions) {
                 const selected = [];
 
@@ -404,7 +395,6 @@ import * as permissionApi from '../../api/permissions.js'
                     this.expandedPermissions.push(permissionId)
                 }
             },
-            // 判断某个权限组的所有子权限是否都被选中
             hasAllChildrenSelected(permission) {
                 if (!permission.childPermissions || permission.childPermissions.length === 0) {
                     return this.selectedPermissions.includes(permission.id)
@@ -415,19 +405,16 @@ import * as permissionApi from '../../api/permissions.js'
                 )
             },
 
-            // 切换权限组的所有子权限
             toggleAllChildren(permission) {
                 const allSelected = this.hasAllChildrenSelected(permission)
 
                 permission.childPermissions.forEach(child => {
                     if (allSelected) {
-                        // 如果全部已选中，则全部取消选中
                         const index = this.selectedPermissions.indexOf(child.id)
                         if (index !== -1) {
                             this.selectedPermissions.splice(index, 1)
                         }
                     } else {
-                        // 如果未全部选中，则全部选中
                         if (!this.selectedPermissions.includes(child.id)) {
                             this.selectedPermissions.push(child.id)
                         }
@@ -439,92 +426,101 @@ import * as permissionApi from '../../api/permissions.js'
                 const isSelected = this.selectedPermissions.includes(permission.id)
 
                 if (isSelected) {
-                    // 取消选中
                     this.selectedPermissions = this.selectedPermissions.filter(id => id !== permission.id)
-                    // 递归取消选中所有子权限
                     if (permission.childPermissions) {
                         this.deselectChildren(permission)
                     }
                 } else {
-                    // 选中当前权限
                     this.selectedPermissions.push(permission.id)
-                    // 如果有父级，检查是否需要递归选中父级
-                    this.checkAndSelectParent(permission)
+                    if (permission.childPermissions) {
+                        this.selectChildren(permission)
+                    }
                 }
             },
-            deselectChildren(permission) {
-                if (permission.childPermissions && permission.childPermissions.length > 0) {
+
+            selectChildren(permission) {
+                if (permission.childPermissions) {
                     permission.childPermissions.forEach(child => {
-                        this.selectedPermissions = this.selectedPermissions.filter(id => id !== child.id)
-                        this.deselectChildren(child)
+                        if (!this.selectedPermissions.includes(child.id)) {
+                            this.selectedPermissions.push(child.id)
+                        }
+                        if (child.childPermissions) {
+                            this.selectChildren(child)
+                        }
                     })
                 }
             },
-            checkAndSelectParent(permission) {
-                // 这里简化处理，实际可能需要根据后端数据结构调整
-                // 主要是处理父子级联关系
-            },
-            extractSelectedPermissions(permissions) {
-                // 将后端返回的权限对象转换为ID数组
-                // 根据实际后端返回的数据结构调整
-                if (Array.isArray(permissions)) {
-                    return permissions.map(p => p.id)
-                } else if (typeof permissions === 'object') {
-                    // 兼容旧格式
-                    return Object.keys(permissions).reduce((selected, key) => {
-                        const perm = permissions[key]
-                        if (typeof perm === 'object') {
-                            Object.values(perm).forEach(value => {
-                                if (value === true) {
-                                    // 这里简化处理，实际需要根据旧格式与新ID的映射关系调整
-                                    // 暂时返回空数组
-                                }
-                            })
+
+            deselectChildren(permission) {
+                if (permission.childPermissions) {
+                    permission.childPermissions.forEach(child => {
+                        const index = this.selectedPermissions.indexOf(child.id)
+                        if (index !== -1) {
+                            this.selectedPermissions.splice(index, 1)
                         }
-                        return selected
-                    }, [])
+                        if (child.childPermissions) {
+                            this.deselectChildren(child)
+                        }
+                    })
                 }
-                return []
+            },
+
+            getMockPermissionTree() {
+                return [
+                    {
+                        id: 1,
+                        name: '系统管理',
+                        code: 'System',
+                        childPermissions: [
+                            { id: 11, name: '用户管理', code: 'UserManagement', childPermissions: [] },
+                            { id: 12, name: '角色管理', code: 'RoleManagement', childPermissions: [] },
+                            { id: 13, name: '菜单管理', code: 'MenuManagement', childPermissions: [] },
+                            { id: 14, name: '权限管理', code: 'PermissionManagement', childPermissions: [] }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        name: '业务管理',
+                        code: 'Business',
+                        childPermissions: [
+                            { id: 21, name: '订单管理', code: 'OrderManagement', childPermissions: [] },
+                            { id: 22, name: '客户管理', code: 'CustomerManagement', childPermissions: [] }
+                        ]
+                    }
+                ]
             },
             async savePermissions() {
-                if (this.selectedRole) {
-                    try {
-                        var updateRoleDto = {
-                            name: this.selectedRole.roleName,
-                            code: this.selectedRole.roleCode,
-                            description: this.selectedRole.roleDescription,
-                            permissionIds: this.selectedPermissions
-                        }
-                        await api.updateRole(this.selectedRole.id, updateRoleDto);
-                        ElMessage.success('权限保存成功');
-                        this.getRoles();
-                    } catch (error) {
-                        ElMessage.error('权限保存失败');
+                try {
+                    const response = await api.assignPermissionsToRole(this.selectedRole.id, this.selectedPermissions);
+                    if (response.status === 200) {
+                        ElMessage.success('权限分配成功');
+                        this.closePermissionModal();
+                    } else {
+                        ElMessage.error('权限分配失败');
                     }
+                } catch (error) {
+                    ElMessage.error('权限分配失败');
                 }
-                this.closePermissionModal();
-            },
-            // 提供模拟的权限树数据
-            getMockPermissionTree() {
-
             },
             async toggleStatus(role) {
-                if (role == null)
-                    return;
-                const self = this;
                 try {
-                    if (!role.isDisabled) {
-                        // 当前是启用状态，需要禁用
-                        await api.disableRole(role.id);
+                    const newStatus = !role.isDisabled
+                    const response = await api.updateRole(role.id, {
+                        name: role.roleName,
+                        code: role.roleCode,
+                        description: role.roleDescription,
+                        isDisabled: newStatus,
+                        permissionIds: []
+                    })
+
+                    if (response.status === 200) {
+                        ElMessage.success(`角色${newStatus ? '启用' : '禁用'}成功`);
+                        this.getRoles();
                     } else {
-                        // 当前是禁用状态，需要启用
-                        await api.enableRole(role.id);
+                        ElMessage.error('操作失败');
                     }
-                    ElMessage.success('角色状态更新成功');
-                    self.getRoles(self.currentPage);
                 } catch (error) {
-                    ElMessage.error('角色状态更新失败');
-                    console.error('更新角色状态失败:', error);
+                    ElMessage.error('操作失败');
                 }
             },
             confirmDelete(role) {
@@ -532,32 +528,27 @@ import * as permissionApi from '../../api/permissions.js'
                 this.showDeleteConfirm = true
             },
             async deleteRoleConfirmed() {
-                if (this.deleteRole) {
-                    try {
-                        await api.deleteRole(this.deleteRole.id);
+                try {
+                    const response = await api.deleteRole(this.deleteRole.id);
+                    if (response.status === 200) {
                         ElMessage.success('角色删除成功');
-                        this.deleteRole = null;
                         this.showDeleteConfirm = false;
+                        this.deleteRole = null;
                         this.getRoles();
-                    } catch (error) {
-                        ElMessage.error('删除失败，请重试');
+                    } else {
+                        ElMessage.error('角色删除失败');
                     }
+                } catch (error) {
+                    ElMessage.error('角色删除失败');
                 }
             },
-            handleTogglePermission(permission) {
-                // 兼容旧事件的处理函数（已不再使用）
-                console.log('🔄 切换权限选择:', permission.id, permission.displayName || permission.name);
-            },
             handleToggleExpand(permissionId) {
-                // 兼容旧事件的处理函数（已不再使用）
                 console.log('🔄 切换权限展开状态:', permissionId);
                 const index = this.expandedPermissions.indexOf(permissionId);
 
                 if (index > -1) {
-                    // 如果已展开，则收起
                     this.expandedPermissions.splice(index, 1);
                 } else {
-                    // 如果未展开，则展开
                     this.expandedPermissions.push(permissionId);
                 }
 
@@ -565,7 +556,6 @@ import * as permissionApi from '../../api/permissions.js'
             }
         },
         watch: {
-            // 当搜索条件改变时，重置到第一页
             searchQuery() {
                 this.currentPage = 1
             }

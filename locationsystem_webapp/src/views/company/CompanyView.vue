@@ -139,7 +139,7 @@
         this.getData();
       },
       onSearch() {
-        
+
         if (this.searchQuery.trim() === "") {
           return;
         } else {
@@ -166,9 +166,9 @@
           // 检查响应状态码
           if (result.status === 200) {
             // result 现在有完整的类型提示
-            this.companies = result.data;
-            this.total = result.total;
-            this.currentPage = result.currentPage;
+            this.companies = result.data.items || [];
+            this.total = result.data.total || 0;
+            this.currentPage = result.data.currentPage || 1;
           } else {
             console.error(`获取公司数据失败，状态码: ${result.status}`)
             this.companies = []
