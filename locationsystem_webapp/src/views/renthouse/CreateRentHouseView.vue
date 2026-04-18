@@ -85,6 +85,7 @@
           <el-col :span="24">
             <el-form-item label="图片">
               <el-upload
+                action="api/RentHouse/upload-multiple"
                 class="upload-demo"
                 :show-file-list="true"
                 :on-change="handleFileChange"
@@ -258,11 +259,10 @@ export default {
           )
           console.log(`上传进度: ${percentCompleted}%`)
         })
-
+        console.log('上传成功:', response)
         // 处理后端返回的数据
-        if (response.status === 200) {
-          const data = response.data
-          if (data && data.files && data.files.length > 0) {
+          const data = response;
+          if (files.length > 0) {
             // 拼接所有fileUrl为一个字符串，用逗号分隔
             const fileUrls = data.files.map(file => file.fileUrl).join(',')
             this.form.imageSrc = fileUrls
@@ -270,7 +270,6 @@ export default {
           } else {
             this.$message.success(`成功上传 ${this.selectedFiles.length} 个文件`)
           }
-        }
 
         // 延迟清空文件列表，避免触发组件状态异常
         setTimeout(() => {

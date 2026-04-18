@@ -25,6 +25,10 @@ namespace LocationSystem.Domain.Entities
             CreateUserId=createUserId;
             Phone = phone;
             CreateTime = DateTime.Now;
+            IsDelete = false;
+            IsVisiable = true;
+            LevelType = LevelType.Public;
+
         }
         public Guid Id { get; set; }
         [Description("标题")]

@@ -1,7 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 // 添加 SQL Server 服务
-var sqlServer = builder.AddSqlServer("sqlserver");
+var sqlServer = builder.AddSqlServer("sqlserver", port: 11433);
 var database = sqlServer.AddDatabase("LocationSystemDB");
 
 // 添加 Redis 服务
