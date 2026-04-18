@@ -35,6 +35,7 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
             Name = name;
             Email = email;
             Id = Guid.NewGuid();
+            CreateTime = DateTime.Now;
         }
         public virtual void UpdateName(string name)
         {

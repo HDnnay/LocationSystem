@@ -94,6 +94,7 @@ namespace LocationSystem.Infrastructure.Repositories
             if (user==null)
                 throw new NotFoundException("删除的用户不存在！");
             user.IsDelete = true;
+            user.DeleteTime = DateTime.Now;
             _context.Update(user);
             return user;
         }
