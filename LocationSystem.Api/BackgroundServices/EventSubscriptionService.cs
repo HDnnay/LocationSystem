@@ -19,10 +19,10 @@ namespace LocationSystem.Api.BackgroudServices
             _serviceProvider = serviceProvider;
         }
 
-        protected override Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             // 等待应用启动完成
-            Task.Delay(5000, stoppingToken).Wait();
+            await Task.Delay(5000, stoppingToken);
 
             try
             {
@@ -48,7 +48,6 @@ namespace LocationSystem.Api.BackgroudServices
             {
                 Console.WriteLine($"事件订阅失败: {ex.Message}");
             }
-            return Task.CompletedTask;
         }
     }
 }

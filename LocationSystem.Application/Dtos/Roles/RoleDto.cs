@@ -1,9 +1,7 @@
 using LocationSystem.Application.Dtos.Permissions;
-using Mapster;
 
 namespace LocationSystem.Application.Dtos.Roles
 {
-    [Mapper]
     public class RoleDto
     {
         public Guid Id { get; set; }

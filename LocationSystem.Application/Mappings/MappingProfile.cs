@@ -32,9 +32,6 @@ namespace LocationSystem.Application.Mappings
             // 角色映射
             config.NewConfig<Role, RoleDto>();
 
-            // 权限映射
-            config.NewConfig<Permission, PermissionDto>();
-
             // 文章映射
             config.NewConfig<Article, ArticleDto>();
             config.NewConfig<ArticleTag, TagDto>();
