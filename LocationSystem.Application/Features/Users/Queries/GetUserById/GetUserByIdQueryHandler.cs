@@ -1,7 +1,6 @@
-using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Roles;
+using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities;
 
 namespace LocationSystem.Application.Features.Users.Queries
 {

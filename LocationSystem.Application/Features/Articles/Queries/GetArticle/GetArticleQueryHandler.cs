@@ -1,5 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Articles;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Articles;
 using Mapster;

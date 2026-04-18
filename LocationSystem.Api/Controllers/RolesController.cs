@@ -1,4 +1,3 @@
-using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Roles.Commands.CreateRole;
 using LocationSystem.Application.Features.Roles.Commands.DeleteRole;
 using LocationSystem.Application.Features.Roles.Commands.DisableRole;
@@ -13,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using LocationSystem.Application.Dtos.Roles;
 
 namespace LocationSystem.Api.Controllers
 {

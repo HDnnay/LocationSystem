@@ -1,8 +1,14 @@
 using Mapster;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
+using LocationSystem.Application.Dtos.RentHouses;
+using LocationSystem.Application.Dtos.Articles;
+using LocationSystem.Application.Dtos.Menus;
+using LocationSystem.Application.Dtos.Permissions;
+using LocationSystem.Application.Dtos.Roles;
+using LocationSystem.Application.Dtos.Users;
 
 namespace LocationSystem.Application.Mappings
 {
@@ -33,6 +39,9 @@ namespace LocationSystem.Application.Mappings
             config.NewConfig<Article, ArticleDto>();
             config.NewConfig<ArticleTag, TagDto>();
             config.NewConfig<ArticleComment, ArticleCommentDto>();
+
+            // 租房映射
+            config.NewConfig<RentHouse, RentHouseListDto>();
         }
     }
 }

@@ -1,11 +1,9 @@
-﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos.RentHouses;
 using LocationSystem.Application.Features.RentHousies.Queries.QueryRentHouseList;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
-using LocationSystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Mapster;
 
 namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList
 {
@@ -18,11 +16,11 @@ namespace LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseLi
         }
         public async Task<PageResult<RentHouseListDto>> Handle(GetRentHouseListQuery request)
         {
-            var (total,result) = await _repository.GetRentHouseTuplePage(request);
+            var (total, result) = await _repository.GetRentHouseTuplePage(request);
             var pageResult = new PageResult<RentHouseListDto>();
             pageResult.Total = total;
             pageResult.CurrentPage = request.Page;
-            pageResult.Data = result.Any() ? result.Select(t => t.ToPageListDto()).ToList() : [];
+            pageResult.Data = result.Any() ? result.Select(t => t.Adapt<RentHouseListDto>()).ToList() : [];
             return pageResult;
         }
     }

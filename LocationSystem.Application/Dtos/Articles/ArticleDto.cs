@@ -1,6 +1,7 @@
+using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Domain.Enums;
 
-namespace LocationSystem.Application.Dtos
+namespace LocationSystem.Application.Dtos.Articles
 {
     public class ArticleDto
     {

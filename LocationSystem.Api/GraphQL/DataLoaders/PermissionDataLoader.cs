@@ -1,11 +1,11 @@
 using HotChocolate;
 using Mapster;
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using LocationSystem.Application.Dtos.Permissions;
 
 namespace LocationSystem.Api.GraphQL.DataLoaders
 {

@@ -2,7 +2,6 @@ using HotChocolate.Types;
 using LocationSystem.Api.GraphQL.Commands;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Features.Menus.Commands.AssignPermissionsToMenu;
 using LocationSystem.Application.Features.Menus.Commands.CreateMenu;
 using LocationSystem.Application.Features.Menus.Commands.DeleteMenu;
@@ -22,6 +21,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dtos = LocationSystem.Application.Dtos;
 using SuccessResponse = LocationSystem.Application.Utilities.SuccessResponse;
+using LocationSystem.Application.Dtos.Articles;
+using LocationSystem.Application.Dtos.Menus;
+using LocationSystem.Application.Dtos.Roles;
+using LocationSystem.Application.Dtos.Users;
 
 namespace LocationSystem.Api.GraphQL
 {
@@ -142,12 +145,12 @@ namespace LocationSystem.Api.GraphQL
         }
 
         // 菜单相关操作
-        public async Task<Dtos.MenuDto> CreateMenu(CreateMenuCommand command)
+        public async Task<MenuDto> CreateMenu(CreateMenuCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<Dtos.MenuDto> UpdateMenu(Guid id, UpdateMenuCommand command)
+        public async Task<MenuDto> UpdateMenu(Guid id, UpdateMenuCommand command)
         {
             command.Id = id;
             return await _mediator.Send(command);
@@ -173,7 +176,7 @@ namespace LocationSystem.Api.GraphQL
             return await _mediator.Send(command);
         }
 
-        public async Task<Dtos.UserDto> UpdateUser(Guid id, UpdateUserCommand command)
+        public async Task<UserDto> UpdateUser(Guid id, UpdateUserCommand command)
         {
             command.Id = id;
             return await _mediator.Send(command);
@@ -194,12 +197,12 @@ namespace LocationSystem.Api.GraphQL
         }
 
         // 角色相关操作
-        public async Task<Dtos.RoleDto> CreateRole(CreateRoleCommand command)
+        public async Task<RoleDto> CreateRole(CreateRoleCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<Dtos.RoleDto> UpdateRole(Guid id, UpdateRoleCommand command)
+        public async Task<RoleDto> UpdateRole(Guid id, UpdateRoleCommand command)
         {
             command.RoleId = id;
             return await _mediator.Send(command);
@@ -220,12 +223,12 @@ namespace LocationSystem.Api.GraphQL
         }
 
         // 文章相关操作
-        public async Task<Dtos.ArticleDto> CreateArticle(CreateArticleCommand command)
+        public async Task<ArticleDto> CreateArticle(CreateArticleCommand command)
         {
             return await _mediator.Send(command);
         }
 
-        public async Task<Dtos.ArticleDto> UpdateArticle(Guid id, UpdateArticleCommand command)
+        public async Task<ArticleDto> UpdateArticle(Guid id, UpdateArticleCommand command)
         {
             command.Id = id;
             return await _mediator.Send(command);

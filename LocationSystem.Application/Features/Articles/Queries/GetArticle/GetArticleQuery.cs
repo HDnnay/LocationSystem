@@ -1,4 +1,4 @@
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Articles;
 using LocationSystem.Application.Utilities;
 using System;
 

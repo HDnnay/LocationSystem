@@ -1,4 +1,6 @@
-namespace LocationSystem.Application.Dtos
+using LocationSystem.Application.Dtos.Permissions;
+
+namespace LocationSystem.Application.Dtos.Menus
 {
     public class MenuDto
     {

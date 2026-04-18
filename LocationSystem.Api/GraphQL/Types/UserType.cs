@@ -1,4 +1,4 @@
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Users;
 
 namespace LocationSystem.Api.GraphQL.Types
 {

@@ -1,12 +1,7 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
-using LocationSystem.Application.Features.Permissions.Queries.GetPermissionDetail;
+using LocationSystem.Application.Dtos.Permissions;
+using LocationSystem.Application.Dtos.Roles;
 using LocationSystem.Application.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionDetail
 {

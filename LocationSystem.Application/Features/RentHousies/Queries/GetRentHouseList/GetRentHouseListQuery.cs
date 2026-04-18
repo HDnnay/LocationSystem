@@ -1,4 +1,4 @@
-﻿using LocationSystem.Application.Features.RentHousies.Queries.GetRentHouseList;
+﻿using LocationSystem.Application.Dtos.RentHouses;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
 using System;

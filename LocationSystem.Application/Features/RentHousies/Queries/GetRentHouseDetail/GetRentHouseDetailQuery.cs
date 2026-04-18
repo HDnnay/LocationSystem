@@ -1,4 +1,4 @@
-﻿using LocationSystem.Application.Features.RentHousies.Queries.ShareDtos;
+﻿using LocationSystem.Application.Dtos.RentHouses;
 using LocationSystem.Application.Utilities;
 using System;
 using System.Collections.Generic;

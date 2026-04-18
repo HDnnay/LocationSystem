@@ -1,13 +1,8 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
-using LocationSystem.Application.Features.Permissions.Queries.GetPermissionList;
+using LocationSystem.Application.Dtos.Permissions;
+using LocationSystem.Application.Dtos.Roles;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionList
 {
@@ -28,7 +23,8 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionL
             var cacheKey = CacheKeys.PermissionWithPage(request);
 
             // 从缓存中获取权限列表或创建缓存
-            var permissionDtos = await _cacheService.GetOrCreateAsync<PageResult<PermissionDto>>(cacheKey, async (options) => {
+            var permissionDtos = await _cacheService.GetOrCreateAsync<PageResult<PermissionDto>>(cacheKey, async (options) =>
+            {
                 // 获取所有权限及其角色
                 var dics = await _permissionRepository.GetPermissionsPage(request);
                 var permissionsDic = dics.FirstOrDefault();
@@ -64,8 +60,8 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetPermissionL
                         ChildPermissions = new List<PermissionDto>()
                     }).ToList()
                 }).ToList();
-                return new PageResult<PermissionDto>() { CurrentPage=request.Page, Total= total,Data=model };
-            },600); // 缓存30分钟（1800秒）
+                return new PageResult<PermissionDto>() { CurrentPage=request.Page, Total= total, Data=model };
+            }, 600); // 缓存30分钟（1800秒）
 
             return permissionDtos!;
         }

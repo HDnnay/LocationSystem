@@ -1,13 +1,10 @@
-﻿using LocationSystem.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using LocationSystem.Domain.Entities;
 
-namespace LocationSystem.Application.Features.RentHousies.Queries.ShareDtos
+namespace LocationSystem.Application.Dtos.RentHouses
 {
-    public class RentHouseDto
+    public class RentHouseListDto
     {
-        public RentHouseDto() { }
+        public RentHouseListDto() { }
         public Guid Id { get; set; }
         public required string Title { get; set; }
         public required string Address { get; set; }
@@ -15,16 +12,9 @@ namespace LocationSystem.Application.Features.RentHousies.Queries.ShareDtos
         public required HouserType Type { get; set; }
         public Guid CreateUserId { get; set; }
         public string? Phone { get; set; }
-        /// <summary>
-        /// 月租
-        /// </summary>
+        public string? ImageSrc { get; set; }
         public decimal MonthlyRent { get; set; }
-        /// <summary>
-        /// 押金
-        /// </summary>
         public decimal Deposit { get; set; }
         public DateTime CreateTime { get; set; }
-        public string ImageSrc { get; set; }
-
     }
 }

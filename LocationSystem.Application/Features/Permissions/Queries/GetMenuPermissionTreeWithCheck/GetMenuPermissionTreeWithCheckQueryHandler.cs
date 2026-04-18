@@ -1,5 +1,5 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Permissions;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissionTreeWithCheckStatus;
 using LocationSystem.Application.Utilities;
 using Microsoft.Extensions.Logging;

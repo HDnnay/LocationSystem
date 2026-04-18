@@ -1,5 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Permissions;
 using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using System;

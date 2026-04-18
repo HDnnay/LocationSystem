@@ -1,12 +1,9 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.RentHousies.Queries.QueryRentHouseList;
 using LocationSystem.Domain.Entities;
 using LocationSystem.Infrastructure.Utilities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
@@ -22,7 +19,7 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             var query = _context.RentHousies.AsQueryable().AsNoTracking();
             var count = await query.CountAsync();
-            var result = await query.Paginate(filter.Page,filter.PageSize).ToListAsync();
+            var result = await query.Paginate(filter.Page, filter.PageSize).ToListAsync();
             var dic = new Dictionary<int, IEnumerable<RentHouse>>();
             dic.Add(count, result);
             return dic;
@@ -32,7 +29,7 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             var query = _context.RentHousies.AsQueryable().AsNoTracking();
             var count = await query.CountAsync();
-            var result = await query.Paginate(filter.Page, filter.PageSize).ToListAsync();
+            var result = await query.WhereNotDeleted(t => t.IsVisiable==true).Paginate(filter.Page, filter.PageSize).ToListAsync();
             return (count, result);
         }
     }

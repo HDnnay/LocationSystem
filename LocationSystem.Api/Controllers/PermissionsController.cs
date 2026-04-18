@@ -1,5 +1,5 @@
 using LocationSystem.Api.Filters;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Permissions;
 using LocationSystem.Application.Features.Permissions.Commands.CreatePermission;
 using LocationSystem.Application.Features.Permissions.Commands.DeletePermission;
 using LocationSystem.Application.Features.Permissions.Commands.UpdatePermission;

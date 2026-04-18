@@ -1,4 +1,4 @@
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Users.Queries

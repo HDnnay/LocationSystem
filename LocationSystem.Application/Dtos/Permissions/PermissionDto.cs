@@ -1,30 +1,36 @@
-namespace LocationSystem.Application.Dtos
+using LocationSystem.Application.Dtos.Roles;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace LocationSystem.Application.Dtos.Permissions
 {
-    public class RoleDto
+    public class PermissionDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
-        public bool IsDisabled { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public List<PermissionDto>? Permissions { get; set; }
+        public Guid? ParentId { get; set; }
+        public List<RoleDto>? Roles { get; set; }
+        public List<PermissionDto>? ChildPermissions { get; set; }
     }
 
-    public class CreateRoleDto
+    public class CreatePermissionDto
     {
         public string Name { get; set; } = null!;
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
-        public List<Guid>? PermissionIds { get; set; }
+        public Guid? ParentId { get; set; }
     }
 
-    public class UpdateRoleDto
+    public class UpdatePermissionDto
     {
         public string Name { get; set; } = null!;
         public string Code { get; set; } = null!;
         public string? Description { get; set; }
-        public List<Guid>? PermissionIds { get; set; }
+        public Guid? ParentId { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Menus;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Menus.Queries.GetMenuById

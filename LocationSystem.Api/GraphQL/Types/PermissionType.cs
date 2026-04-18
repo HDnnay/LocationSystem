@@ -1,5 +1,5 @@
 using HotChocolate.Types;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Permissions;
 
 namespace LocationSystem.Api.GraphQL.Types
 {

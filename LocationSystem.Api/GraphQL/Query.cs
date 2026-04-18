@@ -1,7 +1,11 @@
 using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Articles;
+using LocationSystem.Application.Dtos.Menus;
+using LocationSystem.Application.Dtos.Permissions;
+using LocationSystem.Application.Dtos.Roles;
+using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Features.Articles.Queries.GetArticle;
 using LocationSystem.Application.Features.Articles.Queries.GetArticles;
 using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
@@ -52,27 +56,27 @@ namespace LocationSystem.Api.GraphQL
 
         [GraphQLDescription("获取菜单树形结构")]
         [GraphQLType(typeof(ListType<MenuType>))]
-        public async Task<List<Dtos.MenuDto>> GetMenuTree()
+        public async Task<List<MenuDto>> GetMenuTree()
         {
             var menus = await _menuRepository.GetMenuTreeAsync();
-            return _mapper.Map<List<Dtos.MenuDto>>(menus);
+            return _mapper.Map<List<MenuDto>>(menus);
         }
 
         [UsePaging(IncludeTotalCount = true)]
         [UseSorting]
         [UseFiltering]
         [GraphQLDescription("获取用户列表")]
-        public async Task<IQueryable<Dtos.UserDto>> GetUsers(
+        public async Task<IQueryable<UserDto>> GetUsers(
             [Service] MapsterMapper.IMapper mapper)
         {
             var users = await _userRepository.GetAll();
-            var data = users.Select(u => mapper.Map<Dtos.UserDto>(u)).AsQueryable();
+            var data = users.Select(u => mapper.Map<UserDto>(u)).AsQueryable();
             return data;
         }
 
         [GraphQLDescription("获取用户详情")]
         [GraphQLType(typeof(LocationSystem.Api.GraphQL.Types.UserType))]
-        public async Task<Dtos.UserDto> GetUser(
+        public async Task<UserDto> GetUser(
             [GraphQLDescription("用户ID")] Guid id,
             [Service] UserDataLoader userDataLoader,
             [Service] MapsterMapper.IMapper mapper)
@@ -82,20 +86,20 @@ namespace LocationSystem.Api.GraphQL
             {
                 throw new Exception($"用户不存在，ID: {id}");
             }
-            return mapper.Map<Dtos.UserDto>(user);
+            return mapper.Map<UserDto>(user);
         }
 
         [GraphQLDescription("获取角色列表")]
         [GraphQLType(typeof(ListType<LocationSystem.Api.GraphQL.Types.RoleType>))]
-        public async Task<List<Dtos.RoleDto>> GetRoles()
+        public async Task<List<RoleDto>> GetRoles()
         {
             var roles = await _roleRepository.GetRolesWithPermissionsAsync();
-            return _mapper.Map<List<Dtos.RoleDto>>(roles);
+            return _mapper.Map<List<RoleDto>>(roles);
         }
 
         [GraphQLDescription("获取角色详情")]
         [GraphQLType(typeof(LocationSystem.Api.GraphQL.Types.RoleType))]
-        public async Task<Dtos.RoleDto> GetRole(
+        public async Task<RoleDto> GetRole(
             [GraphQLDescription("角色ID")] Guid id)
         {
             var role = await _roleRepository.GetRoleWithPermissionsAsync(id);
@@ -103,7 +107,7 @@ namespace LocationSystem.Api.GraphQL
             {
                 throw new Exception($"角色不存在，ID: {id}");
             }
-            return _mapper.Map<Dtos.RoleDto>(role);
+            return _mapper.Map<RoleDto>(role);
         }
 
         [GraphQLDescription("获取权限列表")]
@@ -118,17 +122,17 @@ namespace LocationSystem.Api.GraphQL
         [UseSorting]
         [UseFiltering]
         [GraphQLDescription("获取文章列表")]
-        public async Task<IQueryable<Dtos.ArticleDto>> GetArticles(
+        public async Task<IQueryable<ArticleDto>> GetArticles(
             [GraphQLDescription("排序字段")] string? sortBy = null,
             [GraphQLDescription("是否降序排序")] bool? sortDescending = null)
         {
             var articles = await _mediator.Send(new GetArticlesQuery { SortBy = sortBy, SortDescending = sortDescending });
-            return articles.Select(a => _mapper.Map<Dtos.ArticleDto>(a)).AsQueryable();
+            return articles.Select(a => _mapper.Map<ArticleDto>(a)).AsQueryable();
         }
 
         [GraphQLDescription("获取文章详情")]
         [GraphQLType(typeof(ArticleType))]
-        public async Task<Dtos.ArticleDto> GetArticle(
+        public async Task<ArticleDto> GetArticle(
             [GraphQLDescription("文章ID")] Guid id)
         {
             return await _mediator.Send(new GetArticleQuery { Id = id });

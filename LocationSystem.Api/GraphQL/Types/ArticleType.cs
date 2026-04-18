@@ -1,5 +1,4 @@
 using HotChocolate.Types;
-using LocationSystem.Application.Dtos;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.UserRolePermissions;
@@ -9,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LocationSystem.Application.Dtos.Articles;
+using LocationSystem.Application.Dtos.Users;
 
 namespace LocationSystem.Api.GraphQL.Types
 {

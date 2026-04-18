@@ -1,8 +1,9 @@
+using LocationSystem.Application.Dtos.Roles;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LocationSystem.Application.Dtos
+namespace LocationSystem.Application.Dtos.Users
 {
     public class UserDto
     {
