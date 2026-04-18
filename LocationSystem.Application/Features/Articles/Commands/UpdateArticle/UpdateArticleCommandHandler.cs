@@ -2,12 +2,8 @@ using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
 using LocationSystem.Application.Dtos;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities.Articles;
+using LocationSystem.Domain.Enums;
 using Mapster;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Articles.Commands.UpdateArticle
 {
@@ -38,9 +34,9 @@ namespace LocationSystem.Application.Features.Articles.Commands.UpdateArticle
                 command.Topic,
                 command.Subtitle
             );
-            
+
             article.Level = command.Level;
-            
+
             if (command.Level == ArticleLevel.Temporal)
             {
                 article.SetVisibleTimeRange(command.VisibleStartTime, command.VisibleEndTime);

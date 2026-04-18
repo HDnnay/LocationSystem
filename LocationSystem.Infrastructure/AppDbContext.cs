@@ -1,5 +1,6 @@
 using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.Entities.Articles;
+using LocationSystem.Domain.Entities.DeletedSnapshots;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.EntityFrameworkCore;
@@ -67,5 +68,6 @@ namespace LocationSystem.Infrastructure
         public DbSet<ArticleComment> ArticleComments { get; set; }
         public DbSet<ArticleLog> ArticleLogs { get; set; }
         public DbSet<ArticleSection> ArticleSections { get; set; }
+        public DbSet<DeletedSnapshot> DeletedSnapshots { get; set; }
     }
 }

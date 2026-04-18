@@ -30,6 +30,7 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<IArticleRepository, ArticleRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
+            services.AddScoped<IDeletedSnapshotRepository, DeletedSnapshotRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
             return services;
         }
