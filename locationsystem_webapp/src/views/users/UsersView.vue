@@ -210,15 +210,16 @@ export default {
       try {
         const response = await getUserTypes()
         console.log('用户类型数据:', response)
-        userTypes.value = Array.isArray(response) ? response : (response.data || response.items || [])
+        if (response && response.data) {
+          userTypes.value = response.data
+        } else{
+          userTypes.value = []
+        }
+
       } catch (error) {
         console.error('加载用户类型列表失败:', error)
         ElMessage.error('加载用户类型列表失败')
-        userTypes.value = [
-          { value: 0, name: '默认用户' },
-          { value: 1, name: '管理员' },
-          { value: 2, name: '普通用户' }
-        ];
+
       }
     }
 
@@ -228,7 +229,7 @@ export default {
       form.value = {
         name: '',
         email: '',
-        userType: 'Dentist'
+        userType: ''
       }
       dialogVisible.value = true
     }
@@ -245,13 +246,18 @@ export default {
 
     // 处理保存用户
     const handleSaveUser = async () => {
+      if (!form.value.name || !form.value.email || !form.value.userType) {
+        ElMessage.warning('请填写完整的用户信息')
+        return
+      }
       try {
         if (form.value.id) {
           const userData = {
             Name: form.value.name,
             Email: form.value.email,
-            UserType: form.value.userType
+            UserType: (form.value.userType).toString()
           }
+          console.log('更新用户数据:', userData)
           const response = await api.users.updateUser(form.value.id, userData)
           if (response.status === 200) {
             ElMessage.success('更新用户成功')
@@ -263,8 +269,9 @@ export default {
           const userData = {
             Name: form.value.name,
             Email: form.value.email,
-            UserType: form.value.userType
+            UserType: (form.value.userType).toString()
           }
+          console.log('创建用户数据:', userData)
           const response = await api.users.createUser(userData)
           if (response.status === 200) {
             ElMessage.success('新增用户成功')
@@ -277,7 +284,8 @@ export default {
         loadUsers()
       } catch (error) {
         console.error('保存用户失败:', error)
-        ElMessage.error('保存用户失败')
+        const errorMsg = error.response?.data?.message || error.message || '保存用户失败'
+        ElMessage.error('保存用户失败: ' + errorMsg)
       }
     }
 
