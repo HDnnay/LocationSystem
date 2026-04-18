@@ -10,7 +10,7 @@ namespace LocationSystem.Domain.Entities.Articles
         private Article()
         {
             Id = Guid.NewGuid();
-            CreateTiem = DateTime.Now;
+            CreateTime = DateTime.Now;
         }
         public Article(string title, string content, bool isVisiable, Guid userId, string topic, string subtitle = default)
         {
@@ -22,7 +22,7 @@ namespace LocationSystem.Domain.Entities.Articles
             UserId = userId;
         }
         public Guid Id { get; private set; }
-        public DateTime CreateTiem { get; private set; }
+        public DateTime CreateTime { get; private set; }
         [Description("内容")]
         public string Content { get; private set; }
         [Description("标题")]

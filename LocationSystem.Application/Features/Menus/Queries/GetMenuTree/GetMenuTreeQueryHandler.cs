@@ -31,7 +31,7 @@ namespace LocationSystem.Application.Features.Menus.Queries.GetMenuTree
                 Order = menu.Order,
                 Level = menu.Level,
                 ParentId = menu.ParentId,
-                CreatedAt = menu.CreateTiem,
+                CreatedAt = menu.CreateTime,
                 UpdatedAt = menu.UpdatedAt,
                 ChildMenus = MapMenusToDto(menu.Children)
             }).ToList() ?? new List<MenuDto>();

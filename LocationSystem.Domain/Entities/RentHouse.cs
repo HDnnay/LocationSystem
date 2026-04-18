@@ -1,11 +1,12 @@
-﻿using LocationSystem.Domain.Entities.UserRolePermissions;
+﻿using LocationSystem.Domain.Entities.Interfacies;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.Enums;
 using LocationSystem.Domain.Exceptions;
 using System.ComponentModel;
 
 namespace LocationSystem.Domain.Entities
 {
-    public class RentHouse
+    public class RentHouse : ISoftDeleteEntity
     {
         private RentHouse()
         {
@@ -65,6 +66,11 @@ namespace LocationSystem.Domain.Entities
         public DateTime? EndTime { get; set; }
         [Description("创建者")]
         public virtual User? User { get; set; }
+        public bool IsDelete { get; set; }
+        public Guid DeleteUserId { get; set; }
+        public DateTime DeleteTime { get; set; }
+        public bool IsVisiable { get; set; }
+
         public void SetOrUpdateTitle(string title)
         {
             if (string.IsNullOrWhiteSpace(title))

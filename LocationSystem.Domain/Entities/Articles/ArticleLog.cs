@@ -9,7 +9,7 @@ namespace LocationSystem.Domain.Entities.Articles
     {
         public Guid Id { get; private set; }
 
-        public DateTime CreateTiem { get; private set; }
+        public DateTime CreateTime { get; private set; }
 
         public Guid? ArticleId { get; set; }
         public virtual Article? Article { get; private set; }

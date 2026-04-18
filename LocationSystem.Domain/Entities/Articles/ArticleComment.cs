@@ -4,7 +4,7 @@ namespace LocationSystem.Domain.Entities.Articles
 {
     public class ArticleComment : IEntityVisiable
     {
-        private ArticleComment() { Id = Guid.NewGuid(); CreateTiem = DateTime.Now; }
+        private ArticleComment() { Id = Guid.NewGuid(); CreateTime = DateTime.Now; }
         public ArticleComment(Guid userId, string comment, bool isVisiable, Guid articleId)
         {
             UserId = userId;
@@ -18,7 +18,7 @@ namespace LocationSystem.Domain.Entities.Articles
         public Guid ArticleId { get; private set; }
 
         public bool IsVisiable { get; set; }
-        public DateTime CreateTiem { get; set; }
+        public DateTime CreateTime { get; set; }
 
         public void UpdateComment(string newComment)
         {

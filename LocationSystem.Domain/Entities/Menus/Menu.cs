@@ -22,7 +22,7 @@ namespace LocationSystem.Domain.Entities.Menus
         public byte[] Version { get; private set; }
         public bool IsVisiable { get; set; }
 
-        public DateTime CreateTiem { get; private set; }
+        public DateTime CreateTime { get; private set; }
 
         public Menu(string name, string path, string icon, int order, int level, Guid? parentId = null, bool isBackEnd = false)
         {
@@ -36,7 +36,7 @@ namespace LocationSystem.Domain.Entities.Menus
             IsBackEnd = isBackEnd;
             Children = new List<Menu>();
             PermissionMenus = new List<PermissionMenu>();
-            CreateTiem = DateTime.Now;
+            CreateTime = DateTime.Now;
         }
 
         public void Update(string name, string path, string icon, int order, int level, Guid? parentId = null, bool isBackEnd = false)

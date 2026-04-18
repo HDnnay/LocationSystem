@@ -1,9 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Articles;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Features.Articles.Queries.GetArticles
 {
@@ -39,19 +36,19 @@ namespace LocationSystem.Application.Features.Articles.Queries.GetArticles
                         query = sortDescending ? query.OrderByDescending(x => x.Topic) : query.OrderBy(x => x.Topic);
                         break;
                     case "createtime":
-                    case "createtiem":
-                        query = sortDescending ? query.OrderByDescending(x => x.CreateTiem) : query.OrderBy(x => x.CreateTiem);
+                    case "CreateTime":
+                        query = sortDescending ? query.OrderByDescending(x => x.CreateTime) : query.OrderBy(x => x.CreateTime);
                         break;
                     default:
                         // 默认按创建时间降序排序
-                        query = query.OrderByDescending(x => x.CreateTiem);
+                        query = query.OrderByDescending(x => x.CreateTime);
                         break;
                 }
             }
             else
             {
                 // 默认按创建时间降序排序
-                query = query.OrderByDescending(x => x.CreateTiem);
+                query = query.OrderByDescending(x => x.CreateTime);
             }
 
             return query;

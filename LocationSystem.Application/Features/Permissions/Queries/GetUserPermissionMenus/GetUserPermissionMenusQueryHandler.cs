@@ -54,8 +54,8 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
                             MenuPath = m.Path,
                             MenuIcon = m.Icon,
                             Order = m.Order,
-                            CreatedAt = m.CreateTiem,
-                            UpdatedAt = m.UpdatedAt ?? m.CreateTiem
+                            CreatedAt = m.CreateTime,
+                            UpdatedAt = m.UpdatedAt ?? m.CreateTime
                         };
                     })
                     .ToList();

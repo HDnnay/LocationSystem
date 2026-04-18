@@ -3,6 +3,6 @@
     public interface IEntity
     {
         Guid Id { get; }
-        DateTime CreateTiem { get; }
+        DateTime CreateTime { get; }
     }
 }

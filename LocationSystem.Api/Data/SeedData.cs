@@ -171,11 +171,11 @@ namespace LocationSystem.Api.Data
             // 创建标签
             var tags = new List<LocationSystem.Domain.Entities.Articles.ArticleTag>
             {
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "技术", IsVisiable = true, CreateTiem = DateTime.Now },
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "生活", IsVisiable = true, CreateTiem = DateTime.Now },
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "工作", IsVisiable = true, CreateTiem = DateTime.Now },
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "学习", IsVisiable = true, CreateTiem = DateTime.Now },
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "娱乐", IsVisiable = true, CreateTiem = DateTime.Now }
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "技术", IsVisiable = true, CreateTime = DateTime.Now },
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "生活", IsVisiable = true, CreateTime = DateTime.Now },
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "工作", IsVisiable = true, CreateTime = DateTime.Now },
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "学习", IsVisiable = true, CreateTime = DateTime.Now },
+                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "娱乐", IsVisiable = true, CreateTime = DateTime.Now }
             };
 
             foreach (var tag in tags)

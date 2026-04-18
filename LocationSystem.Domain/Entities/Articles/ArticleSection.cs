@@ -11,7 +11,7 @@ namespace LocationSystem.Domain.Entities.Articles
         public Guid? UserId { get; set; }
         public Guid Id { get; private set; }
 
-        public DateTime CreateTiem { get; private set; }
+        public DateTime CreateTime { get; private set; }
         public string Title { get; private set; }
         public string? Description { get; private set; }
         public string ICon { get; set; }

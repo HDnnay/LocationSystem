@@ -18,7 +18,7 @@ namespace LocationSystem.Api.GraphQL.Types
         {
             descriptor.Name("AppArticleDto");
             descriptor.Field(a => a.Id).Type<IdType>();
-            descriptor.Field(a => a.CreateTiem).Type<DateTimeType>();
+            descriptor.Field(a => a.CreateTime).Type<DateTimeType>();
             descriptor.Field(a => a.Content).Type<StringType>();
             descriptor.Field(a => a.Title).Type<StringType>();
             descriptor.Field(a => a.Subtitle).Type<StringType>();
@@ -82,7 +82,7 @@ namespace LocationSystem.Api.GraphQL.Types
             descriptor.Field(c => c.UserId).Type<IdType>();
             descriptor.Field(c => c.Comment).Type<StringType>();
             descriptor.Field(c => c.IsVisiable).Type<BooleanType>();
-            descriptor.Field(c => c.CreateTiem).Type<DateTimeType>();
+            descriptor.Field(c => c.CreateTime).Type<DateTimeType>();
         }
     }
 
