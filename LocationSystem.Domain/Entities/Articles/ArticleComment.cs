@@ -9,7 +9,7 @@ namespace LocationSystem.Domain.Entities.Articles
         {
             UserId = userId;
             Comment = comment;
-            IsVisiable = isVisiable;
+            IsDisabled = isVisiable;
             ArticleId = articleId;
         }
         public Guid UserId { get; private set; }
@@ -17,7 +17,7 @@ namespace LocationSystem.Domain.Entities.Articles
         public Guid Id { get; private set; }
         public Guid ArticleId { get; private set; }
 
-        public bool IsVisiable { get; set; }
+        public bool IsDisabled { get; set; }
         public DateTime CreateTime { get; set; }
 
         public void UpdateComment(string newComment)
@@ -26,7 +26,7 @@ namespace LocationSystem.Domain.Entities.Articles
         }
         public void UpdateVisiable(bool isVisiable)
         {
-            IsVisiable = isVisiable;
+            IsDisabled = isVisiable;
         }
     }
 }

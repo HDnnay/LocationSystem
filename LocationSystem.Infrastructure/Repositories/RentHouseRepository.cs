@@ -29,7 +29,7 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             var query = _context.RentHousies.AsQueryable().AsNoTracking();
             var count = await query.CountAsync();
-            var result = await query.WhereNotDeleted(t => t.IsVisiable==true).Paginate(filter.Page, filter.PageSize).ToListAsync();
+            var result = await query.WhereNotDeleted(t => t.IsDisabled==false).Paginate(filter.Page, filter.PageSize).ToListAsync();
             return (count, result);
         }
     }

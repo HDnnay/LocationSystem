@@ -31,7 +31,8 @@ namespace LocationSystem.Application.Extentions
         {
             // 注册事件处理程序
             services.AddScoped<CacheClearHandler>();
-            
+            services.AddScoped<EntityDeletedEventHandler>();
+
             return services;
         }
         

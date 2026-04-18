@@ -7,7 +7,7 @@ namespace LocationSystem.Domain.Entities.Articles
     [Description("文章板块")]
     public class ArticleSection : IEntityVisiable
     {
-        public bool IsVisiable { get; set; }
+        public bool IsDisabled { get; set; }
         public Guid? UserId { get; set; }
         public Guid Id { get; private set; }
 

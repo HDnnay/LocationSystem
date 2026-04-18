@@ -26,7 +26,7 @@ namespace LocationSystem.Domain.Entities
             Phone = phone;
             CreateTime = DateTime.Now;
             IsDelete = false;
-            IsVisiable = true;
+            IsDisabled = true;
             LevelType = LevelType.Public;
 
         }
@@ -73,7 +73,7 @@ namespace LocationSystem.Domain.Entities
         public bool IsDelete { get; set; }
         public Guid DeleteUserId { get; set; }
         public DateTime DeleteTime { get; set; }
-        public bool IsVisiable { get; set; }
+        public bool IsDisabled { get; set; }
 
         public void SetOrUpdateTitle(string title)
         {
@@ -108,7 +108,7 @@ namespace LocationSystem.Domain.Entities
         }
         public void SetOrUpdateIsVisable(bool isVisable)
         {
-            IsVisiable = isVisable;
+            IsDisabled = isVisable;
         }
         public void SetOrUpdateDelete(bool isDelete)
         {

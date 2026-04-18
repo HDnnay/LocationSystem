@@ -18,7 +18,7 @@ namespace LocationSystem.Domain.Entities.Articles
             Content = content;
             Topic = topic;
             Subtitle = subtitle;
-            IsVisiable = isVisiable;
+            IsDisabled = isVisiable;
             UserId = userId;
         }
         public Guid Id { get; private set; }
@@ -31,7 +31,7 @@ namespace LocationSystem.Domain.Entities.Articles
         public string? Subtitle { get; private set; }
         [Description("是否可见")]
 
-        public bool IsVisiable { get; set; }
+        public bool IsDisabled { get; set; }
         public Guid UserId { get; set; }
         [Description("主题")]
         public string? Topic { get; private set; }
@@ -73,7 +73,7 @@ namespace LocationSystem.Domain.Entities.Articles
         {
             Title = title;
             Content = content;
-            IsVisiable = isVisiable;
+            IsDisabled = isVisiable;
             Topic = topic;
             Subtitle = subtitle;
         }

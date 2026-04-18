@@ -169,13 +169,13 @@ namespace LocationSystem.Api.Data
             await dbContext.SaveChangesAsync();
 
             // 创建标签
-            var tags = new List<LocationSystem.Domain.Entities.Articles.ArticleTag>
+            var tags = new List<ArticleTag>
             {
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "技术", IsVisiable = true, CreateTime = DateTime.Now },
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "生活", IsVisiable = true, CreateTime = DateTime.Now },
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "工作", IsVisiable = true, CreateTime = DateTime.Now },
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "学习", IsVisiable = true, CreateTime = DateTime.Now },
-                new LocationSystem.Domain.Entities.Articles.ArticleTag { Id = Guid.NewGuid(), Name = "娱乐", IsVisiable = true, CreateTime = DateTime.Now }
+                new ArticleTag { Id = Guid.NewGuid(), Name = "技术", IsVisiable = true, CreateTime = DateTime.Now },
+                new ArticleTag { Id = Guid.NewGuid(), Name = "生活", IsVisiable = true, CreateTime = DateTime.Now },
+                new ArticleTag { Id = Guid.NewGuid(), Name = "工作", IsVisiable = true, CreateTime = DateTime.Now },
+                new ArticleTag { Id = Guid.NewGuid(), Name = "学习", IsVisiable = true, CreateTime = DateTime.Now },
+                new ArticleTag { Id = Guid.NewGuid(), Name = "娱乐", IsVisiable = true, CreateTime = DateTime.Now }
             };
 
             foreach (var tag in tags)
@@ -201,11 +201,11 @@ namespace LocationSystem.Api.Data
             await dbContext.SaveChangesAsync();
 
             // 为文章添加标签
-            articles[0].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[0], tags[3] });
-            articles[1].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[1], tags[4] });
-            articles[2].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[2], tags[3] });
-            articles[3].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[3] });
-            articles[4].UpdateTags(new List<LocationSystem.Domain.Entities.Articles.ArticleTag> { tags[4] });
+            articles[0].UpdateTags(new List<ArticleTag> { tags[0], tags[3] });
+            articles[1].UpdateTags(new List<ArticleTag> { tags[1], tags[4] });
+            articles[2].UpdateTags(new List<ArticleTag> { tags[2], tags[3] });
+            articles[3].UpdateTags(new List<ArticleTag> { tags[3] });
+            articles[4].UpdateTags(new List<ArticleTag> { tags[4] });
 
             await dbContext.SaveChangesAsync();
 
