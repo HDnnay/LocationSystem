@@ -149,7 +149,7 @@ namespace LocationSystem.Api.Controllers
             }
         }
 
-        [HttpPut("{id}/permissions")]
+        [HttpPost("{id}/permissions")]
         [PermissionAuthorize("role:edit")]
         public async Task<IActionResult> AssignRolePermissions([FromBody] AssignRolePermissionsIput input)
         {
