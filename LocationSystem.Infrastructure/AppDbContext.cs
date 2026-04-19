@@ -62,7 +62,6 @@ namespace LocationSystem.Infrastructure
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<Menu> Menus { get; set; }
         public DbSet<PermissionMenu> PermissionMenus { get; set; }
-
         public DbSet<Article> Articles { get; set; }
         public DbSet<ArticleTag> ArticleTags { get; set; }
         public DbSet<ArticleComment> ArticleComments { get; set; }

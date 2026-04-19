@@ -1,9 +1,6 @@
 using LocationSystem.Application.Contrats.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
@@ -41,7 +38,7 @@ namespace LocationSystem.Infrastructure.Repositories
             return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<int> GetTotalCount(Expression<Func<T, bool>> predicate=null)
+        public async Task<int> GetTotalCount(Expression<Func<T, bool>> predicate = null)
         {
             if (predicate != null)
             {
@@ -59,7 +56,7 @@ namespace LocationSystem.Infrastructure.Repositories
         public async Task AddRangAsync(List<T> entities)
         {
             if (entities.Any())
-              await  _context.AddRangeAsync(entities);
+                await _context.AddRangeAsync(entities);
         }
 
         public void UpdateRang(IEnumerable<T> entities)
@@ -67,7 +64,7 @@ namespace LocationSystem.Infrastructure.Repositories
             if (entities.Any())
             {
                 _context.UpdateRange(entities);
-                
+
             }
         }
     }

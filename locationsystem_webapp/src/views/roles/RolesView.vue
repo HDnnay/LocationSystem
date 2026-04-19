@@ -494,6 +494,7 @@ import * as permissionApi from '../../api/permissions.js'
                     const response = await api.assignPermissionsToRole(this.selectedRole.id, this.selectedPermissions);
                     if (response.status === 200) {
                         ElMessage.success('权限分配成功');
+                        console.log("分配权限返回数据：",response.data)
                         this.closePermissionModal();
                     } else {
                         ElMessage.error('权限分配失败');

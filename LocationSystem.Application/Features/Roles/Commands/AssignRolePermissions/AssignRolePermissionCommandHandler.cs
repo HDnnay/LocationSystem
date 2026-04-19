@@ -32,23 +32,31 @@ namespace LocationSystem.Application.Features.Roles.Commands.AssignRolePermissio
             {
                 await _unitOfWork.BeginTransactionAsync();
 
-                var role = await _roleRepository.GetByIdAsync(request.RoleId);
+                var role = await _roleRepository.GetRoleWithPermissionsAsync(request.RoleId);
                 if (role == null)
                 {
                     throw new Exception("角色不存在");
                 }
 
-                role.ClearPermissions();
+                var currentPermissionIds = role.Permissions.Select(p => p.Id).ToHashSet();
+                var newPermissionIds = request.Permissions?.ToHashSet() ?? new HashSet<Guid>();
 
-                if (request.Permissions != null && request.Permissions.Count > 0)
+                var toRemove = role.Permissions
+                    .Where(p => !newPermissionIds.Contains(p.Id))
+                    .ToList();
+
+                foreach (var permission in toRemove)
                 {
-                    foreach (var permissionId in request.Permissions)
+                    role.RemovePermission(permission);
+                }
+
+                var toAddIds = newPermissionIds.Except(currentPermissionIds);
+                foreach (var permissionId in toAddIds)
+                {
+                    var permission = await _permissionRepository.GetByIdAsync(permissionId);
+                    if (permission != null)
                     {
-                        var permission = await _permissionRepository.GetByIdAsync(permissionId);
-                        if (permission != null)
-                        {
-                            role.AddPermission(permission);
-                        }
+                        role.AddPermission(permission);
                     }
                 }
 

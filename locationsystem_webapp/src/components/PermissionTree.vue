@@ -215,8 +215,6 @@
 
     .permission-root {
         /* 根节点容器样式 */
-        height: 400px;
-        overflow-y: auto;
     }
 
     .permission-node {
