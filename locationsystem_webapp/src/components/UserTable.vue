@@ -1,7 +1,7 @@
 <template>
   <div class="user-table">
     <!-- 操作按钮 -->
-    <div class="action-buttons">
+    <div class="action-buttons" v-if="!isDeletedTable">
       <el-button type="primary" @click="handleCreate">
         <el-icon><Plus /></el-icon>
         {{ createButtonText }}

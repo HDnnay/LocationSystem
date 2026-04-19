@@ -1,8 +1,8 @@
 import request from './request'
 
 // 获取所有用户
-export const getAllUsers = () => {
-  return request.get('/api/users')
+export const getAllUsers = (page = 1, pageSize = 10) => {
+  return request.get('/api/users', { params: { page, pageSize } })
 }
 
 // 获取单个用户
@@ -41,8 +41,8 @@ export const getUserTypes = () => {
 }
 
 // 获取已删除用户
-export const getDeletedUsers = () => {
-  return request.get('/api/users?filterDelete=true')
+export const getDeletedUsers = (page = 1, pageSize = 10) => {
+  return request.get('/api/users', { params: { page, pageSize, filterDelete: true } })
 }
 
 // 恢复用户

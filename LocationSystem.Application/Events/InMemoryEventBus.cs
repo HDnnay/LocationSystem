@@ -17,6 +17,8 @@ namespace LocationSystem.Application.Events
                 throw new ArgumentNullException(nameof(@event));
             
             var eventType = typeof(TEvent);
+            
+            // 处理当前类型的事件
             if (_handlers.TryGetValue(eventType, out var handlers))
             {
                 foreach (var handler in handlers)
@@ -26,6 +28,23 @@ namespace LocationSystem.Application.Events
                         await typedHandler(@event);
                     }
                 }
+            }
+            
+            // 处理基类类型的事件
+            var baseType = eventType.BaseType;
+            while (baseType != null && baseType != typeof(object))
+            {
+                if (_handlers.TryGetValue(baseType, out var baseHandlers))
+                {
+                    foreach (var handler in baseHandlers)
+                    {
+                        // 使用动态调用，避免类型转换问题
+                        dynamic dynamicHandler = handler;
+                        dynamic dynamicEvent = @event;
+                        await dynamicHandler(dynamicEvent);
+                    }
+                }
+                baseType = baseType.BaseType;
             }
         }
         

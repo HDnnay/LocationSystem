@@ -1,35 +1,32 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
-using LocationSystem.Application.Events;
-using LocationSystem.Domain.Entities.DeletedSnapshots;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace LocationSystem.Application.Events.Handlers
 {
     public class EntityDeletedEventHandler
     {
-        private readonly IServiceScopeFactory _scopeFactory;
         private readonly ILogger<EntityDeletedEventHandler> _logger;
-
-        public EntityDeletedEventHandler(IServiceScopeFactory scopeFactory, ILogger<EntityDeletedEventHandler> logger)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IDeletedSnapshotRepository _repository;
+        public EntityDeletedEventHandler(IDeletedSnapshotRepository repository, IUnitOfWork unitOfWork, ILogger<EntityDeletedEventHandler> logger)
         {
-            _scopeFactory = scopeFactory;
             _logger = logger;
+            _repository = repository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task Handle(EntityDeletedEvent @event)
         {
-            using var scope = _scopeFactory.CreateScope();
-            var snapshotRepository = scope.ServiceProvider.GetRequiredService<IDeletedSnapshotRepository>();
-            var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
             try
             {
-                var snapshot = new DeletedSnapshot
+                await _unitOfWork.BeginTransactionAsync();
+                // 直接创建快照，不需要反序列化实体
+                var snapshot = new Domain.Entities.DeletedSnapshots.DeletedSnapshot
                 {
                     EntityType = @event.EntityType,
-                    AssemblyQualifiedTypeName = @event.EntityType,
+                    AssemblyQualifiedTypeName = @event.AssemblyQualifiedTypeName,
                     EntityId = @event.EntityId.ToString(),
                     SnapshotDataJson = @event.EntityJson,
                     DeletedAt = @event.DeletedAt,
@@ -37,16 +34,14 @@ namespace LocationSystem.Application.Events.Handlers
                     DeleteReason = @event.DeleteReason
                 };
 
-                await unitOfWork.BeginTransactionAsync();
-                await snapshotRepository.AddAsync(snapshot);
-                await unitOfWork.CommitAsync();
-
+                await _repository.AddAsync(snapshot);
+                await _unitOfWork.CommitAsync();
                 _logger.LogInformation("实体删除快照创建成功: {EntityType}, {EntityId}", @event.EntityType, @event.EntityId);
             }
             catch (Exception e)
             {
+                await _unitOfWork.RollbackAsync();
                 _logger.LogError(e, "创建删除快照失败: {EntityType}, {EntityId}", @event.EntityType, @event.EntityId);
-                await unitOfWork.RollbackAsync();
             }
         }
     }
