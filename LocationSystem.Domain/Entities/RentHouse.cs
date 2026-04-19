@@ -26,7 +26,7 @@ namespace LocationSystem.Domain.Entities
             Phone = phone;
             CreateTime = DateTime.Now;
             IsDelete = false;
-            IsDisabled = true;
+            IsDisabled = false;
             LevelType = LevelType.Public;
 
         }

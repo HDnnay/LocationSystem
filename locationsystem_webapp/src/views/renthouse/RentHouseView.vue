@@ -123,7 +123,7 @@
           </div>
           <div class="detail-item">
             <span class="detail-label">描述:</span>
-            <span class="detail-value">{{ currentDetail?.description || '无描述' }}</span>
+             <SafeHtmlRenderer class="detail-value" :html="currentDetail?.description" />
           </div>
           <div class="detail-item">
             <span class="detail-label">类型:</span>
@@ -205,11 +205,13 @@
   import { defineComponent } from 'vue';
   import api from "../../api"
   import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
+import SafeHtmlRenderer from '@/components/SafeHtmlRenderer.vue'
 
   export default defineComponent({
     components: {
       ArrowLeft,
-      ArrowRight
+      ArrowRight,
+      SafeHtmlRenderer
     },
     directives: {
     },
@@ -498,12 +500,10 @@
             pageSize: this.pageSize,
             search: this.searchQuery.trim() || undefined
           })
-
-          console.log('API响应结果:', result)
-
           // 检查响应状态码
           if (result.status === 200) {
             // 根据你的响应结构，result.data是数组，result.total和result.currentPage是直接属性
+            console.log('API响应数据:', result.data)
             this.rent_houses = result.data.items || []
             this.total = result.data.total || 0
             this.currentPage = result.data.currentPage || 1
