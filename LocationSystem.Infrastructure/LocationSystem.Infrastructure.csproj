@@ -20,10 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Utilities\Common\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
   </ItemGroup>
 
