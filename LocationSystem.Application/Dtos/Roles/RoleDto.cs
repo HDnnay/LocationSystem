@@ -29,4 +29,6 @@ namespace LocationSystem.Application.Dtos.Roles
         public string? Description { get; set; }
         public List<Guid>? PermissionIds { get; set; }
     }
+
+
 }

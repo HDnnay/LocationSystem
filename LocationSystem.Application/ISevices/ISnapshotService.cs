@@ -1,4 +1,6 @@
+using LocationSystem.Application.Dtos.DeletedSnapshots;
 using LocationSystem.Domain.Entities.DeletedSnapshots;
+using System.Linq.Expressions;
 
 namespace LocationSystem.Application.ISevices
 {
@@ -36,5 +38,10 @@ namespace LocationSystem.Application.ISevices
         /// 动态加载快照数据（不知道具体类型）
         /// </summary>
         object? LoadSnapshotDynamic(DeletedSnapshot snapshot);
+
+        /// <summary>
+        /// 获取所有删除快照（分页）
+        /// </summary>
+        Task<(int, IEnumerable<DeletedSnapshotDto>)> GetAllSnapshotsAsync(int page = 1, int pageSize = 10, Expression<Func<DeletedSnapshot, bool>>? predicate = null);
     }
 }

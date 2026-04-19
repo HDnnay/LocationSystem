@@ -34,3 +34,7 @@ export const disableRole = (id) => {
 export const enableRole = (id) => {
   return request.post(`/api/roles/${id}/enable`)
 }
+
+export const assignPermissionsToRole = (roleId, permissionIds) => {
+  return request.post(`/api/roles/${roleId}/permissions`, { id:roleId,permissions:permissionIds })
+}

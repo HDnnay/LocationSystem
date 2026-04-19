@@ -62,7 +62,7 @@ namespace LocationSystem.Application.Features.Permissions.Queries.GetUserPermiss
 
                 // 构造树形菜单
                 return BuildMenuTree(dtos);
-            }, 1800); // 缓存30分钟（1800秒）
+            }, 180);
 
             return menuDtos!;
         }

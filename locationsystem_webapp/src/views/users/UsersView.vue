@@ -61,7 +61,7 @@ export default {
 
     const loadUsers = async () => {
       try {
-        const response = await api.users.getAllUsers()
+        const response = await api.users.getAllUsers(currentPage.value, pageSize.value)
         if (response.status === 200) {
           users.value = response.data.items || response.data || []
           total.value = response.data.total || 0
@@ -73,7 +73,7 @@ export default {
 
     const loadDeletedUsers = async () => {
       try {
-        const response = await api.users.getDeletedUsers()
+        const response = await api.users.getDeletedUsers(deletedCurrentPage.value, deletedPageSize.value)
         if (response.status === 200) {
           deletedUsers.value = response.data.items || response.data || []
           deletedTotal.value = response.data.total || 0
@@ -83,11 +83,19 @@ export default {
       }
     }
 
-    const handleRefresh = () => {
+    const handleRefresh = (pagination) => {
+      if (pagination) {
+        currentPage.value = pagination.currentPage
+        pageSize.value = pagination.pageSize
+      }
       loadUsers()
     }
 
-    const handleDeletedRefresh = () => {
+    const handleDeletedRefresh = (pagination) => {
+      if (pagination) {
+        deletedCurrentPage.value = pagination.currentPage
+        deletedPageSize.value = pagination.pageSize
+      }
       loadDeletedUsers()
     }
 

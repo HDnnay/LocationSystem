@@ -9,7 +9,6 @@ using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -130,9 +129,9 @@ namespace LocationSystem.Api.Controllers
             {
                 // 从当前用户信息中获取用户ID
                 // 这里假设用户信息存储在HttpContext.User中
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userId = User.GetUserId();
                 // 创建删除用户命令
-                var command = new DeleteUserCommand { UserId = id, CurrentUserId = Guid.Parse(userId) };
+                var command = new DeleteUserCommand { UserId = id, CurrentUserId = userId.Value };
 
                 // 执行命令
                 await _mediator.Send(command);

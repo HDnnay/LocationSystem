@@ -8,6 +8,10 @@ namespace LocationSystem.Domain.Entities.DeletedSnapshots
     /// </summary>
     public class DeletedSnapshot
     {
+        public DeletedSnapshot()
+        {
+            DeletedAt = DateTime.Now;
+        }
         [Key]
         public Guid Id { get; set; }
 

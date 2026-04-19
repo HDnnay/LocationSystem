@@ -227,6 +227,7 @@
           if (response.status === 200) {
             if (response && typeof response === 'object') {
               const permissionsData = response.data.items || response.data;
+              console.log("权限列表数据源：", permissionsData);
               if (permissionsData && Array.isArray(permissionsData)) {
                 const permissions = permissionsData;
                 const permissionMap = new Map();
@@ -238,30 +239,15 @@
                   ...permission,
                   parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
                 }));
-                console.log("权限列表数据员：this.permissions");
-                console.log(this.permissions);
-                this.allPermissions = permissions;
-                this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
-
-                this.total = response.total || 0;
-                this.currentPage = response.currentPage || 1;
-              } else if (Array.isArray(response)) {
-                const permissions = response;
-                const permissionMap = new Map();
-                permissions.forEach(permission => {
-                  permissionMap.set(permission.id, permission.name);
-                });
-
-                this.permissions = permissions.map(permission => ({
-                  ...permission,
-                  parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
-                }));
 
                 this.allPermissions = permissions;
                 this.permissionTreeOptions = this.buildPermissionTreeOptions(permissions);
 
-                this.total = permissions.length;
-              } else {
+                this.total = response.data.total || 0;
+                this.currentPage = response.data.currentPage || 1;
+              }
+              else
+              {
                 this.permissions = [];
                 this.total = 0;
               }

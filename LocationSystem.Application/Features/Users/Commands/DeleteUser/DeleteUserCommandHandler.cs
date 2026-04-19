@@ -4,7 +4,6 @@ using LocationSystem.Application.Events;
 using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.UserRolePermissions;
-using System.Text.Json;
 
 namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
 {
@@ -51,13 +50,24 @@ namespace LocationSystem.Application.Features.Users.Commands.DeleteUser
                 await _unitOfWork.CommitAsync();
 
                 // 发布实体删除事件，创建快照
-                await _eventBus.PublishAsync(new EntityDeletedEvent
-                {
-                    EntityType = nameof(User),
-                    EntityId = user.Id,
-                    EntityJson = JsonSerializer.Serialize(user),
-                    DeletedAt = DateTime.UtcNow
-                });
+                //await _eventBus.PublishAsync(new EntityDeletedEvent
+                //{
+                //    EntityType = nameof(User),
+                //    EntityId = user.Id,
+                //    EntityJson = JsonSerializer.Serialize(user),
+                //    DeletedAt = DateTime.UtcNow
+                //});
+                var deletedUser = string.IsNullOrWhiteSpace(command.DeletedBy) ? "" : command.DeletedBy;
+                var deleteReason = string.IsNullOrWhiteSpace(command.DeleteReason) ? "" : command.DeleteReason;           // 或从 command.DeleteReason 获取
+
+                // 使用泛型 EntityDeletedEvent<User> 创建并发布事件
+                var deletedEvent = EntityDeletedEvent<User>.Create(
+                    user,
+                    user.Id,
+                    deletedUser,           // 或从 command.CurrentUserName 获取
+                    deleteReason        // 或从 command.DeleteReason 获取
+                );
+                await _eventBus.PublishAsync(deletedEvent);
 
                 return true;
             }

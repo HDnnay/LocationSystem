@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LocationSystem.Application.Utilities.Common
+﻿namespace LocationSystem.Application.Utilities.Common
 {
     public class PageRequest
     {
