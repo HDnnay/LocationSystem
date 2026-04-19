@@ -1,7 +1,7 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Interfaces;
+using LocationSystem.Application.Dtos.Provinces;
 using LocationSystem.Application.Extentions;
-using LocationSystem.Application.Features.Companys.Queries.GetProviceCompany;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
@@ -17,9 +17,9 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
         }
         public async Task<GetProviceCompanyDto> Handle(GetProviceCompanyQuery request)
         {
-            var model =await _cacheService.GetOrCreateAsync(CacheKeys.ProvinceCompanyCount, async _ =>
+            var model = await _cacheService.GetOrCreateAsync(CacheKeys.ProvinceCompanyCount, async _ =>
             {
-               
+
                 var data = await _companyRepository.GetAllFromSelectedFields(u => new ProvinceDto
                 {
                     Address = u.Address,
@@ -28,7 +28,7 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
 
                 if (data.Any()&&!string.IsNullOrWhiteSpace(data.FirstOrDefault().Province))
                 {
-                   return GroupProvinceCompany(data);
+                    return GroupProvinceCompany(data);
                 }
                 else
                 {
@@ -41,7 +41,7 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
                             {
                                 if (item.Address.StartsWith(item2.Key))
                                 {
-                                    matchedResults.Add(new BasiceCompnay {Address = item.Address, Province = item2.Key });
+                                    matchedResults.Add(new BasiceCompnay { Address = item.Address, Province = item2.Key });
                                 }
                             }
                         }
@@ -51,11 +51,11 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
                 }
 
 
-            },600);
+            }, 600);
             return model!;
         }
 
-        private static GetProviceCompanyDto? GroupProvinceCompany<T>(IEnumerable<T> tastkResult) where T:ICompanyEntity
+        private static GetProviceCompanyDto? GroupProvinceCompany<T>(IEnumerable<T> tastkResult) where T : ICompanyEntity
         {
             var result = from item in tastkResult
                          group item by item.Province into provinceGroup
@@ -65,7 +65,7 @@ namespace LocationSystem.Application.Features.Companys.Queries.GetProviceConpany
             return new GetProviceCompanyDto() { ProviceConpany = result.ToList() };
         }
     }
-    public class ProviceCompanyModel:ICompanyEntity
+    public class ProviceCompanyModel : ICompanyEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

@@ -1,5 +1,7 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos.Snapshots;
 using LocationSystem.Domain.Entities.DeletedSnapshots;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -38,6 +40,25 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Where(s => s.EntityType == entityType && s.EntityId == entityId)
                 .OrderByDescending(s => s.DeletedAt)
                 .ToListAsync();
+        }
+
+        public async Task<(int, IEnumerable<DeletedSnapshotDto>)> GetPageAsync(int page = 1, int pageSize = 10, Expression<Func<DeletedSnapshot, bool>>? predicate = null)
+        {
+            var query = _context.DeletedSnapshots.AsQueryable();
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            var total = await query.CountAsync();
+            var items = await query
+                .OrderByDescending(s => s.DeletedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize).ProjectToType<DeletedSnapshotDto>()
+                .ToListAsync();
+
+            return (total, items);
         }
     }
 }

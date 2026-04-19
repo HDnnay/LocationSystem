@@ -1,9 +1,7 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Dtos.Snapshots;
 using LocationSystem.Application.ISevices;
 using LocationSystem.Domain.Entities.DeletedSnapshots;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -110,9 +108,9 @@ namespace LocationSystem.Application.Services
         /// </summary>
         public async Task<List<DeletedSnapshot>> GetDeleteHistoryAsync<T>(object entityId) where T : class
         {
-            Expression<Func<DeletedSnapshot, bool>> predicate = s => 
+            Expression<Func<DeletedSnapshot, bool>> predicate = s =>
                 s.EntityType == typeof(T).Name && s.EntityId == entityId.ToString();
-            
+
             return await _snapshotRepository.FindAsync(predicate);
         }
 
@@ -181,6 +179,14 @@ namespace LocationSystem.Application.Services
         {
             // 这里可以从 HttpContext、IHttpContextAccessor 或 Thread.CurrentPrincipal 获取
             return System.Environment.UserName ?? "System";
+        }
+
+        /// <summary>
+        /// 获取所有删除快照（分页）
+        /// </summary>
+        public async Task<(int, IEnumerable<DeletedSnapshotDto>)> GetAllSnapshotsAsync(int page = 1, int pageSize = 10, Expression<Func<DeletedSnapshot, bool>>? predicate = null)
+        {
+            return await _snapshotRepository.GetPageAsync(page, pageSize, predicate);
         }
     }
 
