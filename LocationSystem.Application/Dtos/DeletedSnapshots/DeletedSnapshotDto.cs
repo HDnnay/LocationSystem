@@ -1,4 +1,4 @@
-namespace LocationSystem.Application.Dtos.Snapshots
+namespace LocationSystem.Application.Dtos.DeletedSnapshots
 {
     public class DeletedSnapshotDto
     {

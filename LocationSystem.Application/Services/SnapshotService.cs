@@ -1,5 +1,5 @@
 using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos.Snapshots;
+using LocationSystem.Application.Dtos.DeletedSnapshots;
 using LocationSystem.Application.ISevices;
 using LocationSystem.Domain.Entities.DeletedSnapshots;
 using System.Linq.Expressions;

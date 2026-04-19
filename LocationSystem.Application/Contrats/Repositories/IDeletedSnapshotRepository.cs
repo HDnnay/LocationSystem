@@ -1,4 +1,4 @@
-using LocationSystem.Application.Dtos.Snapshots;
+using LocationSystem.Application.Dtos.DeletedSnapshots;
 using LocationSystem.Domain.Entities.DeletedSnapshots;
 using System.Linq.Expressions;
 
