@@ -72,7 +72,7 @@ export default {
           this.$root.$data.isLoggedIn = true
           // 清除本地权限缓存，确保下次获取最新权限
           localStorage.removeItem('userPermissions')
-          this.$router.push('/dashboard')
+          this.$router.push('/admin/dashboard')
         } else {
           this.$message.error('登录失败：' + (res.data?.message || '未知错误'))
         }

@@ -36,6 +36,10 @@ namespace LocationSystem.Api.Data
             // 创建子权限
             var permissions = new List<Permission>
             {
+                new Permission("用户创建","user:create","创建用户",userViewPermission.Id),
+                new Permission("用户编辑","user:edit","创建用户",userViewPermission.Id),
+                new Permission("用户删除","user:delete","创建用户",userViewPermission.Id),
+                new Permission("用户恢复","user:recover","恢复用户",userViewPermission.Id),
                 new Permission("角色创建", "role:create", "创建角色信息", roleViewPermission.Id),
                 new Permission("角色编辑", "role:edit", "编辑角色信息", roleViewPermission.Id),
                 new Permission("角色删除", "role:delete", "删除角色信息", roleViewPermission.Id),
