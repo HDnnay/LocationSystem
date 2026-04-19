@@ -1,3 +1,6 @@
+using LocationSystem.Api.Filters;
+using LocationSystem.Application.Dtos.Roles;
+using LocationSystem.Application.Features.Roles.Commands.AssignRolePermissions;
 using LocationSystem.Application.Features.Roles.Commands.CreateRole;
 using LocationSystem.Application.Features.Roles.Commands.DeleteRole;
 using LocationSystem.Application.Features.Roles.Commands.DisableRole;
@@ -6,13 +9,7 @@ using LocationSystem.Application.Features.Roles.Commands.UpdateRole;
 using LocationSystem.Application.Features.Roles.Queries.GetRoleDetail;
 using LocationSystem.Application.Features.Roles.Queries.GetRoleList;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Api.Filters;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using LocationSystem.Application.Dtos.Roles;
 
 namespace LocationSystem.Api.Controllers
 {
@@ -65,7 +62,7 @@ namespace LocationSystem.Api.Controllers
         {
             try
             {
-                var command = new CreateRoleCommand 
+                var command = new CreateRoleCommand
                 {
                     Name = roleDto.Name,
                     Code = roleDto.Code,
@@ -87,7 +84,7 @@ namespace LocationSystem.Api.Controllers
         {
             try
             {
-                var command = new UpdateRoleCommand 
+                var command = new UpdateRoleCommand
                 {
                     RoleId = id,
                     Name = roleDto.Name,
@@ -145,6 +142,26 @@ namespace LocationSystem.Api.Controllers
                 var command = new EnableRoleCommand { RoleId = id };
                 var result = await _mediator.Send(command);
                 return Ok(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}/permissions")]
+        [PermissionAuthorize("role:edit")]
+        public async Task<IActionResult> AssignRolePermissions([FromBody] AssignRolePermissionsIput input)
+        {
+            try
+            {
+                var command = new AssignRolePermissionCommand
+                {
+                    RoleId = input.Id,
+                    Permissions = input.Permissions
+                };
+                var result = await _mediator.Send(command);
+                return Ok(result);
             }
             catch (Exception ex)
             {
