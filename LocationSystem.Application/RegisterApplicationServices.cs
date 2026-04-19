@@ -25,6 +25,9 @@ namespace LocationSystem.Application
             // 注册事件总线和缓存服务
             services.AddEventBusAndCacheServices();
 
+            // 注册快照服务
+            services.AddSnapshotServices();
+
             // 注册RoleManagement
             services.AddTransient<RoleManagement>();
 

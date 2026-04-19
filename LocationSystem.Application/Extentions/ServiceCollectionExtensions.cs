@@ -1,6 +1,7 @@
 using LocationSystem.Application.Contrats.Services;
 using LocationSystem.Application.Events;
 using LocationSystem.Application.Events.Handlers;
+using LocationSystem.Application.ISevices;
 using LocationSystem.Application.Services;
 using Mapster;
 using MapsterMapper;
@@ -27,9 +28,14 @@ namespace LocationSystem.Application.Extentions
             return services;
         }
         
+        public static IServiceCollection AddSnapshotServices(this IServiceCollection services)
+        {
+            services.AddScoped<ISnapshotService, SnapshotService>();
+            return services;
+        }
+
         public static IServiceCollection AddEventHandlers(this IServiceCollection services)
         {
-            // 注册事件处理程序
             services.AddScoped<CacheClearHandler>();
             services.AddScoped<EntityDeletedEventHandler>();
 
