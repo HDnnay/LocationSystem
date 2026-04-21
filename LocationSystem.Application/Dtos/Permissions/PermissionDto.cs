@@ -1,7 +1,4 @@
 using LocationSystem.Application.Dtos.Roles;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Application.Dtos.Permissions
 {
@@ -14,6 +11,7 @@ namespace LocationSystem.Application.Dtos.Permissions
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public Guid? ParentId { get; set; }
+        public PermissionDto? Parent { get; set; }
         public List<RoleDto>? Roles { get; set; }
         public List<PermissionDto>? ChildPermissions { get; set; }
     }
