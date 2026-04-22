@@ -18,7 +18,7 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
         // 导航属性
         public ICollection<Role> Roles { get; private set; } = new List<Role>();
         public bool IsDelete { get; set; }
-        public Guid DeleteUserId { get; set; }
+        public Guid? DeleteUserId { get; set; }
         public DateTime DeleteTime { get; set; }
         public bool IsDisabled { get; set; }
 

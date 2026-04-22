@@ -71,7 +71,7 @@ namespace LocationSystem.Domain.Entities
         [Description("创建者")]
         public virtual User? User { get; set; }
         public bool IsDelete { get; set; }
-        public Guid DeleteUserId { get; set; }
+        public Guid? DeleteUserId { get; set; }
         public DateTime DeleteTime { get; set; }
         public bool IsDisabled { get; set; }
 
