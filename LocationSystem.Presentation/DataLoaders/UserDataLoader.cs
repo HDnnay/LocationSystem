@@ -1,18 +1,21 @@
 ﻿using LocationSystem.Application.Dtos.Users;
+using LocationSystem.Application.Features.Users.Queries.GetUserByIds;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Presentation.DataLoaders
 {
     public static class UserDataLoader
     {
-        public static async Task<Dictionary<Guid, UserDto>> GetUserByIdAsync(IReadOnlyList<int> ids, [Service] IMediator mediator, CancellationToken cancellationToken)
+        [DataLoader]
+
+        public static async Task<Dictionary<Guid, UserDto>> GetUsersAsync(IReadOnlyList<Guid> ids, [Service] IMediator mediator, CancellationToken cancellationToken)
         {
             //// 构造查询并发送
-            //var query = new GetBooksByIdsQuery(ids);
-            //var result = await mediator.Send(query, cancellationToken);
+            var query = new GetUserByIdsQuery(ids);
+            var result = await mediator.Send(query);
 
-            //// 直接返回由Handler计算出的字典
-            //return result;
+            // 直接返回由Handler计算出的字典
+            return result;
         }
     }
 }

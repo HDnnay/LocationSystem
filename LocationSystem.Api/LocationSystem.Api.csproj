@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
     <ProjectReference Include="..\LocationSystem.Infrastructure\LocationSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
     <ProjectReference Include="..\LocationSystem.Presentation\LocationSystem.Presentation.csproj" />
     <ProjectReference Include="..\LocationSystem.ServiceDefaults\LocationSystem.ServiceDefaults.csproj" />
   </ItemGroup>

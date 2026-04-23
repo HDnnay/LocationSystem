@@ -1,6 +1,7 @@
 ﻿using LocationSystem.Domain.Entities.Interfacies;
 using LocationSystem.Domain.Exceptions;
 using LocationSystem.Domain.ValueObjects;
+using System.ComponentModel;
 
 namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
@@ -20,6 +21,7 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
         public bool IsDelete { get; set; }
         public Guid? DeleteUserId { get; set; }
         public DateTime DeleteTime { get; set; }
+        [Description("是否禁用")]
         public bool IsDisabled { get; set; }
 
         public DateTime CreateTime { get; set; }

@@ -4,18 +4,17 @@ using LocationSystem.Application.Dtos.Interfaces;
 using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.Companys.Queries.GetProviceConpany;
 using LocationSystem.Application.Utilities;
-using Microsoft.OpenApi;
 
 namespace LocationSystem.Api.BackgroudServices
 {
     public class HostLoadCachBackgroupService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly ILogger<CompanyUpdateBackgroundService> _logger;
+        private readonly ILogger<HostLoadCachBackgroupService> _logger;
 
         public HostLoadCachBackgroupService(
             IServiceScopeFactory scopeFactory,
-            ILogger<CompanyUpdateBackgroundService> logger)
+            ILogger<HostLoadCachBackgroupService> logger)
         {
             _scopeFactory = scopeFactory;
             _logger = logger;
@@ -28,7 +27,7 @@ namespace LocationSystem.Api.BackgroudServices
             var cachService = scope.ServiceProvider.GetService<ICacheService>();
             var model = await cachService.GetOrCreateAsync(CacheKeys.ProvinceCompanyCount, async _ =>
             {
-                var data = await companyRepository.GetAllFromSelectedFields(t => new CompanyViewModel { Address=t.Address,Province= t.Province });
+                var data = await companyRepository.GetAllFromSelectedFields(t => new CompanyViewModel { Address=t.Address, Province= t.Province });
                 if (data.Any()&&!string.IsNullOrWhiteSpace(data.FirstOrDefault().Province))
                 {
                     return GetGroupProvince(data);
