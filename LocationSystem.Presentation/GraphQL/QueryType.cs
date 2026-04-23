@@ -1,7 +1,5 @@
 ﻿using LocationSystem.Application.Features.Users.Queries;
-using LocationSystem.Application.GrapqLDTOs;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Presentation.InputTypes;
 using Mapster;
 
@@ -12,7 +10,7 @@ namespace LocationSystem.Presentation.GraphQL
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
             descriptor.Field("Users").Argument("input", a => a.Type<UserQueryInputType>())
-                .Type<PageResult<UserGrapqLDto>>()
+                .Type<>()
                 .Resolve(async context =>
                 {
                     var input = context.ArgumentValue<UserQueryInput>("input");
@@ -22,4 +20,5 @@ namespace LocationSystem.Presentation.GraphQL
                 });
         }
     }
+
 }
