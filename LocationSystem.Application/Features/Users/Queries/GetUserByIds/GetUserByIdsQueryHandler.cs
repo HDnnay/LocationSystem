@@ -13,7 +13,7 @@ namespace LocationSystem.Application.Features.Users.Queries.GetUserByIds
         }
         public Task<Dictionary<Guid, UserDto>> Handle(GetUserByIdsQuery request)
         {
-            throw new NotImplementedException();
+            return repository.GetUserByIds(request.Ids);
         }
     }
 }

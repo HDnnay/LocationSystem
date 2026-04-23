@@ -1,21 +1,21 @@
-﻿using LocationSystem.Application.Dtos.Users;
-using LocationSystem.Application.Features.Users.Queries.GetUserByIds;
+﻿using LocationSystem.Application.Features.Users.Queries.GetUserByIds;
+using LocationSystem.Application.GrapqLDTOs;
 using LocationSystem.Application.Utilities;
+using Mapster;
 
 namespace LocationSystem.Presentation.DataLoaders
 {
     public static class UserDataLoader
     {
         [DataLoader]
-
-        public static async Task<Dictionary<Guid, UserDto>> GetUsersAsync(IReadOnlyList<Guid> ids, [Service] IMediator mediator, CancellationToken cancellationToken)
+        public static async Task<Dictionary<Guid, UserGrapqLDto>> GetUsersAsync(
+            IReadOnlyList<Guid> ids,
+            [Service] IMediator mediator,
+            CancellationToken cancellationToken)
         {
-            //// 构造查询并发送
             var query = new GetUserByIdsQuery(ids);
-            var result = await mediator.Send(query);
-
-            // 直接返回由Handler计算出的字典
-            return result;
+            var model = await mediator.Send(query);
+            return model.ToDictionary(t => t.Key, t => t.Adapt<UserGrapqLDto>());
         }
     }
 }

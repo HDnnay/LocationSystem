@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
+    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
+    <Folder Include="IOutputTypes\" />
   </ItemGroup>
 
 </Project>

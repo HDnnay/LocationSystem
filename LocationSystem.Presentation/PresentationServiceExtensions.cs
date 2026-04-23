@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using LocationSystem.Presentation.GraphQL;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LocationSystem.Presentation
 {
@@ -6,18 +7,10 @@ namespace LocationSystem.Presentation
     {
         public static IServiceCollection AddPresentationServices(this IServiceCollection services)
         {
-            // services
-            //.AddGraphQLServer()
-            //.AddQueryType<LocationQueries>()
-            //.AddMutationType<LocationMutations>()
-            //.AddSubscriptionType<LocationSubscriptions>()
-            //.AddDataLoader<LocationDataLoaders>()
-            //.AddDataLoader<DeviceDataLoaders>()
-            //.AddFiltering()
-            //.AddSorting()
-            //.AddProjections()
-            //.AddInMemorySubscriptions();
-
+            services
+            .AddGraphQLServer()
+            .AddQueryType<QueryType>()
+            .AddMutationType<MutationType>();
             return services;
         }
     }
