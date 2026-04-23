@@ -1,3 +1,6 @@
+using HotChocolate;
+using HotChocolate.Data;
+using HotChocolate.Types;
 using LocationSystem.Api.GraphQL.DataLoaders;
 using LocationSystem.Api.GraphQL.Types;
 using LocationSystem.Application.Contrats.Repositories;
@@ -11,7 +14,6 @@ using LocationSystem.Application.Features.Articles.Queries.GetArticles;
 using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.Menus;
-using Dtos = LocationSystem.Application.Dtos;
 
 namespace LocationSystem.Api.GraphQL
 {

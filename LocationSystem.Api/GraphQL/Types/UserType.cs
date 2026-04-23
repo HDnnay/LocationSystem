@@ -1,3 +1,4 @@
+using HotChocolate.Types;
 using LocationSystem.Application.Dtos.Users;
 
 namespace LocationSystem.Api.GraphQL.Types

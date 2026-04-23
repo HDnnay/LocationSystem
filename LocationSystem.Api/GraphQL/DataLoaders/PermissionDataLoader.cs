@@ -1,11 +1,7 @@
-using HotChocolate;
-using Mapster;
+using GreenDonut;
 using LocationSystem.Application.Contrats.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using LocationSystem.Application.Dtos.Permissions;
+using Mapster;
 
 namespace LocationSystem.Api.GraphQL.DataLoaders
 {

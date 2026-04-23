@@ -13,6 +13,9 @@
   <Folder Name="/Infrastructure/">
     <Project Path="LocationSystem.Infrastructure/LocationSystem.Infrastructure.csproj" Id="9a10b297-15b9-4b94-80df-095f6682cd88" />
   </Folder>
+  <Folder Name="/Presentation/">
+    <Project Path="LocationSystem.Presentation/LocationSystem.Presentation.csproj" Id="9ba010cd-a1fe-42a3-8db1-534e538dc898" />
+  </Folder>
   <Folder Name="/Tests/">
     <Project Path="LocationSystem.Tests/LocationSystem.Tests.csproj" />
   </Folder>

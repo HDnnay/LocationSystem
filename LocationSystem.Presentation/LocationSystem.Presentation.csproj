@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.15" />
+    <PackageReference Include="HotChocolate.Data" Version="15.1.15" />
+    <PackageReference Include="HotChocolate.Data.AutoMapper" Version="15.1.15" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
+    <ProjectReference Include="..\LocationSystem.Infrastructure\LocationSystem.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
