@@ -1,4 +1,5 @@
 ﻿using LocationSystem.Application.Dtos.Users;
+using LocationSystem.Domain.Entities.UserRolePermissions;
 using Mapster;
 using System.ComponentModel;
 
@@ -18,7 +19,7 @@ namespace LocationSystem.Application.GrapqLDTOs
         public string Email { get; set; }
         [Description("类型")]
 
-        public string UserType { get; set; }
+        public UserType UserType { get; set; }
         [Description("是否禁用")]
 
         public bool IsDisabled { get; set; }

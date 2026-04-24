@@ -27,7 +27,6 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IDeletedSnapshotRepository, DeletedSnapshotRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
-            // 注册其他服务
             return services;
         }
     }

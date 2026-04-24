@@ -10,7 +10,10 @@ namespace LocationSystem.Presentation
             services
             .AddGraphQLServer()
             .AddQueryType<QueryType>()
-            .AddMutationType<MutationType>();
+            .AddMutationType<MutationType>()
+            .AddType<Models.UserType>()
+            .AddSorting()
+            .AddFiltering();
             return services;
         }
     }
