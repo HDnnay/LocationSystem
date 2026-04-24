@@ -1,9 +1,8 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Domain.Entities.UserRolePermissions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
@@ -56,6 +55,11 @@ namespace LocationSystem.Infrastructure.Repositories
                 .SelectMany(u => u.Roles)
                 .Include(r => r.Permissions)
                 .ToListAsync();
+        }
+
+        public Task<Dictionary<Guid, RoleGraphqLDto>> GetRoleByIds(IReadOnlyList<Guid> ids, CancellationToken cts = default)
+        {
+            return _context.Roles.Where(t => ids.Contains(t.Id)).Select(t => t.Adapt<RoleGraphqLDto>()).ToDictionaryAsync(t => t.Id);
         }
     }
 }
