@@ -3,11 +3,11 @@ using LocationSystem.Domain.Entities.UserRolePermissions;
 using Mapster;
 using System.ComponentModel;
 
-namespace LocationSystem.Application.GrapqLDTOs
+namespace LocationSystem.Application.GrapqLDTOs.Users
 {
     [AdaptTo(typeof(UserDto))]
 
-    public class UserGrapqLDto
+    public class UserGraphqLDto
     {
         [Description("用户Id")]
         public Guid Id { get; set; }
