@@ -67,5 +67,15 @@ namespace LocationSystem.Infrastructure.Repositories
 
             }
         }
+
+        public IQueryable<T> Query()
+        {
+            var result = _context.Set<T>().AsQueryable<T>();
+            return result;
+        }
+        public ParallelQuery<T> QueryAsParalle()
+        {
+            return _context.Set<T>().AsParallel<T>();
+        }
     }
 }

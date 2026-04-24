@@ -1,10 +1,10 @@
 using LocationSystem.Api.BackgroudServices;
-using LocationSystem.Api.Extensions;
 using LocationSystem.Api.Hubs;
 using LocationSystem.Api.Middlewares;
 using LocationSystem.Application;
 using LocationSystem.Application.Utilities.Jwt;
 using LocationSystem.Infrastructure;
+using LocationSystem.Presentation;
 using LocationSystem.ServiceDefaults;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
@@ -54,7 +54,7 @@ try
     // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddInfrastructureServices();
     builder.Services.AddApplicationServices();
-
+    builder.Services.AddPresentationServices();
     // 注册 HTTP 上下文访问器
     builder.Services.AddHttpContextAccessor();
     #region open api
@@ -103,7 +103,7 @@ try
     builder.Services.AddHostedService<EventSubscriptionService>();
 
     // 配置 GraphQL 服务
-    builder.Services.AddGraphQLServices();
+    //builder.Services.AddGraphQLServices();
 
 
 

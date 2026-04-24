@@ -106,5 +106,7 @@ namespace LocationSystem.Infrastructure.Repositories
                 .ToDictionaryAsync(t => t.Id, t => t.Adapt<UserDto>(), cts);
             return result;
         }
+
+      
     }
 }

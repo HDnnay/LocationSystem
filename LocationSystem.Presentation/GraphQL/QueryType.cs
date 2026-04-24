@@ -1,6 +1,7 @@
-﻿using LocationSystem.Application.Features.Users.Queries;
+﻿using LocationSystem.Application.Features.Users.Queries.GetUsers;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Presentation.InputTypes;
+using LocationSystem.Presentation.Models;
 using Mapster;
 
 namespace LocationSystem.Presentation.GraphQL
@@ -9,14 +10,13 @@ namespace LocationSystem.Presentation.GraphQL
     {
         protected override void Configure(IObjectTypeDescriptor descriptor)
         {
-            descriptor.Field("Users").Argument("input", a => a.Type<UserQueryInputType>())
-                .Type<>()
+            descriptor.Field("Users").UsePaging<UserType>()
                 .Resolve(async context =>
                 {
                     var input = context.ArgumentValue<UserQueryInput>("input");
-                    var query = input.Adapt<GetAllUsersQuery>();
+                    var query = new GetUsersQuery();
                     var result = await context.Service<IMediator>().Send(query);
-                    return result;
+                    return result.Select(t => t.Adapt<UserType>());
                 });
         }
     }
