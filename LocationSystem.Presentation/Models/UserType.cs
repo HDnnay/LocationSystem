@@ -1,4 +1,7 @@
-﻿using LocationSystem.Application.GrapqLDTOs.Users;
+﻿using HotChocolate.Types;
+using LocationSystem.Application.GrapqLDTOs.Roles;
+using LocationSystem.Application.GrapqLDTOs.Users;
+using LocationSystem.Presentation.DataLoaders;
 using UserRolePermissions = LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Presentation.Models
@@ -18,7 +21,10 @@ namespace LocationSystem.Presentation.Models
             descriptor.Field(t => t.DeleteTime).Type<DateTimeType>().Description("删除时间");
             descriptor.Field("roles").Type<ListType<RoleType>>().Description("用户角色列表").Resolve(async context =>
             {
-
+                var user = context.Parent<UserGraphqLDto>();
+                var dataLoader = context.DataLoader<IGetRolesByUserDataLoader>();
+                var roles = await dataLoader.LoadAsync(user.Id, context.RequestAborted);
+                return roles ?? new List<RoleGraphqLDto>();
             });
         }
     }
