@@ -40,7 +40,12 @@
             <el-table-column type="index" :index="(index) => (currentPage - 1) * pageSize + index + 1" label="序号" width="80" />
             <el-table-column prop="name" label="权限名称" width="180" />
             <el-table-column prop="code" label="权限代码" width="180" />
-            <el-table-column prop="parentName" label="父级权限" width="180" />
+            <el-table-column prop="parentName" label="父级权限" width="180">
+              <template #default="scope">
+                <span v-if="scope.row.parentName">{{ scope.row.parentName }}</span>
+                <span v-else class="text-gray-500">无</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="description" label="权限描述" min-width="200" />
             <el-table-column prop="createdAt" label="创建时间" width="180">
               <template #default="scope">
@@ -223,7 +228,7 @@
           };
 
           const response = await api.permissions.getPermissions(params);
-          console.log(response);
+          console.log("权限列表响应：", response);
           if (response.status === 200) {
             if (response && typeof response === 'object') {
               const permissionsData = response.data.items || response.data;
@@ -237,7 +242,7 @@
 
                 this.permissions = permissions.map(permission => ({
                   ...permission,
-                  parentName: permission.parentId ? permissionMap.get(permission.parentId) || '未知' : '无'
+                  parentName: permission.parentId ? permissionMap.get(permission.parentId) || '--' : '无'
                 }));
 
                 this.allPermissions = permissions;
@@ -360,7 +365,7 @@
               description: this.formData.description,
               parentId: this.formData.parentId
             }
-            await request.put(`/api/permissions/${this.editingPermission.id}`, updatePermissionDto);
+            await api.permissions.updatePermission(`${this.editingPermission.id}`, updatePermissionDto);
             ElMessage.success('权限更新成功');
           } else {
             const createPermissionDto = {
@@ -369,7 +374,7 @@
               description: this.formData.description,
               parentId: this.formData.parentId
             }
-            await request.post('/api/permissions', createPermissionDto);
+            await api.permissions.createPermission( createPermissionDto);
             ElMessage.success('权限创建成功');
           }
           this.closePermissionModal();
@@ -392,7 +397,7 @@
       async deletePermissionConfirmed() {
         if (this.deletePermission) {
           try {
-            await request.delete(`/api/permissions/${this.deletePermission.id}`);
+            await api.permissions.deletePermission(`${this.deletePermission.id}`);
             ElMessage.success('权限删除成功');
             this.deletePermission = null;
             this.showDeleteConfirm = false;

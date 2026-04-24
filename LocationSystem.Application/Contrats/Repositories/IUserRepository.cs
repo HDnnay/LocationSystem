@@ -13,5 +13,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<User?> GetByIdWithRolesAsync(Guid userId);
         Task<List<User>> GetByIdsWithRolesAsync(List<Guid> userIds);
         Task<User?> DeleteUserAsync(Guid UserId);
+
+        Task<Dictionary<Guid, UserDto>> GetUserByIds(IReadOnlyList<Guid> ids, CancellationToken cts = default);
     }
 }

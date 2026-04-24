@@ -1,3 +1,4 @@
+using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Roles;
 using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Utilities;
@@ -7,9 +8,9 @@ namespace LocationSystem.Application.Features.Users.Queries
 {
     public class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, UserDto?>
     {
-        private readonly LocationSystem.Application.Contrats.Repositories.IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
 
-        public GetUserByIdQueryHandler(LocationSystem.Application.Contrats.Repositories.IUserRepository userRepository)
+        public GetUserByIdQueryHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

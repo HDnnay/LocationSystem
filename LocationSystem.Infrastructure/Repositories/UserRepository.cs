@@ -99,6 +99,14 @@ namespace LocationSystem.Infrastructure.Repositories
             return user;
         }
 
+        public async Task<Dictionary<Guid, UserDto>> GetUserByIds(IReadOnlyList<Guid> ids, CancellationToken cts = default)
+        {
+            var result = await _context.Users.AsNoTracking()
+                .WhereNotDeleted(t => ids.Contains(t.Id)&&t.IsDisabled==false)
+                .ToDictionaryAsync(t => t.Id, t => t.Adapt<UserDto>(), cts);
+            return result;
+        }
 
+      
     }
 }

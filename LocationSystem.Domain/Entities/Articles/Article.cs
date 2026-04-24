@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace LocationSystem.Domain.Entities.Articles
 {
-    public class Article : IEntityVisiable
+    public class Article : ISoftDeleteEntity
     {
         private Article()
         {
@@ -49,7 +49,10 @@ namespace LocationSystem.Domain.Entities.Articles
         public DateTime? VisibleStartTime { get; private set; }
         [Description("限时可见结束时间")]
         public DateTime? VisibleEndTime { get; private set; }
-
+        public bool IsDelete { get; set; }
+        public Guid? DeleteUserId { get; set; }
+        public DateTime DeleteTime { get; set; }
+        public virtual ICollection<ArticleImage>? ArticleImages { get; set; }
         public bool IsCurrentlyVisible()
         {
             if (Level != ArticleLevel.Temporal)

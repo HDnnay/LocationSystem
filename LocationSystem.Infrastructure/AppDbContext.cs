@@ -68,5 +68,6 @@ namespace LocationSystem.Infrastructure
         public DbSet<ArticleLog> ArticleLogs { get; set; }
         public DbSet<ArticleSection> ArticleSections { get; set; }
         public DbSet<DeletedSnapshot> DeletedSnapshots { get; set; }
+        public DbSet<ArticleImage> ArticleImages { get; set; }
     }
 }

@@ -1,8 +1,9 @@
+using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Users.Commands.CreateUser
 {
-    public class CreateUserCommand : IRequest<Guid>
+    public class CreateUserCommand : IRequest<UserDto>
     {
         public string Name { get; set; }
         public string Email { get; set; }

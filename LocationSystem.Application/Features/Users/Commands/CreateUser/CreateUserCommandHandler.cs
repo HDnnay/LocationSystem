@@ -1,13 +1,14 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Contrats.UnitOfWorks;
-using LocationSystem.Application.Dtos;
+using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Domain.Factories;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Users.Commands.CreateUser
 {
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Guid>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserDto>
     {
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
@@ -20,11 +21,11 @@ namespace LocationSystem.Application.Features.Users.Commands.CreateUser
             _userFactory = new UserFactory();
         }
 
-        public async Task<Guid> Handle(CreateUserCommand command)
+        public async Task<UserDto> Handle(CreateUserCommand command)
         {
             try
             {
-                var userExs=await _userRepository.GetUserByEmailAsync(command.Email);
+                var userExs = await _userRepository.GetUserByEmailAsync(command.Email);
                 if (userExs!=null)
                     throw new ArgumentException("该邮箱已被注册");
                 // 开始事务
@@ -36,7 +37,7 @@ namespace LocationSystem.Application.Features.Users.Commands.CreateUser
                     throw new ArgumentException($"无效的用户类型: {command.UserType}");
                 }
                 // 使用默认密码 "123456"
-                var user = _userFactory.CreateUser(userType, command.Name, command.Email, "123456",false);
+                var user = _userFactory.CreateUser(userType, command.Name, command.Email, "123456", false);
 
                 // 添加用户
                 await _userRepository.AddAsync(user);
@@ -44,7 +45,7 @@ namespace LocationSystem.Application.Features.Users.Commands.CreateUser
                 // 提交事务
                 await _unitOfWork.CommitAsync();
 
-                return user.Id;
+                return user.Adapt<UserDto>();
             }
             catch (Exception ex)
             {

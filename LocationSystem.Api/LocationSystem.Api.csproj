@@ -15,9 +15,6 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
-    <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.14" />
-    <PackageReference Include="HotChocolate.Data" Version="15.1.14" />
-    <PackageReference Include="MediatR" Version="14.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.6" />
@@ -34,12 +31,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
     <ProjectReference Include="..\LocationSystem.Infrastructure\LocationSystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
+    <ProjectReference Include="..\LocationSystem.Presentation\LocationSystem.Presentation.csproj" />
     <ProjectReference Include="..\LocationSystem.ServiceDefaults\LocationSystem.ServiceDefaults.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Extensions\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>

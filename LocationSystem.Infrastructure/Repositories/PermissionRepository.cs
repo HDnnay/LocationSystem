@@ -4,9 +4,6 @@ using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
@@ -47,14 +44,14 @@ namespace LocationSystem.Infrastructure.Repositories
         {
 
             var query = _context.Permissions.AsNoTracking().AsQueryable();
-            var count =await query.CountAsync();
+            var count = await query.CountAsync();
             if (!string.IsNullOrWhiteSpace(pageRequest.KeyWord))
             {
                 query = query.Where(t => t.Code.Contains(pageRequest.KeyWord)||t.Name.Contains(pageRequest.KeyWord));
             }
-            var result =await query.Skip(pageRequest.PageSize*(pageRequest.Page-1)).Take(pageRequest.PageSize).ToListAsync();
+            var result = await query.Include(t => t.Parent).Skip(pageRequest.PageSize*(pageRequest.Page-1)).Take(pageRequest.PageSize).ToListAsync();
             Dictionary<int, IEnumerable<Permission>> data = new Dictionary<int, IEnumerable<Permission>>();
-            data.Add(count,result);
+            data.Add(count, result);
             return data;
         }
 
@@ -115,7 +112,7 @@ namespace LocationSystem.Infrastructure.Repositories
             var menu = await _context.Menus.Include(m => m.PermissionMenus).FirstOrDefaultAsync(t => t.Id ==menuId.Value);
             if (menu==null)
                 throw new NotFoundException($"菜单不存在：{menuId.Value}");
-            var menuPermissionIds =menu.PermissionMenus.Select(m => m.PermissionId).ToList();
+            var menuPermissionIds = menu.PermissionMenus.Select(m => m.PermissionId).ToList();
             // 递归设置权限的选中状态
             SetCheckStatus(permissionTree, menuPermissionIds);
 
@@ -125,23 +122,23 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             // 先获取完整的权限树
             var permissionTree = await GetPermissionTreeDtosAsync();
-            
+
             if (!roleId.HasValue)
             {
                 // 如果没有提供角色ID，返回所有权限未选中的状态
                 return permissionTree;
             }
-            
+
             // 获取角色拥有的权限ID列表
             var role = await _context.Roles
                 .Include(r => r.Permissions)
                 .FirstOrDefaultAsync(r => r.Id == roleId.Value);
-            
+
             var rolePermissionIds = role?.Permissions.Select(p => p.Id).ToList() ?? new List<Guid>();
-            
+
             // 递归设置权限的选中状态
             SetCheckStatus(permissionTree, rolePermissionIds);
-            
+
             return permissionTree;
         }
 
@@ -151,7 +148,7 @@ namespace LocationSystem.Infrastructure.Repositories
             {
                 // 设置当前权限的选中状态
                 permission.IsCheck = rolePermissionIds.Contains(permission.Id);
-                
+
                 // 递归处理子权限
                 if (permission.ChildPermissions.Any())
                 {

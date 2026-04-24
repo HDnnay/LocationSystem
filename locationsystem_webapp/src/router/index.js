@@ -80,7 +80,8 @@ const routes = [
     component: () => import('../views/renthouse/RentHouseView.vue'),
     meta: {
       title: '租房管理',
-      requiresAuth: true
+      requiresAuth: true,
+      permission: 'rent:view'
     }
   },
   {
@@ -89,7 +90,8 @@ const routes = [
     component: () => import('../views/renthouse/RentHouseView.vue'),
     meta: {
       title: '租房列表',
-      requiresAuth: true
+      requiresAuth: true,
+      permission: 'rent:view'
     }
   },
   {
@@ -98,7 +100,8 @@ const routes = [
     component: () => import('../views/renthouse/CreateRentHouseView.vue'),
     meta: {
       title: '租房创建',
-      requiresAuth: true
+      requiresAuth: true,
+      permission: 'rent:create'
     }
   },
   {
@@ -127,7 +130,8 @@ const routes = [
     component: () => import('../views/users/UsersView.vue'),
     meta: {
       title: '用户管理',
-      requiresAuth: true
+      requiresAuth: true,
+      permission: 'user:view'
     }
   },
   {
@@ -136,7 +140,8 @@ const routes = [
     component: () => import('../views/menus/MenusView.vue'),
     meta: {
       title: '菜单管理',
-      requiresAuth: true
+      requiresAuth: true,
+      permission: 'menu:view'
     }
   },
   {
@@ -198,6 +203,7 @@ router.beforeEach(async (to, from, next) => {
 
         // 检查是否需要权限
         if (to.meta.permission) {
+          console.log("需要权限:", to.meta.permission)
             try {
                 // 先从本地存储获取权限，避免频繁调用API
                 let userPermissions = JSON.parse(localStorage.getItem('userPermissions') || '[]')
