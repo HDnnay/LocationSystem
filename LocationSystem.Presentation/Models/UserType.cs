@@ -16,7 +16,10 @@ namespace LocationSystem.Presentation.Models
             descriptor.Field(t => t.IsDelete).Type<BooleanType>().Description("是否删除");
             descriptor.Field(t => t.CreateTime).Type<DateTimeType>().Description("创建时间");
             descriptor.Field(t => t.DeleteTime).Type<DateTimeType>().Description("删除时间");
+            descriptor.Field("roles").Type<ListType<RoleType>>().Description("用户角色列表").Resolve(async context =>
+            {
 
+            });
         }
     }
 }
