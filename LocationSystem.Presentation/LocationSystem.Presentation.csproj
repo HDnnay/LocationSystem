@@ -7,16 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="IOutputTypes\**" />
+    <EmbeddedResource Remove="IOutputTypes\**" />
+    <None Remove="IOutputTypes\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="HotChocolate.AspNetCore" Version="15.1.15" />
     <PackageReference Include="HotChocolate.Data" Version="15.1.15" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="IOutputTypes\" />
   </ItemGroup>
 
 </Project>
