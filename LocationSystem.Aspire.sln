@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.2.11415.280 d18.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.0.0
 MinimumVisualStudioVersion = 17.8.0.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LocationSystem.Aspire.AppHost", "LocationSystem.Aspire.AppHost\LocationSystem.Aspire.AppHost.csproj", "{3017584C-5B9B-4911-AF4C-030D1BCA2341}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocationSystem.Domain", "LocationSystem.Domain\LocationSystem.Domain.csproj", "{3A17C885-9F33-4286-A4D0-1A2B49814D0E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocationSystem.Infrastructure", "LocationSystem.Infrastructure\LocationSystem.Infrastructure.csproj", "{E8A5CEF6-3BA1-4636-B96C-A8DE41668ED0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocationSystem.ServiceDefaults", "LocationSystem.ServiceDefaults\LocationSystem.ServiceDefaults.csproj", "{CB566C8A-92DD-4B76-9A14-611FC3832899}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +127,18 @@ Global
 		{E8A5CEF6-3BA1-4636-B96C-A8DE41668ED0}.Release|x64.Build.0 = Release|Any CPU
 		{E8A5CEF6-3BA1-4636-B96C-A8DE41668ED0}.Release|x86.ActiveCfg = Release|Any CPU
 		{E8A5CEF6-3BA1-4636-B96C-A8DE41668ED0}.Release|x86.Build.0 = Release|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Debug|x64.Build.0 = Debug|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Debug|x86.Build.0 = Debug|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Release|x64.ActiveCfg = Release|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Release|x64.Build.0 = Release|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Release|x86.ActiveCfg = Release|Any CPU
+		{CB566C8A-92DD-4B76-9A14-611FC3832899}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
