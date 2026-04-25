@@ -1,11 +1,7 @@
-using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Permissions;
+using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities.UserRolePermissions;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LocationSystem.Application.Contrats.Repositories
 {
@@ -20,7 +16,9 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<List<PermissionTreeDto>> GetPermissionTreeWithCheckStatusAsync(Guid? roleId);
         Task<List<PermissionTreeDto>> GetMenuPermissionTreeWithCheck(Guid? menuId);
         Task<Permission?> GetPermissionWithChildrenAsync(Guid id);
-        Task<Dictionary<int,IEnumerable<Permission>>> GetPermissionsPage(PageRequest pageRequest);
+        Task<Dictionary<int, IEnumerable<Permission>>> GetPermissionsPage(PageRequest pageRequest);
+
+        Task<PermissionGraphqLDto?> GetParentPermission(Guid parentId);
 
     }
 }

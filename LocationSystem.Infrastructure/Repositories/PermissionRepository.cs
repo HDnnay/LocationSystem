@@ -1,8 +1,10 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Permissions;
 using LocationSystem.Application.Exceptions;
+using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities.UserRolePermissions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocationSystem.Infrastructure.Repositories
@@ -168,6 +170,11 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(p => p.Roles)
                 .Include(p => p.Parent)
                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<PermissionGraphqLDto?> GetParentPermission(Guid parentId)
+        {
+            return await _context.Permissions.ProjectToType<PermissionGraphqLDto>().FirstOrDefaultAsync(t => t.ParentId==parentId);
         }
     }
 }
