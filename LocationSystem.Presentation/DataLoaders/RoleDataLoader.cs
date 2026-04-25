@@ -1,22 +1,30 @@
+using GreenDonut;
 using LocationSystem.Application.Features.Roles.Queries.GetRoleByIds;
 using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Presentation.DataLoaders
 {
-
-    public static class RoleDataLoader
+    public class RoleDataLoader : BatchDataLoader<Guid, RoleGraphqLDto>
     {
-        [DataLoader]
+        private readonly IMediator _mediator;
 
-        public static async Task<Dictionary<Guid, RoleGraphqLDto>> GetRolesAsync(IReadOnlyList<Guid> ids,
-            [Service] IMediator mediator,
-            CancellationToken cancellationToken)
+        public RoleDataLoader(
+            IMediator mediator,
+            IBatchScheduler batchScheduler,
+            DataLoaderOptions? options = null)
+            : base(batchScheduler, options)
         {
-            var query = new GetRoleByIdsQuery(ids);
-            var result = await mediator.Send(query);
-            return result;
+            _mediator = mediator;
         }
 
+        protected override async Task<IReadOnlyDictionary<Guid, RoleGraphqLDto>> LoadBatchAsync(
+            IReadOnlyList<Guid> keys,
+            CancellationToken cancellationToken)
+        {
+            var query = new GetRoleByIdsQuery(keys);
+            var result = await _mediator.Send(query);
+            return result;
+        }
     }
 }
