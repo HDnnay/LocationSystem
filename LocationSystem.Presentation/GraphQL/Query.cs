@@ -1,7 +1,8 @@
-﻿using LocationSystem.Application.Features.Users.Queries.GetUsers;
+﻿using LocationSystem.Application.Features.Roles.Queries.GetRoles;
+using LocationSystem.Application.Features.Users.Queries.GetUsers;
+using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Application.GrapqLDTOs.Users;
 using LocationSystem.Application.Utilities;
-using Mapster;
 
 namespace LocationSystem.Presentation.GraphQL
 {
@@ -16,20 +17,18 @@ namespace LocationSystem.Presentation.GraphQL
         {
             var query = new GetUsersQuery();
             var model = await mediator.Send(query);
-            var result = model.Select(t => t.Adapt<UserGraphqLDto>());
-            return result;
+            return model;
         }
-        [UsePaging(typeof(Models.UserType), IncludeTotalCount = true)]
+        [UsePaging(typeof(Models.RoleType), IncludeTotalCount = true)]
         [UseSorting]
         [UseFiltering]
         [GraphQLDescription("获取角色列表")]
         [GraphQLName("roles")]
-        public async Task<IQueryable<UserGraphqLDto>> GetRoles([Service] IMediator mediator)
+        public async Task<IQueryable<RoleGraphqLDto>> GetRoles([Service] IMediator mediator)
         {
-            var query = new GetUsersQuery();
+            var query = new GetRolesQuery();
             var model = await mediator.Send(query);
-            var result = model.Select(t => t.Adapt<UserGraphqLDto>());
-            return result;
+            return model;
         }
     }
 }
