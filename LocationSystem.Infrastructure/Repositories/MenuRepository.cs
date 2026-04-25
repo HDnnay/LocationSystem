@@ -78,5 +78,19 @@ namespace LocationSystem.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Dictionary<Guid, MenuGraphqLDto>> GetMenusByIdsAsync(IReadOnlyList<Guid> menuIds)
+        {
+            if (menuIds == null || !menuIds.Any())
+                return new Dictionary<Guid, MenuGraphqLDto>();
+
+            // 根据 ID 查找菜单（批量版本）
+            var menus = await _context.Menus
+                .Where(m => menuIds.Contains(m.Id))
+                .ProjectToType<MenuGraphqLDto>()
+                .ToListAsync();
+
+            return menus.ToDictionary(m => m.Id, m => m);
+        }
+
     }
 }
