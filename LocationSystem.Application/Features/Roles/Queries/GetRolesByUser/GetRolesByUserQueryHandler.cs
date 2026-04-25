@@ -1,13 +1,37 @@
-﻿using LocationSystem.Application.GrapqLDTOs.Roles;
+using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Application.Utilities;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Roles.Queries.GetRolesByUser
 {
-    internal class GetRolesByUserQueryHandler : IRequestHandler<GetRolesByUserQuery, ILookup<Guid, RoleGraphqLDto>>
+    public class GetRolesByUserQueryHandler : IRequestHandler<GetRolesByUserQuery, Dictionary<Guid, List<RoleGraphqLDto>>>
     {
-        public Task<ILookup<Guid, RoleGraphqLDto>> Handle(GetRolesByUserQuery request)
+        private readonly IRoleRepository _repository;
+        public GetRolesByUserQueryHandler(IRoleRepository roleRepository)
         {
-            throw new NotImplementedException();
+            _repository = roleRepository;
+        }
+        public async Task<Dictionary<Guid, List<RoleGraphqLDto>>> Handle(GetRolesByUserQuery request)
+        {
+            if (request.Ids == null || !request.Ids.Any())
+            {
+                return new Dictionary<Guid, List<RoleGraphqLDto>>();
+            }
+
+            // 查询用户角色关系
+            var result = await _repository.GetRolesByUserIdsAsync(request.Ids);
+
+            // 确保所有请求的用户ID都有对应的条目（即使为空列表）
+            foreach (var userId in request.Ids)
+            {
+                if (!result.ContainsKey(userId))
+                {
+                    result[userId] = new List<RoleGraphqLDto>();
+                }
+            }
+
+            return result;
         }
     }
 }

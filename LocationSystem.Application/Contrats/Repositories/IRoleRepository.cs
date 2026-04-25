@@ -11,6 +11,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<IEnumerable<Role>> GetRolesWithPermissionsAsync();
         Task<List<Role>> GetRolesWithPermissionsByIdsAsync(List<Guid> roleIds);
         Task<IEnumerable<Role>> GetRolesByUserIdAsync(Guid userId);
+        Task<Dictionary<Guid, List<RoleGraphqLDto>>> GetRolesByUserIdsAsync(IReadOnlyList<Guid> userIds);
         Task<Dictionary<Guid, RoleGraphqLDto>> GetRoleByIds(IReadOnlyList<Guid> ids, CancellationToken cts = default);
     }
 }

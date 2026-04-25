@@ -61,5 +61,27 @@ namespace LocationSystem.Infrastructure.Repositories
         {
             return _context.Roles.Where(t => ids.Contains(t.Id)).Select(t => t.Adapt<RoleGraphqLDto>()).ToDictionaryAsync(t => t.Id);
         }
+
+        public async Task<Dictionary<Guid, List<RoleGraphqLDto>>> GetRolesByUserIdsAsync(IReadOnlyList<Guid> userIds)
+        {
+            if (userIds == null || !userIds.Any())
+                return new Dictionary<Guid, List<RoleGraphqLDto>>();
+
+            // 查询用户角色关系，包含权限信息
+            var userRoles = await _context.Users
+                .Where(u => userIds.Contains(u.Id))
+                .Select(u => new
+                {
+                    UserId = u.Id,
+                    Roles = u.Roles.Select(r => r.Adapt<RoleGraphqLDto>()).ToList()
+                })
+                .ToListAsync();
+
+            // 转换为字典格式
+            return userRoles.ToDictionary(
+                ur => ur.UserId,
+                ur => ur.Roles
+            );
+        }
     }
 }

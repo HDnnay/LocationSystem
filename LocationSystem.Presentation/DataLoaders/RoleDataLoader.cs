@@ -1,5 +1,4 @@
 using LocationSystem.Application.Features.Roles.Queries.GetRoleByIds;
-using LocationSystem.Application.Features.Roles.Queries.GetRolesByUser;
 using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Application.Utilities;
 
@@ -18,12 +17,6 @@ namespace LocationSystem.Presentation.DataLoaders
             var result = await mediator.Send(query);
             return result;
         }
-        [DataLoader]
-        public static async Task<Dictionary<Guid, List<RoleGraphqLDto>>> GetRolesByUserAsync(IReadOnlyList<Guid> ids, [Service] IMediator mediator, CancellationToken cts = default)
-        {
-            var query = new GetRolesByUserQuery() { Ids = ids };
-            var result = await mediator.Send(query);
-            return result;
-        }
+
     }
 }
