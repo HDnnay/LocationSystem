@@ -19,7 +19,7 @@ var apiService = builder.AddProject<Projects.LocationSystem_Api>("location-api")
     .WithReference(database);
 
 // 添加 locationsystem_webapp 前端项目
-var webApp = builder.AddNpmApp("location-webapp", "../locationsystem_webapp", scriptName: "dev")
+var webApp = builder.AddJavaScriptApp("location-webapp", "../locationsystem_webapp")
     .WithHttpEndpoint(name: "web-http", env: "PORT")
     .WithReference(apiService)
     .WaitFor(apiService);
