@@ -172,9 +172,18 @@ namespace LocationSystem.Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<PermissionGraphqLDto?> GetParentPermission(Guid parentId)
+        public async Task<Dictionary<Guid, PermissionGraphqLDto>> GetPermissionsByIdsAsync(IReadOnlyList<Guid> permissionIds)
         {
-            return await _context.Permissions.ProjectToType<PermissionGraphqLDto>().FirstOrDefaultAsync(t => t.ParentId==parentId);
+            if (permissionIds == null || !permissionIds.Any())
+                return new Dictionary<Guid, PermissionGraphqLDto>();
+
+            // 根据 ID 查找权限（批量版本）
+            var permissions = await _context.Permissions
+                .Where(p => permissionIds.Contains(p.Id))
+                .ProjectToType<PermissionGraphqLDto>()
+                .ToListAsync();
+
+            return permissions.ToDictionary(p => p.Id, p => p);
         }
     }
 }

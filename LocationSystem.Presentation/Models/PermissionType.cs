@@ -1,5 +1,6 @@
-﻿using LocationSystem.Application.GrapqLDTOs.Permissons;
+using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Application.Utilities;
+using LocationSystem.Presentation.DataLoaders;
 
 namespace LocationSystem.Presentation.Models
 {
@@ -22,8 +23,10 @@ namespace LocationSystem.Presentation.Models
                 if (permission.ParentId == null)
                     return null;
 
-                // 这里需要实现加载父级权限的逻辑
-                var mediator = context.Service<IMediator>();
+                // 使用 DataLoader 批量加载父级权限
+                var dataLoader = context.DataLoader<PermissionDataLoader>();
+                var parentPermission = await dataLoader.LoadAsync(permission.ParentId.Value, context.RequestAborted);
+                return parentPermission;
             });
         }
     }

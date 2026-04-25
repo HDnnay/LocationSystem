@@ -1,16 +1,29 @@
-﻿using LocationSystem.Application.GrapqLDTOs.Permissons;
+using LocationSystem.Application.Features.Permissions.Queries.GetPermissionsByIds;
+using LocationSystem.Application.GrapqLDTOs.Permissons;
+using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Presentation.DataLoaders
 {
     public class PermissionDataLoader : BatchDataLoader<Guid, PermissionGraphqLDto>
     {
-        public PermissionDataLoader(IBatchScheduler batchScheduler, DataLoaderOptions options) : base(batchScheduler, options)
+        private readonly IMediator _mediator;
+
+        public PermissionDataLoader(
+            IMediator mediator,
+            IBatchScheduler batchScheduler,
+            DataLoaderOptions? options = null)
+            : base(batchScheduler, options)
         {
+            _mediator = mediator;
         }
 
-        protected override Task<IReadOnlyDictionary<Guid, PermissionGraphqLDto>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
+        protected override async Task<IReadOnlyDictionary<Guid, PermissionGraphqLDto>> LoadBatchAsync(
+            IReadOnlyList<Guid> keys,
+            CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var query = new GetPermissionsByIdsQuery { Ids = keys };
+            var result = await _mediator.Send(query);
+            return result;
         }
     }
 }

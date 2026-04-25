@@ -18,7 +18,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<Permission?> GetPermissionWithChildrenAsync(Guid id);
         Task<Dictionary<int, IEnumerable<Permission>>> GetPermissionsPage(PageRequest pageRequest);
 
-        Task<PermissionGraphqLDto?> GetParentPermission(Guid parentId);
+        Task<Dictionary<Guid, PermissionGraphqLDto>> GetPermissionsByIdsAsync(IReadOnlyList<Guid> permissionIds);
 
     }
 }

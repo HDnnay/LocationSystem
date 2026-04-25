@@ -1,5 +1,7 @@
-﻿using LocationSystem.Application.Features.Roles.Queries.GetRoles;
+﻿using LocationSystem.Application.Features.Permissions.Queries.GetPermissions;
+using LocationSystem.Application.Features.Roles.Queries.GetRoles;
 using LocationSystem.Application.Features.Users.Queries.GetUsers;
+using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Application.GrapqLDTOs.Users;
 using LocationSystem.Application.Utilities;
@@ -27,6 +29,17 @@ namespace LocationSystem.Presentation.GraphQL
         public async Task<IQueryable<RoleGraphqLDto>> GetRoles([Service] IMediator mediator)
         {
             var query = new GetRolesQuery();
+            var model = await mediator.Send(query);
+            return model;
+        }
+        [UsePaging(typeof(Models.PermissionType), IncludeTotalCount = true)]
+        [UseSorting]
+        [UseFiltering]
+        [GraphQLDescription("获取权限列表")]
+        [GraphQLName("permissions")]
+        public async Task<IQueryable<PermissionGraphqLDto>> GetPermissions([Service] IMediator mediator)
+        {
+            var query = new GetPermissionsQuery();
             var model = await mediator.Send(query);
             return model;
         }
