@@ -10,6 +10,6 @@ namespace LocationSystem.Application.Contrats.Repositories
     public interface IArticleTagRepository : IRepository<ArticleTag>
     {
         Task<IEnumerable<ArticleTag>> GetByIdsAsync(IEnumerable<Guid> ids);
-        Task<Dictionary<Guid, List<ArticleTagGraphqLDto>>> GetTagsByArticleIdsAsync(IReadOnlyList<Guid> articleIds, CancellationToken cancellationToken = default);
+        Task<ILookup<Guid, ArticleTagGraphqLDto>> GetTagsByArticleIdsAsync(IReadOnlyList<Guid> articleIds, CancellationToken cancellationToken = default);
     }
 }

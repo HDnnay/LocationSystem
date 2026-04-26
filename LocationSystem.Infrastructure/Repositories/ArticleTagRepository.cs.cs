@@ -22,10 +22,10 @@ namespace LocationSystem.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Dictionary<Guid, List<ArticleTagGraphqLDto>>> GetTagsByArticleIdsAsync(IReadOnlyList<Guid> articleIds, CancellationToken cancellationToken = default)
+        public async Task<ILookup<Guid, ArticleTagGraphqLDto>> GetTagsByArticleIdsAsync(IReadOnlyList<Guid> articleIds, CancellationToken cancellationToken = default)
         {
             if (articleIds == null || !articleIds.Any())
-                return new Dictionary<Guid, List<ArticleTagGraphqLDto>>();
+                return Enumerable.Empty<(Guid ArticleId, ArticleTagGraphqLDto Tag)>().ToLookup(x => x.ArticleId, x => x.Tag);
 
             // 查询所有指定文章的文章标签
             var articles = await _context.Articles
@@ -33,35 +33,23 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Where(a => articleIds.Contains(a.Id))
                 .ToListAsync(cancellationToken);
 
-            // 创建字典，按文章ID分组
-            var result = new Dictionary<Guid, List<ArticleTagGraphqLDto>>();
+            // 创建包含文章ID和标签信息的列表
+            var tagPairs = new List<(Guid ArticleId, ArticleTagGraphqLDto Tag)>();
 
             foreach (var article in articles)
             {
-                var tagDtos = new List<ArticleTagGraphqLDto>();
-
                 if (article.Tags != null)
                 {
                     foreach (var tag in article.Tags)
                     {
                         var tagDto = tag.Adapt<ArticleTagGraphqLDto>();
-                        tagDtos.Add(tagDto);
+                        tagPairs.Add((article.Id, tagDto));
                     }
                 }
-
-                result[article.Id] = tagDtos;
             }
 
-            // 确保所有请求的文章都有结果（即使没有标签）
-            foreach (var articleId in articleIds)
-            {
-                if (!result.ContainsKey(articleId))
-                {
-                    result[articleId] = new List<ArticleTagGraphqLDto>();
-                }
-            }
-
-            return result;
+            // 直接返回 ILookup
+            return tagPairs.ToLookup(item => item.ArticleId, item => item.Tag);
         }
     }
 }

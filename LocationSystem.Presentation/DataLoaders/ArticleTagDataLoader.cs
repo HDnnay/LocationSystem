@@ -27,19 +27,10 @@ namespace LocationSystem.Presentation.DataLoaders
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
             var query = new GetTagsByArticleIdsQuery { ArticleIds = articleIds };
-            var tagsByArticleId = await mediator.Send(query);
+            var tagsLookup = await mediator.Send(query);
 
-            // 将字典转换为 ILookup
-            var lookup = new List<(Guid ArticleId, ArticleTagGraphqLDto Tag)>();
-            foreach (var kvp in tagsByArticleId)
-            {
-                foreach (var tag in kvp.Value)
-                {
-                    lookup.Add((kvp.Key, tag));
-                }
-            }
-
-            return lookup.ToLookup(item => item.ArticleId, item => item.Tag);
+            // 直接返回 ILookup，无需转换
+            return tagsLookup;
         }
     }
 }
