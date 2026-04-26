@@ -30,6 +30,10 @@ namespace LocationSystem.Presentation.Models
                 var user = await dataLoader.LoadAsync(article.UserId, context.RequestAborted);
                 return user;
             });
+            descriptor.Field("comment").Type<ListType<ArticleCommentType>>().Description("评论列表").Resolve(async context =>
+            {
+
+            });
         }
     }
 }
