@@ -1,6 +1,7 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
 using LocationSystem.Application.GrapqLDTOs.Menus;
+using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Infrastructure.Utilities;
 using Mapster;
@@ -94,5 +95,11 @@ namespace LocationSystem.Infrastructure.Repositories
             return menus.ToDictionary(m => m.Id, m => m);
         }
 
+
+
+        public async Task<Dictionary<Guid, PermissionGraphqLDto>> GetMeunsByIdsAsync(IReadOnlyList<Guid> ids)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

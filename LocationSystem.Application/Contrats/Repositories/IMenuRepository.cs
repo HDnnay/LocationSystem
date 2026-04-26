@@ -1,5 +1,6 @@
 using LocationSystem.Application.Features.Menus.Queries.GetAllMenus;
 using LocationSystem.Application.GrapqLDTOs.Menus;
+using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Domain.Entities.Menus;
 
 namespace LocationSystem.Application.Contrats.Repositories
@@ -15,5 +16,8 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<IEnumerable<Menu>> GetByIdsAsync(IEnumerable<Guid> ids);
         Task<List<Menu>> GetByIdsWithPermissionsAsync(List<Guid> menuIds);
         Task<Dictionary<Guid, MenuGraphqLDto>> GetMenusByIdsAsync(IReadOnlyList<Guid> menuIds);
+
+        Task<Dictionary<Guid, PermissionGraphqLDto>> GetMeunsByIdsAsync(IReadOnlyList<Guid> ids);
+
     }
 }
