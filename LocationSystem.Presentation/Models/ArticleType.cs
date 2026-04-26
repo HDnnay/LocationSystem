@@ -1,5 +1,6 @@
 ﻿using LocationSystem.Application.GrapqLDTOs.Articles;
 using LocationSystem.Domain.Enums;
+using LocationSystem.Presentation.DataLoaders;
 
 namespace LocationSystem.Presentation.Models
 {
@@ -22,6 +23,13 @@ namespace LocationSystem.Presentation.Models
             descriptor.Field(t => t.Level).Type<NonNullType<EnumType<ArticleLevel>>>().Description("文章可见等级");
             descriptor.Field(t => t.VisibleStartTime).Type<DateTimeType>().Description("文章可见开始时间");
             descriptor.Field(t => t.VisibleEndTime).Type<DateTimeType>().Description("文章可见结束时间");
+            descriptor.Field("creator").Type<UserType>().Description("作者").Resolve(async context =>
+            {
+                var article = context.Parent<ArticleGraphqLDto>();
+                var dataLoader = context.DataLoader<UserDataLoader>();
+                var user = await dataLoader.LoadAsync(article.UserId, context.RequestAborted);
+                return user;
+            });
         }
     }
 }
