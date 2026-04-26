@@ -1,4 +1,5 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.GrapqLDTOs.Articles;
 using LocationSystem.Domain.Entities.Articles;
 
 namespace LocationSystem.Infrastructure.Repositories
@@ -7,6 +8,11 @@ namespace LocationSystem.Infrastructure.Repositories
     {
         public ArticleLogRepository(AppDbContext context) : base(context)
         {
+        }
+
+        public Task<Dictionary<Guid, List<ArticleLogGraphqLDto>>> GetArticleLogByIds(IReadOnlyList<Guid> ids)
+        {
+            throw new NotImplementedException();
         }
     }
 }
