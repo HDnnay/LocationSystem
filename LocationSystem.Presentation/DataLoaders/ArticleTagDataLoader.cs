@@ -1,4 +1,3 @@
-using GreenDonut;
 using LocationSystem.Application.Features.Articles.Queries.GetTagsByArticleIds;
 using LocationSystem.Application.GrapqLDTOs.Articles;
 using LocationSystem.Application.Utilities;
@@ -28,8 +27,8 @@ namespace LocationSystem.Presentation.DataLoaders
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
             var query = new GetTagsByArticleIdsQuery { ArticleIds = articleIds };
-            var tagsByArticleId = await mediator.Send(query, cancellationToken);
-            
+            var tagsByArticleId = await mediator.Send(query);
+
             // 将字典转换为 ILookup
             var lookup = new List<(Guid ArticleId, ArticleTagGraphqLDto Tag)>();
             foreach (var kvp in tagsByArticleId)
@@ -39,7 +38,7 @@ namespace LocationSystem.Presentation.DataLoaders
                     lookup.Add((kvp.Key, tag));
                 }
             }
-            
+
             return lookup.ToLookup(item => item.ArticleId, item => item.Tag);
         }
     }
