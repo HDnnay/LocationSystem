@@ -1,8 +1,10 @@
 using FluentValidation;
 using LocationSystem.Application.Extentions;
+using LocationSystem.Application.Security;
 using LocationSystem.Application.Services;
 using LocationSystem.Application.Utilities;
 using LocationSystem.Application.Utilities.Jwt;
+using LocationSystem.Core.Security.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -33,8 +35,13 @@ namespace LocationSystem.Application
 
             // 注册PermissionManagement
             services.AddTransient<PermissionManagement>();
+
             // 注册 Mapster
             services.AddMapsterServices();
+            // 注册基础权限提供器
+            services.AddScoped<IPermissionProvider, PermissionProvider>();
+            // 注册权限验证器
+            services.AddScoped<IPermissionValidator, PermissionValidator>();
             return services;
         }
     }
