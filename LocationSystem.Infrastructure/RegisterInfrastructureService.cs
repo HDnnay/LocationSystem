@@ -23,7 +23,7 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddScoped<IPermissionMenuRepository, PermissionMenuRepository>();
             services.AddScoped<IArticleRepository, ArticleRepository>();
-            services.AddScoped<IArticleTagRepository, TagRepository>();
+            services.AddScoped<IArticleTagRepository, ArticleTagRepository>();
             services.AddScoped<IArticleCommentRepository, ArticleCommentRepository>();
             services.AddScoped<IArticleImageRepository, ArticleImageRepository>();
             services.AddScoped<IArticleLogRepository, ArticleLogRepository>();
