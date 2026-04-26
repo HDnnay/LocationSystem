@@ -8,6 +8,7 @@
   </Folder>
   <Folder Name="/Core/">
     <Project Path="LocationSystem.Application/LocationSystem.Application.csproj" />
+    <Project Path="LocationSystem.Core/LocationSystem.Core.csproj" Id="b5ccec5c-facf-41d4-9ec4-000be07973b1" />
     <Project Path="LocationSystem.Domain/LocationSystem.Domain.csproj" />
   </Folder>
   <Folder Name="/Infrastructure/">
