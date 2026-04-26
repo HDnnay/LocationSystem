@@ -9,6 +9,7 @@ namespace LocationSystem.Presentation
         {
             _=services
             .AddGraphQLServer()
+             .AddAuthorization()
             .AddQueryType<QueryType>()
             .AddMutationType<MutationType>()
             .AddType<Models.UserType>()

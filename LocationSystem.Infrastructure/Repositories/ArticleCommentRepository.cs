@@ -21,5 +21,16 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Where(c => articleIds.Contains(c.ArticleId)).ProjectToType<ArticleCommentGraphqLDto>()
                 .ToDictionaryAsync(t => t.Id);
         }
+
+        public async Task<List<ArticleCommentGraphqLDto>> GetCommentsByArticleIdsAsync(IReadOnlyList<Guid> articleIds)
+        {
+            if (articleIds == null || !articleIds.Any())
+                return new List<ArticleCommentGraphqLDto>();
+
+            return await _context.ArticleComments
+                .Where(c => articleIds.Contains(c.ArticleId))
+                .ProjectToType<ArticleCommentGraphqLDto>()
+                .ToListAsync();
+        }
     }
 }

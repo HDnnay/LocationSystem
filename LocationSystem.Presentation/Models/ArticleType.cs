@@ -34,8 +34,8 @@ namespace LocationSystem.Presentation.Models
             {
                 var article = context.Parent<ArticleGraphqLDto>();
                 var dataLoader = context.DataLoader<ArticleCommentDataLoader>();
-                var result = await dataLoader.LoadAsync(article.Id, context.RequestAborted);
-                return result;
+                var comments = await dataLoader.LoadAsync(article.Id, context.RequestAborted);
+                return comments.ToList(); // GroupDataLoader 返回 IEnumerable，需要转换为 List
             });
         }
     }
