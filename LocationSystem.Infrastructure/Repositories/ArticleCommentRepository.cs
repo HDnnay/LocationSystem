@@ -15,11 +15,11 @@ namespace LocationSystem.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<ArticleCommentGraphqLDto>> GetByArticleIdsAsync(IEnumerable<Guid> articleIds)
+        public async Task<Dictionary<Guid, ArticleCommentGraphqLDto>> GetByArticleIdsAsync(IEnumerable<Guid> articleIds)
         {
             return await _context.ArticleComments
                 .Where(c => articleIds.Contains(c.ArticleId)).ProjectToType<ArticleCommentGraphqLDto>()
-                .ToListAsync();
+                .ToDictionaryAsync(t => t.Id);
         }
     }
 }

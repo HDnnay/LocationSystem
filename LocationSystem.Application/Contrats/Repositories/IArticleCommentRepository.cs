@@ -5,6 +5,6 @@ namespace LocationSystem.Application.Contrats.Repositories
 {
     public interface IArticleCommentRepository : IRepository<ArticleComment>
     {
-        Task<IEnumerable<ArticleCommentGraphqLDto>> GetByArticleIdsAsync(IEnumerable<Guid> articleIds);
+        Task<Dictionary<Guid, ArticleCommentGraphqLDto>> GetByArticleIdsAsync(IEnumerable<Guid> articleIds);
     }
 }

@@ -1,4 +1,5 @@
-﻿using LocationSystem.Application.GrapqLDTOs.Articles;
+﻿using LocationSystem.Application.Features.ArticleComments.Queries.GetArticleCommentByIds;
+using LocationSystem.Application.GrapqLDTOs.Articles;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Presentation.DataLoaders
@@ -11,9 +12,11 @@ namespace LocationSystem.Presentation.DataLoaders
             _mediator = mediator;
         }
 
-        protected override Task<IReadOnlyDictionary<Guid, ArticleCommentGraphqLDto>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
+        protected override async Task<IReadOnlyDictionary<Guid, ArticleCommentGraphqLDto>> LoadBatchAsync(IReadOnlyList<Guid> keys, CancellationToken cancellationToken)
         {
-            var query = new GetArticleCommentByIdsQuery();
+            var query = new GetCommentByArticleIdsQuery() { Ids = keys };
+            var result = await _mediator.Send(query);
+            return result;
         }
     }
 }

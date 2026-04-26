@@ -6,9 +6,10 @@ namespace LocationSystem.Application.Features.ArticleComments.Queries.GetArticle
 {
     public class GetCommentByArticleIdsHandler(IArticleCommentRepository repository) : IRequestHandler<GetCommentByArticleIdsQuery, Dictionary<Guid, ArticleCommentGraphqLDto>>
     {
-        public Task<Dictionary<Guid, ArticleCommentGraphqLDto>> Handle(GetCommentByArticleIdsQuery request)
+        public async Task<Dictionary<Guid, ArticleCommentGraphqLDto>> Handle(GetCommentByArticleIdsQuery request)
         {
-            var reuslt = repository.GetByArticleIdsAsync(request.Ids);
+            var reuslt = await repository.GetByArticleIdsAsync(request.Ids);
+            return reuslt;
         }
     }
 }
