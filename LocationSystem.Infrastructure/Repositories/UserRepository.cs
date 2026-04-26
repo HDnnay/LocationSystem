@@ -107,6 +107,6 @@ namespace LocationSystem.Infrastructure.Repositories
             return result;
         }
 
-      
+
     }
 }

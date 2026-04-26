@@ -10,9 +10,9 @@ namespace LocationSystem.Application.Features.Articles.Commands.UpdateArticle
     public class UpdateArticleCommandHandler : IRequestHandler<UpdateArticleCommand, ArticleDto>
     {
         private readonly IArticleRepository _articleRepository;
-        private readonly ITagRepository _tagRepository;
+        private readonly IArticleTagRepository _tagRepository;
         private readonly IUnitOfWork _unitOfWork;
-        public UpdateArticleCommandHandler(IArticleRepository articleRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork)
+        public UpdateArticleCommandHandler(IArticleRepository articleRepository, IArticleTagRepository tagRepository, IUnitOfWork unitOfWork)
         {
             _articleRepository = articleRepository;
             _tagRepository = tagRepository;

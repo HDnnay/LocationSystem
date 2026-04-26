@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
-    public class TagRepository : Repository<ArticleTag>, ITagRepository
+    public class TagRepository : Repository<ArticleTag>, IArticleTagRepository
     {
         private readonly AppDbContext _context;
 

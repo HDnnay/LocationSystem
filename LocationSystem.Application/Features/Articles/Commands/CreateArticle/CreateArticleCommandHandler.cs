@@ -14,10 +14,10 @@ namespace LocationSystem.Application.Features.Articles.Commands.CreateArticle
     public class CreateArticleCommandHandler : IRequestHandler<CreateArticleCommand, ArticleDto>
     {
         private readonly IArticleRepository _articleRepository;
-        private readonly ITagRepository _tagRepository;
+        private readonly IArticleTagRepository _tagRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateArticleCommandHandler(IArticleRepository articleRepository, ITagRepository tagRepository, IUnitOfWork unitOfWork)
+        public CreateArticleCommandHandler(IArticleRepository articleRepository, IArticleTagRepository tagRepository, IUnitOfWork unitOfWork)
         {
             _articleRepository = articleRepository;
             _tagRepository = tagRepository;
