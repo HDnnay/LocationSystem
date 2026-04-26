@@ -1,6 +1,8 @@
-﻿using LocationSystem.Application.Features.Permissions.Queries.GetPermissions;
+﻿using LocationSystem.Application.Features.Articles.Queries.GetArticles;
+using LocationSystem.Application.Features.Permissions.Queries.GetPermissions;
 using LocationSystem.Application.Features.Roles.Queries.GetRoles;
 using LocationSystem.Application.Features.Users.Queries.GetUsers;
+using LocationSystem.Application.GrapqLDTOs.Articles;
 using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Application.GrapqLDTOs.Users;
@@ -56,14 +58,14 @@ namespace LocationSystem.Presentation.GraphQL
             return model;
         }
 
-        [UsePaging(typeof(Models.MenuType), IncludeTotalCount = true)]
+        [UsePaging(typeof(Models.ArticleType), IncludeTotalCount = true)]
         [UseSorting]
         [UseFiltering]
         [GraphQLDescription("获取菜单列表")]
-        [GraphQLName("menus")]
-        public async Task<IQueryable<PermissionGraphqLDto>> GetMenus([Service] IMediator mediator)
+        [GraphQLName("articles")]
+        public async Task<IQueryable<ArticleGraphqLDto>> GetArticless([Service] IMediator mediator)
         {
-            var query = new GetPermissionsQuery();
+            var query = new GetArticlesQuery();
             var model = await mediator.Send(query);
             return model;
         }
