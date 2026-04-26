@@ -55,5 +55,17 @@ namespace LocationSystem.Presentation.GraphQL
             var model = await mediator.Send(query);
             return model;
         }
+
+        [UsePaging(typeof(Models.MenuType), IncludeTotalCount = true)]
+        [UseSorting]
+        [UseFiltering]
+        [GraphQLDescription("获取菜单列表")]
+        [GraphQLName("menus")]
+        public async Task<IQueryable<PermissionGraphqLDto>> GetMenus([Service] IMediator mediator)
+        {
+            var query = new GetPermissionsQuery();
+            var model = await mediator.Send(query);
+            return model;
+        }
     }
 }
