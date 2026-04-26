@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Dtos\Snapshots\" />
+    <Folder Include="Features\ArticleImages\Commands\" />
     <Folder Include="Features\ArticleLogs\Commands\" />
     <Folder Include="Features\ArticleTags\Commands\" />
     <Folder Include="Features\Permissions\Queries\GetPermissionByIds\" />
