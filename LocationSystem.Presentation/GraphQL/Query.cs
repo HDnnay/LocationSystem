@@ -1,4 +1,5 @@
 ﻿using LocationSystem.Application.Features.Articles.Queries.GetArticles;
+using LocationSystem.Application.Features.ArticleTags.Queries.GetArticleTags;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissions;
 using LocationSystem.Application.Features.Roles.Queries.GetRoles;
 using LocationSystem.Application.Features.Users.Queries.GetUsers;
@@ -63,9 +64,21 @@ namespace LocationSystem.Presentation.GraphQL
         [UseFiltering]
         [GraphQLDescription("获取文章列表")]
         [GraphQLName("articles")]
-        public async Task<IQueryable<ArticleGraphqLDto>> GetArticless([Service] IMediator mediator)
+        public async Task<IQueryable<ArticleGraphqLDto>> GetArticles([Service] IMediator mediator)
         {
             var query = new GetArticlesQuery();
+            var model = await mediator.Send(query);
+            return model;
+        }
+
+        [UsePaging(typeof(Models.ArticleTagType), IncludeTotalCount = true)]
+        [UseSorting]
+        [UseFiltering]
+        [GraphQLDescription("获取文章标签列表")]
+        [GraphQLName("articleTags")]
+        public async Task<IQueryable<ArticleTagGraphqLDto>> GetArticleTag([Service] IMediator mediator)
+        {
+            var query = new GetArticleTagsQuery();
             var model = await mediator.Send(query);
             return model;
         }
