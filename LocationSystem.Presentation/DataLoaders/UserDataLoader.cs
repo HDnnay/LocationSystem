@@ -7,8 +7,8 @@ namespace LocationSystem.Presentation.DataLoaders
 {
     public class UserDataLoader : BatchDataLoader<Guid, UserGraphqLDto>
     {
-        private readonly IMediator _mediator;
-        private readonly IServiceScopeFactory _scopeFactory; // 注入作用域工厂
+        private readonly IServiceScopeFactory _scopeFactory;
+
         public UserDataLoader(
             IServiceScopeFactory scopeFactory,
             IBatchScheduler batchScheduler,
@@ -21,12 +21,14 @@ namespace LocationSystem.Presentation.DataLoaders
         protected override async Task<IReadOnlyDictionary<Guid, UserGraphqLDto>> LoadBatchAsync(
             IReadOnlyList<Guid> keys,
             CancellationToken cancellationToken)
-
         {
+            // 创建临时作用域，确保 DbContext 隔离
             using var scope = _scopeFactory.CreateScope();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
             var query = new GetUserByIdsQuery(keys);
             var model = await mediator.Send(query);
+
             return model;
         }
     }
