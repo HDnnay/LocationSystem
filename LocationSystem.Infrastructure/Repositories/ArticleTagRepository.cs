@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
-    public class TagRepository : Repository<ArticleTag>, IArticleTagRepository
+    public class ArticleTagRepository : Repository<ArticleTag>, IArticleTagRepository
     {
         private readonly AppDbContext _context;
 
-        public TagRepository(AppDbContext context) : base(context)
+        public ArticleTagRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }
@@ -35,7 +35,7 @@ namespace LocationSystem.Infrastructure.Repositories
 
             // 创建包含文章ID和标签信息的列表
             var tagPairs = new List<(Guid ArticleId, ArticleTagGraphqLDto Tag)>();
-            
+
             foreach (var relation in relations)
             {
                 var tagDto = new ArticleTagGraphqLDto
