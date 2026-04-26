@@ -3,6 +3,7 @@ using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Exceptions;
 using LocationSystem.Application.Extentions;
 using LocationSystem.Application.Features.Users.Queries;
+using LocationSystem.Application.GrapqLDTOs.Users;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using LocationSystem.Infrastructure.Utilities;
 using Mapster;
@@ -99,12 +100,21 @@ namespace LocationSystem.Infrastructure.Repositories
             return user;
         }
 
-        public async Task<Dictionary<Guid, UserDto>> GetUserByIds(IReadOnlyList<Guid> ids, CancellationToken cts = default)
+        public async Task<Dictionary<Guid, UserGraphqLDto>> GetUserByIds(IReadOnlyList<Guid> ids)
         {
-            var result = await _context.Users.AsNoTracking()
+            try
+            {
+                var result = await _context.Users.AsNoTracking()
                 .WhereNotDeleted(t => ids.Contains(t.Id)&&t.IsDisabled==false)
-                .ToDictionaryAsync(t => t.Id, t => t.Adapt<UserDto>(), cts);
-            return result;
+                .Select(t => t.Adapt<UserGraphqLDto>())
+                .ToDictionaryAsync(t => t.Id);
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
         }
 
 

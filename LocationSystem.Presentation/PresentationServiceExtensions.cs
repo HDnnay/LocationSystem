@@ -13,7 +13,6 @@ namespace LocationSystem.Presentation
                  .AddAuthorization()
                  .AddQueryType<QueryType>()
                  .AddMutationType<MutationType>()
-                 .AddType<Models.UserType>()
                  .AddCostAnalyzer()
                  .ModifyCostOptions(options =>
                     {
@@ -34,7 +33,16 @@ namespace LocationSystem.Presentation
                         options.EnforceCostLimits = true;
                     })
                  .AddSorting()
-                 .AddFiltering();
+                 .AddFiltering()
+                 .AddDataLoader<DataLoaders.ArticleCommentDataLoader>()
+                 //.AddDataLoader<DataLoaders.ArticleImageDataLoader>()
+                 //.AddDataLoader<DataLoaders.ArticleLogDataLoader>()
+                 //.AddDataLoader<DataLoaders.ArticleTagDataLoader>()
+                 .AddDataLoader<DataLoaders.UserDataLoader>()
+                 .AddDataLoader<DataLoaders.RoleDataLoader>()
+                 .AddDataLoader<DataLoaders.UserRoleDataLoader>()
+                 .AddDataLoader<DataLoaders.PermissionDataLoader>()
+                 .AddDataLoader<DataLoaders.MenuDataLoader>();
             return services;
         }
     }

@@ -1,11 +1,11 @@
-﻿using LocationSystem.Application.Dtos.Users;
+using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 using Mapster;
 using System.ComponentModel;
 
 namespace LocationSystem.Application.GrapqLDTOs.Users
 {
-    [AdaptTo(typeof(UserDto))]
+    [AdaptFrom(typeof(UserDto))]
 
     public class UserGraphqLDto
     {

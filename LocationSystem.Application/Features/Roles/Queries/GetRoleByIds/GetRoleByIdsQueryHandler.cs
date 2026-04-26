@@ -1,4 +1,4 @@
-﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Application.Utilities;
 

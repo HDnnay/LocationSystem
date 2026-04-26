@@ -1,4 +1,4 @@
-﻿﻿using LocationSystem.Application.GrapqLDTOs.Articles;
+﻿using LocationSystem.Application.GrapqLDTOs.Articles;
 using LocationSystem.Domain.Enums;
 using LocationSystem.Presentation.DataLoaders;
 

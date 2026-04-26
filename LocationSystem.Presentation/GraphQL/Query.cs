@@ -61,7 +61,7 @@ namespace LocationSystem.Presentation.GraphQL
         [UsePaging(typeof(Models.ArticleType), IncludeTotalCount = true)]
         [UseSorting]
         [UseFiltering]
-        [GraphQLDescription("获取菜单列表")]
+        [GraphQLDescription("获取文章列表")]
         [GraphQLName("articles")]
         public async Task<IQueryable<ArticleGraphqLDto>> GetArticless([Service] IMediator mediator)
         {
