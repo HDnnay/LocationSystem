@@ -10,4 +10,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Security\Extensions\" />
+    <Folder Include="Security\Factories\" />
+    <Folder Include="Security\Models\" />
+  </ItemGroup>
+
 </Project>
