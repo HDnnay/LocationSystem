@@ -1,4 +1,5 @@
-﻿using LocationSystem.Application.Features.ArticleLogs.Queries.GetAricleLogs;
+﻿using HotChocolate.Authorization;
+using LocationSystem.Application.Features.ArticleLogs.Queries.GetAricleLogs;
 using LocationSystem.Application.Features.Articles.Queries.GetArticles;
 using LocationSystem.Application.Features.ArticleTags.Queries.GetArticleTags;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissions;
@@ -12,6 +13,8 @@ using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Presentation.GraphQL
 {
+    [Authorize]
+
     public class Query
     {
         [UsePaging(typeof(Models.UserType), IncludeTotalCount = true)]

@@ -203,7 +203,7 @@ try
     app.MapControllers();
 
     // 配置 GraphQL 中间件
-    app.MapGraphQL();
+    app.MapGraphQL().RequireAuthorization();
 
     app.Run();
 }

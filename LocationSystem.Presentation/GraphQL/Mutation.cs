@@ -5,6 +5,8 @@ using Mapster;
 
 namespace LocationSystem.Presentation.GraphQL
 {
+
+
     public class Mutation
     {
         public async Task<UserType> CreateUserAsync(

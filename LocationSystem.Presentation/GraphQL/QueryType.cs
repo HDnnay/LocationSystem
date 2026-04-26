@@ -1,5 +1,6 @@
 ﻿namespace LocationSystem.Presentation.GraphQL
 {
+
     public class QueryType : ObjectType<Query>
     {
 
