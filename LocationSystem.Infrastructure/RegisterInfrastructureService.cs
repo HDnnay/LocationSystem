@@ -14,7 +14,7 @@ namespace LocationSystem.Infrastructure
             // Register Infrastructure services here
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer("name=SqlServerConnectionString"));
-
+            #region ²Ö´¢×¢²á
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IRentHouseRepository, RentHouseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -29,6 +29,7 @@ namespace LocationSystem.Infrastructure
             services.AddScoped<IArticleLogRepository, ArticleLogRepository>();
             services.AddScoped<IDeletedSnapshotRepository, DeletedSnapshotRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWorkCore>();
+            #endregion 
             return services;
         }
     }
