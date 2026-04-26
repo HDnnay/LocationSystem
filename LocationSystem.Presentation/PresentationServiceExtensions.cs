@@ -1,4 +1,5 @@
 ﻿using LocationSystem.Presentation.GraphQL;
+using LocationSystem.Presentation.Security;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LocationSystem.Presentation
@@ -10,9 +11,10 @@ namespace LocationSystem.Presentation
             services.AddScoped<QueryType>()
                  .AddScoped<MutationType>()
                  .AddGraphQLServer()
-                 .AddAuthorization()
+                 //.AddAuthorization()
                  .AddQueryType<QueryType>()
                  .AddMutationType<MutationType>()
+                 .UseField<GlobalGraphQLPermissionMiddleware>() // 全局中间件
                  .AddCostAnalyzer()
                  .ModifyCostOptions(options =>
                     {
