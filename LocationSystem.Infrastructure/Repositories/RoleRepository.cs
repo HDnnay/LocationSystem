@@ -1,9 +1,8 @@
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Domain.Entities.UserRolePermissions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
@@ -56,6 +55,33 @@ namespace LocationSystem.Infrastructure.Repositories
                 .SelectMany(u => u.Roles)
                 .Include(r => r.Permissions)
                 .ToListAsync();
+        }
+
+        public Task<Dictionary<Guid, RoleGraphqLDto>> GetRoleByIds(IReadOnlyList<Guid> ids, CancellationToken cts = default)
+        {
+            return _context.Roles.Where(t => ids.Contains(t.Id)).Select(t => t.Adapt<RoleGraphqLDto>()).ToDictionaryAsync(t => t.Id);
+        }
+
+        public async Task<Dictionary<Guid, List<RoleGraphqLDto>>> GetRolesByUserIdsAsync(IReadOnlyList<Guid> userIds)
+        {
+            if (userIds == null || !userIds.Any())
+                return new Dictionary<Guid, List<RoleGraphqLDto>>();
+
+            // 查询用户角色关系，包含权限信息
+            var userRoles = await _context.Users
+                .Where(u => userIds.Contains(u.Id))
+                .Select(u => new
+                {
+                    UserId = u.Id,
+                    Roles = u.Roles.Select(r => r.Adapt<RoleGraphqLDto>()).ToList()
+                })
+                .ToListAsync();
+
+            // 转换为字典格式
+            return userRoles.ToDictionary(
+                ur => ur.UserId,
+                ur => ur.Roles
+            );
         }
     }
 }

@@ -1,19 +1,19 @@
-﻿using LocationSystem.Application.Contrats.Repositories;
-using LocationSystem.Application.Dtos.Users;
+using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.GrapqLDTOs.Users;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Users.Queries.GetUserByIds
 {
-    public class GetUserByIdsQueryHandler : IRequestHandler<GetUserByIdsQuery, Dictionary<Guid, UserDto>>
+    public class GetUserByIdsQueryHandler : IRequestHandler<GetUserByIdsQuery, Dictionary<Guid, UserGraphqLDto>>
     {
         private readonly IUserRepository repository;
         public GetUserByIdsQueryHandler(IUserRepository userRepository)
         {
             repository = userRepository;
         }
-        public Task<Dictionary<Guid, UserDto>> Handle(GetUserByIdsQuery request)
+        public async Task<Dictionary<Guid, UserGraphqLDto>> Handle(GetUserByIdsQuery request)
         {
-            return repository.GetUserByIds(request.Ids);
+            return await repository.GetUserByIds(request.Ids);
         }
     }
 }

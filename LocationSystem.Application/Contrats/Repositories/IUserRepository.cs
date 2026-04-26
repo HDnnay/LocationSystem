@@ -1,5 +1,6 @@
 using LocationSystem.Application.Dtos.Users;
 using LocationSystem.Application.Features.Users.Queries;
+using LocationSystem.Application.GrapqLDTOs.Users;
 using LocationSystem.Domain.Entities.UserRolePermissions;
 
 namespace LocationSystem.Application.Contrats.Repositories
@@ -14,6 +15,6 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<List<User>> GetByIdsWithRolesAsync(List<Guid> userIds);
         Task<User?> DeleteUserAsync(Guid UserId);
 
-        Task<Dictionary<Guid, UserDto>> GetUserByIds(IReadOnlyList<Guid> ids, CancellationToken cts = default);
+        Task<Dictionary<Guid, UserGraphqLDto>> GetUserByIds(IReadOnlyList<Guid> ids);
     }
 }

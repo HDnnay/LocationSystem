@@ -1,8 +1,10 @@
 using LocationSystem.Application.Contrats.Repositories;
 using LocationSystem.Application.Dtos.Permissions;
 using LocationSystem.Application.Exceptions;
+using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Application.Utilities.Common;
 using LocationSystem.Domain.Entities.UserRolePermissions;
+using Mapster;
 using Microsoft.EntityFrameworkCore;
 
 namespace LocationSystem.Infrastructure.Repositories
@@ -168,6 +170,20 @@ namespace LocationSystem.Infrastructure.Repositories
                 .Include(p => p.Roles)
                 .Include(p => p.Parent)
                 .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<Dictionary<Guid, PermissionGraphqLDto>> GetPermissionsByIdsAsync(IReadOnlyList<Guid> permissionIds)
+        {
+            if (permissionIds == null || !permissionIds.Any())
+                return new Dictionary<Guid, PermissionGraphqLDto>();
+
+            // 根据 ID 查找权限（批量版本）
+            var permissions = await _context.Permissions
+                .Where(p => permissionIds.Contains(p.Id))
+                .ProjectToType<PermissionGraphqLDto>()
+                .ToListAsync();
+
+            return permissions.ToDictionary(p => p.Id, p => p);
         }
     }
 }

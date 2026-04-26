@@ -1,9 +1,9 @@
-﻿using LocationSystem.Application.Dtos.Users;
+﻿using LocationSystem.Application.GrapqLDTOs.Users;
 using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Application.Features.Users.Queries.GetUserByIds
 {
-    public class GetUserByIdsQuery : IRequest<Dictionary<Guid, UserDto>>
+    public class GetUserByIdsQuery : IRequest<Dictionary<Guid, UserGraphqLDto>>
     {
         public GetUserByIdsQuery(IReadOnlyList<Guid>? ids)
         {

@@ -1,7 +1,4 @@
 using LocationSystem.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Domain.Entities.UserRolePermissions
 {
@@ -17,7 +14,7 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
         public bool IsDisabled { get; private set; } = false;
-        public bool IsSuperAdmin { get;private set; }
+        public bool IsSuperAdmin { get; private set; }
         // 导航属性
         public ICollection<Permission> Permissions { get; private set; } = new List<Permission>();
         public ICollection<User> Users { get; private set; } = new List<User>();
@@ -42,7 +39,7 @@ namespace LocationSystem.Domain.Entities.UserRolePermissions
             Description = description;
             CreatedAt = DateTime.UtcNow;
         }
-        public Role(string name,string code,bool isSuperAdmin,string? description=null):this(name,code,description)
+        public Role(string name, string code, bool isSuperAdmin, string? description = null) : this(name, code, description)
         {
             IsSuperAdmin = isSuperAdmin;
         }

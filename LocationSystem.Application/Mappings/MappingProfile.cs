@@ -1,14 +1,15 @@
-using Mapster;
+using LocationSystem.Application.Dtos.Articles;
+using LocationSystem.Application.Dtos.Menus;
+using LocationSystem.Application.Dtos.Permissions;
+using LocationSystem.Application.Dtos.RentHouses;
+using LocationSystem.Application.Dtos.Roles;
+using LocationSystem.Application.Dtos.Users;
+using LocationSystem.Application.GrapqLDTOs.Users;
 using LocationSystem.Domain.Entities;
 using LocationSystem.Domain.Entities.Articles;
 using LocationSystem.Domain.Entities.Menus;
 using LocationSystem.Domain.Entities.UserRolePermissions;
-using LocationSystem.Application.Dtos.RentHouses;
-using LocationSystem.Application.Dtos.Articles;
-using LocationSystem.Application.Dtos.Menus;
-using LocationSystem.Application.Dtos.Permissions;
-using LocationSystem.Application.Dtos.Roles;
-using LocationSystem.Application.Dtos.Users;
+using Mapster;
 
 namespace LocationSystem.Application.Mappings
 {
@@ -32,6 +33,8 @@ namespace LocationSystem.Application.Mappings
                 .Map(dest => dest.UserType, src => src.UserType.ToString())
                 .Map(dest => dest.Email, src => src.Email.Value);
 
+
+
             // 角色映射
             config.NewConfig<Role, RoleDto>()
                 .PreserveReference(true); // 启用循环引用检测
@@ -43,6 +46,11 @@ namespace LocationSystem.Application.Mappings
 
             // 租房映射
             config.NewConfig<RentHouse, RentHouseListDto>();
+            #region Graphql
+            // GraphQL 用户映射
+            config.NewConfig<User, UserGraphqLDto>()
+                .Map(dest => dest.Email, src => src.Email.Value);
+            #endregion
         }
     }
 }

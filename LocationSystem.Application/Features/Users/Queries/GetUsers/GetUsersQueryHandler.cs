@@ -1,10 +1,11 @@
 ﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.GrapqLDTOs.Users;
 using LocationSystem.Application.Utilities;
-using LocationSystem.Domain.Entities.UserRolePermissions;
+using Mapster;
 
 namespace LocationSystem.Application.Features.Users.Queries.GetUsers
 {
-    public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IQueryable<User>>
+    public class GetUsersQueryHandler : IRequestHandler<GetUsersQuery, IQueryable<UserGraphqLDto>>
     {
         private readonly IUserRepository _repository;
         public GetUsersQueryHandler(IUserRepository repository)
@@ -12,9 +13,9 @@ namespace LocationSystem.Application.Features.Users.Queries.GetUsers
             _repository = repository;
         }
 
-        public Task<IQueryable<User>> Handle(GetUsersQuery request)
+        public Task<IQueryable<UserGraphqLDto>> Handle(GetUsersQuery request)
         {
-            var result = _repository.Query();
+            var result = _repository.Query().ProjectToType<UserGraphqLDto>();
             return Task.FromResult(result);
         }
     }

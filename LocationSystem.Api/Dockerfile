@@ -8,13 +8,14 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 # 创建项目目录结构
-RUN mkdir -p LocationSystem.Api LocationSystem.Application LocationSystem.Domain LocationSystem.Infrastructure
+RUN mkdir -p LocationSystem.Api LocationSystem.Application LocationSystem.Domain LocationSystem.Infrastructure LocationSystem.Presentation
 
 # 复制项目文件
 COPY LocationSystem.Api ./LocationSystem.Api
 COPY LocationSystem.Application ./LocationSystem.Application
 COPY LocationSystem.Domain ./LocationSystem.Domain
 COPY LocationSystem.Infrastructure ./LocationSystem.Infrastructure
+COPY LocationSystem.Presentation ./LocationSystem.Presentation
 
 # 还原依赖
 RUN dotnet restore LocationSystem.Api/LocationSystem.Api.csproj

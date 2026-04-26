@@ -1,8 +1,5 @@
-using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Domain.Entities.UserRolePermissions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LocationSystem.Application.Contrats.Repositories
 {
@@ -14,5 +11,7 @@ namespace LocationSystem.Application.Contrats.Repositories
         Task<IEnumerable<Role>> GetRolesWithPermissionsAsync();
         Task<List<Role>> GetRolesWithPermissionsByIdsAsync(List<Guid> roleIds);
         Task<IEnumerable<Role>> GetRolesByUserIdAsync(Guid userId);
+        Task<Dictionary<Guid, List<RoleGraphqLDto>>> GetRolesByUserIdsAsync(IReadOnlyList<Guid> userIds);
+        Task<Dictionary<Guid, RoleGraphqLDto>> GetRoleByIds(IReadOnlyList<Guid> ids, CancellationToken cts = default);
     }
 }
