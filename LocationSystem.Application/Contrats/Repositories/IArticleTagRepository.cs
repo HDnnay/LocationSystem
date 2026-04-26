@@ -1,3 +1,4 @@
+using LocationSystem.Application.GrapqLDTOs.Articles;
 using LocationSystem.Domain.Entities.Articles;
 using System;
 using System.Collections.Generic;
@@ -9,5 +10,6 @@ namespace LocationSystem.Application.Contrats.Repositories
     public interface IArticleTagRepository : IRepository<ArticleTag>
     {
         Task<IEnumerable<ArticleTag>> GetByIdsAsync(IEnumerable<Guid> ids);
+        Task<Dictionary<Guid, List<ArticleTagGraphqLDto>>> GetTagsByArticleIdsAsync(IReadOnlyList<Guid> articleIds, CancellationToken cancellationToken = default);
     }
 }

@@ -37,6 +37,13 @@ namespace LocationSystem.Presentation.Models
                 var comments = await dataLoader.LoadAsync(article.Id, context.RequestAborted);
                 return comments.ToList(); // GroupDataLoader 返回 IEnumerable，需要转换为 List
             });
+            descriptor.Field("tags").Type<ListType<ArticleTagType>>().Description("标签列表").Resolve(async context =>
+            {
+                var article = context.Parent<ArticleGraphqLDto>();
+                var dataLoader = context.DataLoader<ArticleTagDataLoader>();
+                var tags = await dataLoader.LoadAsync(article.Id, context.RequestAborted);
+                return tags.ToList(); // GroupDataLoader 返回 IEnumerable，需要转换为 List
+            });
         }
     }
 }
