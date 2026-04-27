@@ -3,7 +3,6 @@ using LocationSystem.Application.Utilities;
 using LocationSystem.Core;
 using LocationSystem.Core.Security.Abstractions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -37,8 +36,7 @@ namespace LocationSystem.Presentation.Security
             var userId = ExtractUserId(context);
             if (userId == null)
             {
-                context.Result = new UnauthorizedResult();
-                return;
+                throw new GraphQLException("用户未登录！");
             }
 
             // 使用 Core 层的验证服务
@@ -67,7 +65,11 @@ namespace LocationSystem.Presentation.Security
 
         private Guid? ExtractUserId(IMiddlewareContext context)
         {
-            var httpContext = context.GetGlobalState<HttpContext>("HttpContext");
+            //var httpContext = context.GetGlobalState<HttpContext>("HttpContext");
+            //return httpContext?.User?.GetUserId();
+            var scope = context.RequestServices.CreateScope();
+            var httpContextAsscessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
+            var httpContext = httpContextAsscessor?.HttpContext;
             return httpContext?.User?.GetUserId();
         }
     }
