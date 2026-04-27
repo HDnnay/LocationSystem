@@ -1,6 +1,6 @@
 ﻿using LocationSystem.Application.Features.Users.Commands.CreateUser;
 
-namespace LocationSystem.Presentation.InputTypes
+namespace LocationSystem.Presentation.Commands
 {
     public class CreateUserCommandType : InputObjectType<CreateUserCommand>
     {
