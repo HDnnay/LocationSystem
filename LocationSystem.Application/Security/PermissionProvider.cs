@@ -1,6 +1,8 @@
 ﻿// LocationSystem.Application/Security/PermissionProvider.cs
 using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.Utilities;
 using LocationSystem.Core.Security.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace LocationSystem.Application.Security
@@ -10,20 +12,19 @@ namespace LocationSystem.Application.Security
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly IPermissionRepository _permissionRepository;
-        private readonly IPermissionMenuRepository _permissionMenuRepository;
         private readonly ILogger<PermissionProvider> _logger;
-
+        private readonly IServiceProvider _serviceProvider;
         public PermissionProvider(
             IUserRepository userRepository,
             IRoleRepository roleRepository,
             IPermissionRepository permissionRepository,
-            IPermissionMenuRepository permissionMenuRepository,
+            IServiceProvider serviceProvider,
             ILogger<PermissionProvider> logger)
         {
             _userRepository = userRepository;
             _roleRepository = roleRepository;
             _permissionRepository = permissionRepository;
-            _permissionMenuRepository = permissionMenuRepository;
+            _serviceProvider = serviceProvider;
             _logger = logger;
         }
 
@@ -31,21 +32,19 @@ namespace LocationSystem.Application.Security
         {
             try
             {
-                // 1. 获取用户角色权限
-                var rolePermissions = await GetUserRolePermissionCodesAsync(userId);
+                var cacheService = _serviceProvider.GetRequiredService<ICacheService>();
+                var cacheKey = CacheKeys.UserPermissions(userId);
 
-                // 2. 获取用户直接权限
-                var directPermissions = await GetUserDirectPermissionCodesAsync(userId);
+                // 从缓存中获取用户权限或创建缓存
+                var userPermissions = await cacheService.GetOrCreateAsync<List<string>>(cacheKey, async (options) =>
+                {
+                    // 获取权限管理服务
+                    var permissionManagement = _serviceProvider.GetRequiredService<LocationSystem.Application.Services.PermissionManagement>();
+                    // 获取用户的所有权限代码
+                    return await permissionManagement.GetUserPermissionCodesAsync(userId);
+                }, 1800);
 
-                // 3. 合并权限并去重
-                var allPermissions = rolePermissions
-                    .Union(directPermissions)
-                    .Distinct()
-                    .ToList();
-
-                _logger.LogDebug("用户 {UserId} 拥有 {Count} 个权限", userId, allPermissions.Count);
-
-                return allPermissions;
+                return userPermissions!;
             }
             catch (Exception ex)
             {
@@ -93,9 +92,8 @@ namespace LocationSystem.Application.Security
             try
             {
                 var userRoles = await _roleRepository.GetRolesByUserIdAsync(userId);
-                var superAdminRoleCode = GetSuperAdminRoleCode();
-
-                return userRoles?.Any(role => role?.Code == superAdminRoleCode) == true;
+                var isSuperAdmin = userRoles.Any(role => role != null && role.IsSuperAdmin);
+                return isSuperAdmin;
             }
             catch (Exception ex)
             {
@@ -134,9 +132,9 @@ namespace LocationSystem.Application.Security
             _logger.LogInformation("刷新用户权限缓存: {UserId}", userId);
         }
 
-        public Task<List<string>> GetUserPermissionsAsync(Guid userId)
+        public async Task<List<string>> GetUserPermissionsAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            return await GetUserPermissionCodesAsync(userId);
         }
     }
 }

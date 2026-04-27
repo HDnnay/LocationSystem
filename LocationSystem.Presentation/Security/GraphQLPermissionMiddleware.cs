@@ -3,6 +3,7 @@ using LocationSystem.Application.Utilities;
 using LocationSystem.Core;
 using LocationSystem.Core.Security.Abstractions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -36,7 +37,8 @@ namespace LocationSystem.Presentation.Security
             var userId = ExtractUserId(context);
             if (userId == null)
             {
-                //  throw new GraphQLException("用户未认证");
+                context.Result = new UnauthorizedResult();
+                return;
             }
 
             // 使用 Core 层的验证服务
