@@ -9,26 +9,20 @@ namespace LocationSystem.Application.Security
 {
     public class PermissionProvider : IPermissionProvider
     {
-        private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
-        private readonly IPermissionRepository _permissionRepository;
         private readonly ILogger<PermissionProvider> _logger;
         private readonly IServiceProvider _serviceProvider;
         public PermissionProvider(
-            IUserRepository userRepository,
             IRoleRepository roleRepository,
-            IPermissionRepository permissionRepository,
             IServiceProvider serviceProvider,
             ILogger<PermissionProvider> logger)
         {
-            _userRepository = userRepository;
             _roleRepository = roleRepository;
-            _permissionRepository = permissionRepository;
             _serviceProvider = serviceProvider;
             _logger = logger;
         }
 
-        public async Task<List<string>> GetUserPermissionCodesAsync(Guid userId)
+        private async Task<List<string>> GetUserPermissionCodesAsync(Guid userId)
         {
             try
             {
@@ -53,7 +47,7 @@ namespace LocationSystem.Application.Security
             }
         }
 
-        public async Task<List<string>> GetUserRolePermissionCodesAsync(Guid userId)
+        private async Task<List<string>> GetUserRolePermissionCodesAsync(Guid userId)
         {
             // 1. 获取用户角色
             var userRoles = await _roleRepository.GetRolesByUserIdAsync(userId);
@@ -80,7 +74,7 @@ namespace LocationSystem.Application.Security
             return rolePermissionCodes.Distinct().ToList();
         }
 
-        public async Task<List<string>> GetUserDirectPermissionCodesAsync(Guid userId)
+        private async Task<List<string>> GetUserDirectPermissionCodesAsync(Guid userId)
         {
             // 实现获取用户直接分配的权限
             // 这里可以根据你的业务逻辑实现
@@ -102,19 +96,19 @@ namespace LocationSystem.Application.Security
             }
         }
 
-        public string GetSuperAdminRoleCode()
+        private string GetSuperAdminRoleCode()
         {
             return "admin"; // 可以从配置中读取
         }
 
-        public async Task<Dictionary<string, List<Guid>>> GetUserDataLevelPermissionsAsync(Guid userId)
+        private async Task<Dictionary<string, List<Guid>>> GetUserDataLevelPermissionsAsync(Guid userId)
         {
             // 实现数据级权限查询
             // 返回格式: { "Article": [guid1, guid2], "User": [guid3] }
             return new Dictionary<string, List<Guid>>();
         }
 
-        public async Task<bool> HasDataLevelPermissionAsync(Guid userId, string resourceType, Guid resourceId)
+        private async Task<bool> HasDataLevelPermissionAsync(Guid userId, string resourceType, Guid resourceId)
         {
             var dataLevelPermissions = await GetUserDataLevelPermissionsAsync(userId);
 
@@ -126,7 +120,7 @@ namespace LocationSystem.Application.Security
             return false;
         }
 
-        public async Task RefreshUserPermissionsCacheAsync(Guid userId)
+        private async Task RefreshUserPermissionsCacheAsync(Guid userId)
         {
             // 实现权限缓存刷新逻辑
             _logger.LogInformation("刷新用户权限缓存: {UserId}", userId);

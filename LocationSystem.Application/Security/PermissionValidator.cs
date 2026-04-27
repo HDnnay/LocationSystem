@@ -32,7 +32,7 @@ namespace LocationSystem.Application.Security
                 var validationResult = PermissionValidationResult.Success(true);
                 return validationResult;
             }
-            var codes = await _permissionProvider.GetUserPermissionCodesAsync(context.UserId);
+            var codes = await _permissionProvider.GetUserPermissionsAsync(context.UserId);
             // 检查用户是否有权限
             if (codes.Contains(context.PermissionCode))
             {
