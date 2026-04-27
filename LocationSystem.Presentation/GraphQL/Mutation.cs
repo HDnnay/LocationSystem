@@ -16,6 +16,6 @@ namespace LocationSystem.Presentation.GraphQL
             var model = await mediator.Send(command);
             return model.Adapt<UserType>();
         }
-
+        public async Task<>
     }
 }

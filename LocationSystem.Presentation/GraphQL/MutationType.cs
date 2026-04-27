@@ -13,6 +13,7 @@ namespace LocationSystem.Presentation.GraphQL
                 .Description("创建用户")
                 .Argument("command", a => a.Type<NonNullType<CreateUserCommandType>>())
                 .Type<NonNullType<UserType>>();
+            descriptor.Field(m => m.)
         }
     }
 }
