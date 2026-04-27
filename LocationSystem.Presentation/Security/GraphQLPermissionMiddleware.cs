@@ -65,8 +65,6 @@ namespace LocationSystem.Presentation.Security
 
         private Guid? ExtractUserId(IMiddlewareContext context)
         {
-            //var httpContext = context.GetGlobalState<HttpContext>("HttpContext");
-            //return httpContext?.User?.GetUserId();
             var scope = context.RequestServices.CreateScope();
             var httpContextAsscessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
             var httpContext = httpContextAsscessor?.HttpContext;
