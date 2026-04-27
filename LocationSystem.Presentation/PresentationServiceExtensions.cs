@@ -10,7 +10,7 @@ namespace LocationSystem.Presentation
             services.AddScoped<QueryType>()
                  .AddScoped<MutationType>()
                  .AddGraphQLServer()
-                 //.AddAuthorization()
+                 .AddAuthorization()
                  .AddQueryType<QueryType>()
                  .AddMutationType<MutationType>()
                  .AddCostAnalyzer()

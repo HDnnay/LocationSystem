@@ -143,6 +143,7 @@ try
 
     app.UseCustomExceptionHandler();
     app.UseCors("AllowFrontend");
+    //认证中间件
     app.UseAuthentication();
     // // 1. 添加自定义中间件来拦截静态文件请求
     app.Use(async (context, next) =>
@@ -196,14 +197,15 @@ try
             ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=604800");
         }
     });
+    //授权Authorization
     app.UseAuthorization();
 
     // 配置 SignalR Hub 路由
     app.MapHub<MenuHub>("/hub/menu");
     app.MapControllers();
 
-    // 配置 GraphQL 中间件
-    app.MapGraphQL();//.RequireAuthorization();
+    // 配置 GraphQL 中间件,授权Authorization
+    app.MapGraphQL().RequireAuthorization();
 
     app.Run();
 }

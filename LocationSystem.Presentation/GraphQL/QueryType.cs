@@ -1,8 +1,10 @@
-﻿﻿using LocationSystem.Presentation.Extensions;
+﻿using HotChocolate.Authorization;
+using LocationSystem.Presentation.Extensions;
 using LocationSystem.Presentation.Models;
 
 namespace LocationSystem.Presentation.GraphQL
 {
+    [Authorize]
     public class QueryType : ObjectType<Query>
     {
         protected override void Configure(IObjectTypeDescriptor<Query> descriptor)
@@ -12,25 +14,25 @@ namespace LocationSystem.Presentation.GraphQL
             // 文章相关字段 - 添加权限中间件
             descriptor.Field(q => q.GetArticles(default!))
                 .Type<ListType<ArticleType>>()
-                .UsePermissionMiddleware("article.list.read")  // 字段级权限中间件
+                .UsePermissionMiddleware("article:view")  // 字段级权限中间件
                 .Description("获取文章列表，支持过滤和排序");
 
             // 用户相关字段 - 需要管理员权限
             descriptor.Field(q => q.GetUsers(default!))
                 .Type<ListType<UserType>>()
-                .RequireAllPermissions("user.list.read", "admin.access")  // 需要所有权限
+                .RequireAllPermissions("user:view")  // 需要所有权限
                 .Description("获取用户列表（需要管理员权限）");
 
             // 角色相关字段 - 需要管理员权限
             descriptor.Field(q => q.GetRoles(default!))
                 .Type<ListType<RoleType>>()
-                .RequireAllPermissions("role.list.read", "admin.access")
+                .RequireAllPermissions("role:view")
                 .Description("获取角色列表（需要管理员权限）");
 
             // 权限相关字段 - 需要管理员权限
             descriptor.Field(q => q.GetPermissions(default!))
                 .Type<ListType<PermissionType>>()
-                .RequireAllPermissions("permission.list.read", "admin.access")
+                .RequireAllPermissions("permission:view")
                 .Description("获取权限列表（需要管理员权限）");
 
             // 菜单相关字段 - 需要菜单读取权限
