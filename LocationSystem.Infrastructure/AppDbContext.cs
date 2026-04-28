@@ -34,8 +34,18 @@ namespace LocationSystem.Infrastructure
             modelBuilder.Entity<Permission>()
                 .HasMany(p => p.ChildPermissions)
                 .WithOne(p => p.Parent)
-                .HasForeignKey(p => p.ParentId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(p => p.ParentId);
+
+            // 配置Article和ArticleTag的多对多关系
+            modelBuilder.Entity<Article>()
+                .HasMany(a => a.TagRelations)
+                .WithOne(tr => tr.Article)
+                .HasForeignKey(tr => tr.ArticleId);
+
+            modelBuilder.Entity<ArticleTag>()
+                .HasMany(t => t.ArticleRelations)
+                .WithOne(tr => tr.Tag)
+                .HasForeignKey(tr => tr.TagId);
 
             // 配置Menu的自引用关系（父子菜单）
             modelBuilder.Entity<Menu>()
@@ -64,6 +74,7 @@ namespace LocationSystem.Infrastructure
         public DbSet<PermissionMenu> PermissionMenus { get; set; }
         public DbSet<Article> Articles { get; set; }
         public DbSet<ArticleTag> ArticleTags { get; set; }
+        public DbSet<ArticleTagRelation> ArticleTagRelations { get; set; }
         public DbSet<ArticleComment> ArticleComments { get; set; }
         public DbSet<ArticleLog> ArticleLogs { get; set; }
         public DbSet<ArticleSection> ArticleSections { get; set; }

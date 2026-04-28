@@ -1,2 +1,2 @@
-Add-Migration add_ArticleImage_Entity -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
+Add-Migration update_ArticleTag_Entity -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
 Update-Database -Project LocationSystem.Infrastructure -StartupProject LocationSystem.Api

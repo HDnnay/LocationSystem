@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LocationSystem.Infrastructure.Repositories
 {
-    public class TagRepository : Repository<ArticleTag>, IArticleTagRepository
+    public class ArticleTagRepository : Repository<ArticleTag>, IArticleTagRepository
     {
         private readonly AppDbContext _context;
 
-        public TagRepository(AppDbContext context) : base(context)
+        public ArticleTagRepository(AppDbContext context) : base(context)
         {
             _context = context;
         }
@@ -27,25 +27,26 @@ namespace LocationSystem.Infrastructure.Repositories
             if (articleIds == null || !articleIds.Any())
                 return Enumerable.Empty<(Guid ArticleId, ArticleTagGraphqLDto Tag)>().ToLookup(x => x.ArticleId, x => x.Tag);
 
-            // 查询所有指定文章的文章标签
-            var articles = await _context.Articles
-                .Include(a => a.Tags)
-                .Where(a => articleIds.Contains(a.Id))
+            // 查询所有指定文章的标签关联关系
+            var relations = await _context.ArticleTagRelations
+                .Include(tr => tr.Tag)  // 包含标签信息
+                .Where(tr => articleIds.Contains(tr.ArticleId))
                 .ToListAsync(cancellationToken);
 
             // 创建包含文章ID和标签信息的列表
             var tagPairs = new List<(Guid ArticleId, ArticleTagGraphqLDto Tag)>();
 
-            foreach (var article in articles)
+            foreach (var relation in relations)
             {
-                if (article.Tags != null)
+                var tagDto = new ArticleTagGraphqLDto
                 {
-                    foreach (var tag in article.Tags)
-                    {
-                        var tagDto = tag.Adapt<ArticleTagGraphqLDto>();
-                        tagPairs.Add((article.Id, tagDto));
-                    }
-                }
+                    Id = relation.Tag.Id,
+                    Name = relation.Tag.Name,
+                    Description = relation.Tag.Description,
+                    IsVisiable = relation.Tag.IsVisiable,
+                    CreateTime = relation.Tag.CreateTime
+                };
+                tagPairs.Add((relation.ArticleId, tagDto));
             }
 
             // 直接返回 ILookup

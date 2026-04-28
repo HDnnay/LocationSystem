@@ -1,8 +1,12 @@
-﻿using LocationSystem.Application.Features.Articles.Queries.GetArticles;
+﻿﻿﻿﻿using LocationSystem.Application.Features.ArticleLogs.Queries.GetAricleLogs;
+using LocationSystem.Application.Features.Articles.Queries.GetArticles;
+using LocationSystem.Application.Features.ArticleTags.Queries.GetArticleTags;
+using LocationSystem.Application.Features.Menus.Queries.GetMenus;
 using LocationSystem.Application.Features.Permissions.Queries.GetPermissions;
 using LocationSystem.Application.Features.Roles.Queries.GetRoles;
 using LocationSystem.Application.Features.Users.Queries.GetUsers;
 using LocationSystem.Application.GrapqLDTOs.Articles;
+using LocationSystem.Application.GrapqLDTOs.Menus;
 using LocationSystem.Application.GrapqLDTOs.Permissons;
 using LocationSystem.Application.GrapqLDTOs.Roles;
 using LocationSystem.Application.GrapqLDTOs.Users;
@@ -10,6 +14,7 @@ using LocationSystem.Application.Utilities;
 
 namespace LocationSystem.Presentation.GraphQL
 {
+
     public class Query
     {
         [UsePaging(typeof(Models.UserType), IncludeTotalCount = true)]
@@ -51,9 +56,9 @@ namespace LocationSystem.Presentation.GraphQL
         [UseFiltering]
         [GraphQLDescription("获取菜单列表")]
         [GraphQLName("menus")]
-        public async Task<IQueryable<PermissionGraphqLDto>> GetMenus([Service] IMediator mediator)
+        public async Task<IQueryable<MenuGraphqLDto>> GetMenus([Service] IMediator mediator)
         {
-            var query = new GetPermissionsQuery();
+            var query = new GetMenusQuery();
             var model = await mediator.Send(query);
             return model;
         }
@@ -63,9 +68,32 @@ namespace LocationSystem.Presentation.GraphQL
         [UseFiltering]
         [GraphQLDescription("获取文章列表")]
         [GraphQLName("articles")]
-        public async Task<IQueryable<ArticleGraphqLDto>> GetArticless([Service] IMediator mediator)
+        public async Task<IQueryable<ArticleGraphqLDto>> GetArticles([Service] IMediator mediator)
         {
             var query = new GetArticlesQuery();
+            var model = await mediator.Send(query);
+            return model;
+        }
+
+        [UsePaging(typeof(Models.ArticleTagType), IncludeTotalCount = true)]
+        [UseSorting]
+        [UseFiltering]
+        [GraphQLDescription("获取文章标签列表")]
+        [GraphQLName("articleTags")]
+        public async Task<IQueryable<ArticleTagGraphqLDto>> GetArticleTags([Service] IMediator mediator)
+        {
+            var query = new GetArticleTagsQuery();
+            var model = await mediator.Send(query);
+            return model;
+        }
+        [UsePaging(typeof(Models.ArticleLogType), IncludeTotalCount = true)]
+        [UseSorting]
+        [UseFiltering]
+        [GraphQLDescription("获取文章审计列表")]
+        [GraphQLName("articleLogs")]
+        public async Task<IQueryable<ArticleLogGraphqLDto>> GetArticleLogs([Service] IMediator mediator)
+        {
+            var query = new GetArticleLogsQuery();
             var model = await mediator.Send(query);
             return model;
         }

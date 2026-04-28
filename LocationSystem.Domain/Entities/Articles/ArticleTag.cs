@@ -1,4 +1,4 @@
-﻿using LocationSystem.Domain.Entities.Interfacies;
+using LocationSystem.Domain.Entities.Interfacies;
 using System.ComponentModel;
 
 namespace LocationSystem.Domain.Entities.Articles
@@ -12,5 +12,11 @@ namespace LocationSystem.Domain.Entities.Articles
         [Description("是否可见")]
         public bool IsVisiable { get; set; }
 
+        // 导航属性
+        [Description("文章关联关系")]
+        public virtual ICollection<ArticleTagRelation>? ArticleRelations { get; set; }
+
+
+        public virtual ICollection<Article>? Articles { get; set; }
     }
 }

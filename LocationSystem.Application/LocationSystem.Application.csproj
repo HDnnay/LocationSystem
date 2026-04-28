@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LocationSystem.Core\LocationSystem.Core.csproj" />
     <ProjectReference Include="..\LocationSystem.Domain\LocationSystem.Domain.csproj" />
   </ItemGroup>
 

@@ -1,13 +1,16 @@
-﻿using LocationSystem.Application.GrapqLDTOs.Articles;
+﻿using LocationSystem.Application.Contrats.Repositories;
+using LocationSystem.Application.GrapqLDTOs.Articles;
 using LocationSystem.Application.Utilities;
+using Mapster;
 
 namespace LocationSystem.Application.Features.ArticleLogs.Queries.GetAricleLogs
 {
-    public class GetArticleQueryHandler : IRequestHandler<GetArticleLogsQuery, IQueryable<ArticleLogGraphqLDto>>
+    public class GetArticleQueryHandler(IArticleLogRepository repository) : IRequestHandler<GetArticleLogsQuery, IQueryable<ArticleLogGraphqLDto>>
     {
-        public Task<IQueryable<ArticleLogGraphqLDto>> Handle(GetArticleLogsQuery request)
+        public async Task<IQueryable<ArticleLogGraphqLDto>> Handle(GetArticleLogsQuery request)
         {
-            throw new NotImplementedException();
+            var model = repository.Query().ProjectToType<ArticleLogGraphqLDto>();
+            return await Task.FromResult(model);
         }
     }
 }

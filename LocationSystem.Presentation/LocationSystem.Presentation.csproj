@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LocationSystem.Application\LocationSystem.Application.csproj" />
+    <ProjectReference Include="..\LocationSystem.Core\LocationSystem.Core.csproj" />
   </ItemGroup>
 
 </Project>

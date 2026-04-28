@@ -1,4 +1,4 @@
-﻿namespace LocationSystem.Presentation.InputTypes
+﻿namespace LocationSystem.Presentation.Commands
 {
     public record UserQueryInput
     (

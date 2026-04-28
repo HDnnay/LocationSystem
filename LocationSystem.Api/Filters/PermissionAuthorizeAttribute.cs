@@ -1,4 +1,6 @@
-using LocationSystem.Application.Utilities;using Microsoft.AspNetCore.Authorization;using Microsoft.AspNetCore.Mvc;using Microsoft.AspNetCore.Mvc.Filters;using Microsoft.Extensions.Caching.Distributed;using System.Security.Claims;using System.Threading.Tasks;
+using LocationSystem.Application.Utilities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace LocationSystem.Api.Filters
 {
@@ -38,30 +40,31 @@ namespace LocationSystem.Api.Filters
 
             // 获取缓存服务
             var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
-            
+
             // 生成缓存键
             var cacheKey = CacheKeys.UserPermissions(userId.Value);
-            
+
             // 从缓存中获取用户权限或创建缓存
-            var userPermissions = await cacheService.GetOrCreateAsync<List<string>>(cacheKey, async (options) => {
+            var userPermissions = await cacheService.GetOrCreateAsync<List<string>>(cacheKey, async (options) =>
+            {
                 // 获取权限管理服务
                 var permissionManagement = context.HttpContext.RequestServices.GetRequiredService<LocationSystem.Application.Services.PermissionManagement>();
-                
+
                 // 获取用户的所有权限代码
                 return await permissionManagement.GetUserPermissionCodesAsync(userId.Value);
-            }, 1800); 
-            
+            }, 1800);
+
             // 检查用户是否是超级管理员（拥有admin角色）
             var roleRepository = context.HttpContext.RequestServices.GetRequiredService<LocationSystem.Application.Contrats.Repositories.IRoleRepository>();
             var userRoles = await roleRepository.GetRolesByUserIdAsync(userId.Value);
             var isSuperAdmin = userRoles.Any(role => role != null && role.Code == "admin");
-            
+
             // 如果是超级管理员，直接通过
             if (isSuperAdmin)
             {
                 return;
             }
-            
+
             // 检查用户是否有权限
             if (userPermissions == null || !userPermissions.Contains(PermissionCode))
             {

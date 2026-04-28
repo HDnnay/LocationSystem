@@ -37,6 +37,9 @@ namespace LocationSystem.Domain.Entities.Articles
         public string? Topic { get; private set; }
         [Description("标签")]
         public virtual ICollection<ArticleTag>? Tags { get; private set; }
+        
+        [Description("标签关联关系")]
+        public virtual ICollection<ArticleTagRelation>? TagRelations { get; private set; }
         [Description("评论")]
         public virtual ICollection<ArticleComment>? Comments { get; private set; }
         [Description("创建者")]
