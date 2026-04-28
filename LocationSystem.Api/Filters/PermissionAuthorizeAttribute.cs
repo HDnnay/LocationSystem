@@ -1,4 +1,6 @@
 using LocationSystem.Application.Utilities;
+using LocationSystem.Core;
+using LocationSystem.Core.Security.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -37,36 +39,14 @@ namespace LocationSystem.Api.Filters
                 context.Result = new UnauthorizedResult();
                 return;
             }
-
-            // 获取缓存服务
-            var cacheService = context.HttpContext.RequestServices.GetRequiredService<ICacheService>();
-
-            // 生成缓存键
-            var cacheKey = CacheKeys.UserPermissions(userId.Value);
-
-            // 从缓存中获取用户权限或创建缓存
-            var userPermissions = await cacheService.GetOrCreateAsync<List<string>>(cacheKey, async (options) =>
+            var permissionValidator = context.HttpContext.RequestServices.GetRequiredService<IPermissionValidator>();
+            var validationContext = new PermissionValidationContext
             {
-                // 获取权限管理服务
-                var permissionManagement = context.HttpContext.RequestServices.GetRequiredService<LocationSystem.Application.Services.PermissionManagement>();
-
-                // 获取用户的所有权限代码
-                return await permissionManagement.GetUserPermissionCodesAsync(userId.Value);
-            }, 1800);
-
-            // 检查用户是否是超级管理员（拥有admin角色）
-            var roleRepository = context.HttpContext.RequestServices.GetRequiredService<LocationSystem.Application.Contrats.Repositories.IRoleRepository>();
-            var userRoles = await roleRepository.GetRolesByUserIdAsync(userId.Value);
-            var isSuperAdmin = userRoles.Any(role => role != null && role.Code == "admin");
-
-            // 如果是超级管理员，直接通过
-            if (isSuperAdmin)
-            {
-                return;
-            }
-
-            // 检查用户是否有权限
-            if (userPermissions == null || !userPermissions.Contains(PermissionCode))
+                UserId = userId.Value,
+                PermissionCode = PermissionCode
+            };
+            var result = await permissionValidator.ValidateAsync(validationContext);
+            if (!result.IsAuthorized)
             {
                 context.Result = new ForbidResult();
                 return;
