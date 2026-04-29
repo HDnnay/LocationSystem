@@ -17,6 +17,5 @@ namespace LocationSystem.Domain.Entities.Articles
         public virtual ICollection<ArticleTagRelation>? ArticleRelations { get; set; }
 
 
-        public virtual ICollection<Article>? Articles { get; set; }
     }
 }
