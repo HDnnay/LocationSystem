@@ -204,13 +204,20 @@ namespace LocationSystem.Api.Data
             }
             await dbContext.SaveChangesAsync();
 
-            // 为文章添加标签
-            articles[0].UpdateTags(new List<ArticleTag> { tags[0], tags[3] });
-            articles[1].UpdateTags(new List<ArticleTag> { tags[1], tags[4] });
-            articles[2].UpdateTags(new List<ArticleTag> { tags[2], tags[3] });
-            articles[3].UpdateTags(new List<ArticleTag> { tags[3] });
-            articles[4].UpdateTags(new List<ArticleTag> { tags[4] });
-
+            // 为文章添加标签关联
+            var tagRelations = new List<ArticleTagRelation>
+            {
+                new() { ArticleId = articles[0].Id, TagId = tags[0].Id },
+                new() { ArticleId = articles[0].Id, TagId = tags[3].Id },
+                new() { ArticleId = articles[1].Id, TagId = tags[1].Id },
+                new() { ArticleId = articles[1].Id, TagId = tags[4].Id },
+                new() { ArticleId = articles[2].Id, TagId = tags[2].Id },
+                new() { ArticleId = articles[2].Id, TagId = tags[3].Id },
+                new() { ArticleId = articles[3].Id, TagId = tags[3].Id },
+                new() { ArticleId = articles[4].Id, TagId = tags[4].Id }
+            };
+            
+            await dbContext.ArticleTagRelations.AddRangeAsync(tagRelations);
             await dbContext.SaveChangesAsync();
 
             // 创建评论

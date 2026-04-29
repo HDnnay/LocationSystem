@@ -15,12 +15,18 @@ namespace LocationSystem.Application.Features.Articles.Commands.CreateArticle
     {
         private readonly IArticleRepository _articleRepository;
         private readonly IArticleTagRepository _tagRepository;
+        private readonly IArticleTagRelationRepository _articleTagRelationRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateArticleCommandHandler(IArticleRepository articleRepository, IArticleTagRepository tagRepository, IUnitOfWork unitOfWork)
+        public CreateArticleCommandHandler(
+            IArticleRepository articleRepository, 
+            IArticleTagRepository tagRepository,
+            IArticleTagRelationRepository articleTagRelationRepository,
+            IUnitOfWork unitOfWork)
         {
             _articleRepository = articleRepository;
             _tagRepository = tagRepository;
+            _articleTagRelationRepository = articleTagRelationRepository;
             _unitOfWork = unitOfWork;
         }
 
@@ -38,16 +44,24 @@ namespace LocationSystem.Application.Features.Articles.Commands.CreateArticle
             article.Level = command.Level;
             article.SetVisibleTimeRange(command.VisibleStartTime, command.VisibleEndTime);
 
-            if (command.TagIds != null && command.TagIds.Any())
-            {
-                var tags = await _tagRepository.GetByIdsAsync(command.TagIds);
-                article.UpdateTags(tags.ToList());
-            }
-
             await _unitOfWork.BeginTransactionAsync();
             try
             {
                 await _articleRepository.AddAsync(article);
+                
+                // 处理标签关联
+                if (command.TagIds != null && command.TagIds.Any())
+                {
+                    var tags = await _tagRepository.GetByIdsAsync(command.TagIds);
+                    var relations = tags.Select(tag => new ArticleTagRelation
+                    {
+                        ArticleId = article.Id,
+                        TagId = tag.Id
+                    }).ToList();
+                    
+                    await _articleTagRelationRepository.AddRangeAsync(relations);
+                }
+                
                 await _unitOfWork.CommitAsync();
             }
             catch (Exception)

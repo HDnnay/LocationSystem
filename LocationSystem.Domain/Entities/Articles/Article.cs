@@ -88,11 +88,7 @@ namespace LocationSystem.Domain.Entities.Articles
             VisibleEndTime = endTime;
         }
 
-        // 添加更新标签方法
-        public void UpdateTags(List<ArticleTag> tags)
-        {
-            Tags = tags;
-        }
+
     }
 
 

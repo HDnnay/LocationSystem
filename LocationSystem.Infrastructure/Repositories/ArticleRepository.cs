@@ -19,7 +19,7 @@ namespace LocationSystem.Infrastructure.Repositories
 
             if (includeTags)
             {
-                query = query.Include(a => a.Tags);
+                query = query.Include(a => a.TagRelations);
             }
 
             return await query.FirstOrDefaultAsync(a => a.Id == id);
@@ -40,7 +40,8 @@ namespace LocationSystem.Infrastructure.Repositories
         public async Task<Dictionary<Guid, ICollection<ArticleTag>>> GetTagsByArticleIdsAsync(List<Guid> articleIds)
         {
             var articles = await _context.Articles
-                .Include(a => a.Tags)
+                .Include(a => a.TagRelations)
+                    .ThenInclude(tr => tr.Tag)
                 .Where(a => articleIds.Contains(a.Id))
                 .ToListAsync();
 
@@ -48,7 +49,10 @@ namespace LocationSystem.Infrastructure.Repositories
 
             foreach (var article in articles)
             {
-                result[article.Id] = article.Tags ?? new List<ArticleTag>();
+                result[article.Id] = article.TagRelations?
+                    .Select(tr => tr.Tag)
+                    .Where(tag => tag != null)
+                    .ToList() ?? new List<ArticleTag>();
             }
 
             // 确保所有请求的文章都有结果
