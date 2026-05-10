@@ -12,9 +12,8 @@ namespace LocationSystem.Infrastructure
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
             // Register Infrastructure services here
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer("name=SqlServerConnectionString"));
-            #region �ִ�ע��
+
+            #region 仓储服务
             services.AddScoped<ICompanyRepository, CompanyRepository>();
             services.AddScoped<IRentHouseRepository, RentHouseRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

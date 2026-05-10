@@ -1,2 +1,11 @@
-Add-Migration update_ArticleTag_Entity -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
+Add-Migration update_ArticleTag_Entity11 -StartUpProject LocationSystem.Api -Project LocationSystem.Infrastructure
 Update-Database -Project LocationSystem.Infrastructure -StartupProject LocationSystem.Api
+
+ MySQL 不支持 nvarchar(max) 数据类型。在 MySQL 中，
+ 应该使用 LONGTEXT 或 TEXT 类型来替代。实体中如果字符类型未指定长度，生成：
+SQL Server	    MySQL
+nvarchar(max)	LONGTEXT
+nvarchar(n)	    varchar(n)
+ntext	        TEXT 或 LONGTEXT
+char(n)	        char(n)
+nchar(n)	    char(n)

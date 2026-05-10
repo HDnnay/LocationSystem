@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LocationSystem.Domain.Entities.DeletedSnapshots
 {
@@ -42,7 +41,6 @@ namespace LocationSystem.Domain.Entities.DeletedSnapshots
         /// <summary>
         /// 快照数据（JSON格式）
         /// </summary>
-        [Column(TypeName = "nvarchar(max)")]
         public string SnapshotDataJson { get; set; } = string.Empty;
 
         /// <summary>
@@ -65,7 +63,6 @@ namespace LocationSystem.Domain.Entities.DeletedSnapshots
         /// <summary>
         /// 额外元数据（JSON格式，可选）
         /// </summary>
-        [Column(TypeName = "nvarchar(max)")]
         public string? MetadataJson { get; set; }
     }
 }

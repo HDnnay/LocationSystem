@@ -16,9 +16,11 @@ namespace LocationSystem.Api
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            var connectionString = configuration.GetConnectionString("SqlServerConnectionString");
-
-            optionsBuilder.UseSqlServer(connectionString);
+            var connectionString = configuration.GetConnectionString("DefaultConnection")?? throw new ArgumentNullException("数据库链接字符串不存在！");
+            if (configuration["DataBaseProvider"]=="Mysql")
+                optionsBuilder.UseMySQL(connectionString);
+            else
+                optionsBuilder.UseSqlServer(connectionString);
 
             return new AppDbContext(optionsBuilder.Options);
         }

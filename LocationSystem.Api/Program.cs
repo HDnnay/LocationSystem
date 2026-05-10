@@ -7,6 +7,7 @@ using LocationSystem.Infrastructure;
 using LocationSystem.Presentation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
@@ -49,7 +50,18 @@ try
         //options.JsonSerializerOptions.Converters.Add(new DateTimeJsonConverter());
         //options.JsonSerializerOptions.Converters.Add(new NullableDateTimeJsonConverter());
     });
-    // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+    #region 数据库上下文配置
+    if (builder.Configuration["DataBaseProvider"]=="MySql")
+    {
+        Console.WriteLine($"当前使用的数据库", builder.Configuration["DataBaseProvider"]);
+        builder.Services.AddDbContext<AppDbContext>(options => options.UseMySQL("name=DefaultConnection"));
+    }
+    else
+    {
+        Console.WriteLine($"当前使用的数据库", builder.Configuration["DataBaseProvider"]);
+        builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer("name=DefaultConnection"));
+    }
+    #endregion
     builder.Services.AddInfrastructureServices();
     builder.Services.AddApplicationServices();
     builder.Services.AddPresentationServices();
